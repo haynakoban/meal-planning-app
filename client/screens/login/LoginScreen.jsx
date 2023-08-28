@@ -3,7 +3,7 @@ import { Avatar, Button, Divider, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Avatar.Image
@@ -100,6 +100,23 @@ const LoginScreen = () => {
             textColor='#000000'
           >
             Continue with Apple
+          </Button>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text>Don't have an account?</Text>
+          <Button
+            mode='text'
+            textColor='#0d6efd'
+            style={{ marginLeft: -8 }}
+            onPress={() => navigation.navigate('Sign Up')}
+          >
+            Sign Up
           </Button>
         </View>
       </View>
