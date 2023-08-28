@@ -1,7 +1,8 @@
-import { View } from 'react-native';
-import { Avatar, Button, Divider, Text, TextInput } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { View, TextInput } from 'react-native';
+import { Avatar, Button, Divider, Text } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import styles from '../../styles/login';
 import { COLORS } from '../../constants';
@@ -35,7 +36,11 @@ const LoginScreen = ({ navigation }) => {
     buttonLabel,
     buttonText,
     signUpButton,
+    input,
   } = styles;
+
+  const [focusEmail, setFocusEmail] = useState(1);
+  const [focusPassword, setFocusPassword] = useState(1);
 
   return (
     <SafeAreaView style={container}>
@@ -46,12 +51,18 @@ const LoginScreen = ({ navigation }) => {
       />
 
       <View style={loginWrapper}>
-        <TextInput label='  Email:' mode='outlined' style={mb} theme={theme} />
         <TextInput
-          label='  Password:'
+          placeholder='Email'
+          onFocus={() => setFocusEmail(2)}
+          onBlur={() => setFocusEmail(1)}
+          style={[input, { borderWidth: focusEmail }]}
+        />
+        <TextInput
           secureTextEntry
-          mode='outlined'
-          theme={theme}
+          placeholder='Password'
+          onFocus={() => setFocusPassword(2)}
+          onBlur={() => setFocusPassword(1)}
+          style={[input, { borderWidth: focusPassword }]}
         />
 
         <Button

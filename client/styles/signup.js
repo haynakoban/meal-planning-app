@@ -3,6 +3,15 @@ import { StyleSheet } from 'react-native';
 import { COLORS, FONT, SIZES } from '../constants';
 
 const styles = StyleSheet.create({
+  input: {
+    height: 50,
+    marginBottom: 12,
+    borderRadius: 999,
+    padding: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    fontFamily: FONT.regular,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -43,7 +52,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.semiBold,
   },
   buttonText: {
-    fontFamily: FONT.extraBold,
+    fontFamily: FONT.bold,
     fontSize: SIZES.md,
   },
   signUpButton: {

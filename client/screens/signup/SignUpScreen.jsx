@@ -1,5 +1,6 @@
-import { View } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper';
+import { useState } from 'react';
+import { View, TextInput } from 'react-native';
+import { Button, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import styles from '../../styles/signup';
@@ -20,6 +21,7 @@ const RegisterScreen = ({ navigation }) => {
     footerText,
     buttonText,
     signUpButton,
+    input,
   } = styles;
   const theme = {
     colors: {
@@ -28,6 +30,12 @@ const RegisterScreen = ({ navigation }) => {
     },
     roundness: 999,
   };
+
+  const [focusName, setFocusName] = useState(1);
+  const [focusEmail, setFocusEmail] = useState(1);
+  const [focusPassword, setFocusPassword] = useState(1);
+  const [focusConfirmPassword, setFocusConfirmPassword] = useState(1);
+
   return (
     <SafeAreaView style={container}>
       <View style={bannerWrapper}>
@@ -39,28 +47,32 @@ const RegisterScreen = ({ navigation }) => {
 
       <View style={registerWrapper}>
         <TextInput
-          label='  Full Name'
-          mode='outlined'
-          style={mb}
-          theme={theme}
-        />
-        <TextInput label='  Email' mode='outlined' style={mb} theme={theme} />
-        <TextInput
-          label='  Password'
-          secureTextEntry
-          mode='outlined'
-          style={mb}
-          theme={theme}
+          placeholder='Full Name'
+          onFocus={() => setFocusName(2)}
+          onBlur={() => setFocusName(1)}
+          style={[input, { borderWidth: focusName }]}
         />
         <TextInput
-          label='  Confirm Password'
+          placeholder='Email'
+          onFocus={() => setFocusEmail(2)}
+          onBlur={() => setFocusEmail(1)}
+          style={[input, { borderWidth: focusEmail }]}
+        />
+        <TextInput
           secureTextEntry
-          mode='outlined'
-          style={mb}
-          theme={theme}
+          placeholder='Password'
+          onFocus={() => setFocusPassword(2)}
+          onBlur={() => setFocusPassword(1)}
+          style={[input, { borderWidth: focusPassword }]}
+        />
+        <TextInput
+          secureTextEntry
+          placeholder='Confirm Password'
+          onFocus={() => setFocusConfirmPassword(2)}
+          onBlur={() => setFocusConfirmPassword(1)}
+          style={[input, { borderWidth: focusConfirmPassword }]}
         />
         <Button
-          mode='contained'
           uppercase
           style={button}
           labelStyle={[letterSpacing, buttonText]}
