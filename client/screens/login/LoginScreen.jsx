@@ -46,9 +46,9 @@ const LoginScreen = ({ navigation }) => {
       />
 
       <View style={loginWrapper}>
-        <TextInput label='Email:' mode='outlined' style={mb} theme={theme} />
+        <TextInput label='  Email:' mode='outlined' style={mb} theme={theme} />
         <TextInput
-          label='Password:'
+          label='  Password:'
           secureTextEntry
           mode='outlined'
           theme={theme}
