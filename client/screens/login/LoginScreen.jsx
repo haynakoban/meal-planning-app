@@ -3,7 +3,7 @@ import { Avatar, Button, Divider, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Avatar.Image
@@ -22,6 +22,7 @@ const LoginScreen = () => {
               primary: '#000000', // Border color on focus
               background: '#F5EBEB', // Background color
             },
+            roundness: 999,
           }}
           // value={password}
           // onChangeText={handlePasswordChange}
@@ -30,12 +31,12 @@ const LoginScreen = () => {
           label='Password:'
           secureTextEntry
           mode='outlined'
-          style={[styles.mb, { marginTop: 4 }]}
           theme={{
             colors: {
               primary: '#000000', // Border color on focus
               background: '#F5EBEB', // Background color
             },
+            roundness: 999,
           }}
           // value={password}
           // onChangeText={handlePasswordChange}
@@ -53,9 +54,9 @@ const LoginScreen = () => {
         <Button
           mode='contained'
           uppercase
-          style={[styles.button, styles.noBorderRadius]}
+          style={[styles.button]}
           labelStyle={styles.letterSpacing}
-          textColor='#000000'
+          textColor='#FFF'
           // onPress={() => }
         >
           Sign In
@@ -102,6 +103,23 @@ const LoginScreen = () => {
             Continue with Apple
           </Button>
         </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text>Don't have an account?</Text>
+          <Button
+            mode='text'
+            textColor='#00A8E8'
+            style={{ marginLeft: -8 }}
+            onPress={() => navigation.navigate('Sign Up')}
+          >
+            Sign Up
+          </Button>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -115,20 +133,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5EBEB',
   },
   loginWrapper: {
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     width: '100%',
   },
   mb: {
     marginBottom: 12,
   },
   button: {
-    marginTop: 4,
-    width: '45%',
-    alignSelf: 'center',
-    backgroundColor: '#E4D0D0CC',
+    marginTop: 12,
+    backgroundColor: '#00A8E8',
     letterSpacing: '2px',
-    borderWidth: 1,
-    borderColor: '#00000045',
+    paddingVertical: 3,
+    borderRadius: 999,
   },
   letterSpacing: {
     letterSpacing: 1,
