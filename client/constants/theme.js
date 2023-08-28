@@ -1,7 +1,7 @@
 const COLORS = {
   primary: '#F5EBEB',
   secondary: '#E4D0D0',
-  tertiary: '#FF7754',
+  accent: '#00A8E8',
 
   gray: '#83829A',
   gray2: '#C1C0C8',
@@ -14,9 +14,15 @@ const COLORS = {
 };
 
 const FONT = {
-  regular: 'DMRegular',
-  medium: 'DMMedium',
-  bold: 'DMBold',
+  thin: 'MThin', // 100
+  extraLight: 'MExtraLight', // 200
+  light: 'MLight', // 300
+  regular: 'MRegular', // 400
+  medium: 'MMedium', // 500
+  semiBold: 'MSemiBold', // 600
+  bold: 'MBold', // 700
+  extraBold: 'MExtraBold', // 800
+  black: 'MBlack', // 900
 };
 
 const SIZES = {
