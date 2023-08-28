@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen, LoginScreen, SignUpScreen } from '../screens';
+import { COLORS, FONT } from '../constants';
 
 const Stack = createStackNavigator();
 
@@ -8,11 +9,11 @@ const AppNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#00A8E8',
+          backgroundColor: COLORS.accent,
           borderBottomWidth: 1,
-          borderBottomColor: '#F5EBEB',
+          borderBottomColor: COLORS.primary,
         },
-        headerTintColor: '#F5EBEB',
+        headerTintColor: COLORS.primary,
       }}
     >
       <Stack.Screen name='Home' component={HomeScreen} />
@@ -26,6 +27,9 @@ const AppNavigator = () => {
         component={SignUpScreen}
         options={{
           headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: FONT.bold,
+          },
         }}
       />
     </Stack.Navigator>

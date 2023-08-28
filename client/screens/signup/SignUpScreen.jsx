@@ -1,98 +1,80 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import styles from '../../styles/signup';
+import { COLORS } from '../../constants';
+
 const RegisterScreen = ({ navigation }) => {
+  const { primary, black, white, accent } = COLORS;
+  const {
+    container,
+    bannerWrapper,
+    bannerHeader,
+    bannerDescription,
+    registerWrapper,
+    mb,
+    button,
+    letterSpacing,
+    footerWrapper,
+    footerText,
+    buttonText,
+    signUpButton,
+  } = styles;
+  const theme = {
+    colors: {
+      primary: black,
+      background: primary,
+    },
+    roundness: 999,
+  };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: 700 }}>
-          Create Your Account
+    <SafeAreaView style={container}>
+      <View style={bannerWrapper}>
+        <Text style={bannerHeader}>Create Your Account</Text>
+        <Text style={bannerDescription}>
+          Please enter info to create account
         </Text>
-        <Text>Please enter info to create account</Text>
       </View>
 
-      <View style={styles.registerWrapper}>
+      <View style={registerWrapper}>
         <TextInput
-          label='Full Name:'
+          label='  Full Name'
           mode='outlined'
-          style={styles.mb}
-          theme={{
-            colors: {
-              primary: '#000000',
-              background: '#F5EBEB',
-            },
-            roundness: 999,
-          }}
-          // value={password}
-          // onChangeText={handlePasswordChange}
+          style={mb}
+          theme={theme}
         />
+        <TextInput label='  Email' mode='outlined' style={mb} theme={theme} />
         <TextInput
-          label='Email:'
-          mode='outlined'
-          style={styles.mb}
-          theme={{
-            colors: {
-              primary: '#000000',
-              background: '#F5EBEB',
-            },
-            roundness: 999,
-          }}
-          // value={password}
-          // onChangeText={handlePasswordChange}
-        />
-        <TextInput
-          label='Password:'
+          label='  Password'
           secureTextEntry
           mode='outlined'
-          style={styles.mb}
-          theme={{
-            colors: {
-              primary: '#000000',
-              background: '#F5EBEB',
-            },
-            roundness: 999,
-          }}
-          // value={password}
-          // onChangeText={handlePasswordChange}
+          style={mb}
+          theme={theme}
         />
         <TextInput
-          label='Confirm Password:'
+          label='  Confirm Password'
           secureTextEntry
           mode='outlined'
-          style={styles.mb}
-          theme={{
-            colors: {
-              primary: '#000000',
-              background: '#F5EBEB',
-            },
-            roundness: 999,
-          }}
-          // value={password}
-          // onChangeText={handlePasswordChange}
+          style={mb}
+          theme={theme}
         />
         <Button
           mode='contained'
           uppercase
-          style={[styles.button]}
-          labelStyle={styles.letterSpacing}
-          textColor='#FFF'
-          // onPress={() => }
+          style={button}
+          labelStyle={[letterSpacing, buttonText]}
+          textColor={white}
         >
           Submit
         </Button>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Text>Already have an account?</Text>
+        <View style={footerWrapper}>
+          <Text style={footerText}>Already have an account?</Text>
           <Button
             mode='text'
-            textColor='#00A8E8'
-            style={{ marginLeft: -8 }}
+            textColor={accent}
+            style={signUpButton}
+            labelStyle={footerText}
             onPress={() => navigation.navigate('Login')}
           >
             Sign In
@@ -103,30 +85,4 @@ const RegisterScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#F5EBEB',
-  },
-  registerWrapper: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    width: '100%',
-    marginTop: 8,
-  },
-  mb: {
-    marginBottom: 12,
-  },
-  button: {
-    marginTop: 12,
-    backgroundColor: '#00A8E8',
-    letterSpacing: '2px',
-    paddingVertical: 3,
-    borderRadius: 999,
-  },
-  letterSpacing: {
-    letterSpacing: 1,
-  },
-});
 export default RegisterScreen;
