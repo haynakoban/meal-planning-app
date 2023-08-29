@@ -1,16 +1,19 @@
 import React from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { Card } from 'react-native-paper';
+import { Avatar, Card } from 'react-native-paper';
 
 import { AntDesign } from '@expo/vector-icons';
-import { FONT } from '../../constants';
+import { COLORS, FONT } from '../../constants';
 
 const FavoriteCard = ({ name, username, ratings, image }) => {
   const [isFavorite, setIsFavorite] = React.useState(true);
 
   return (
     <Card style={styles.card}>
-      <Card.Cover source={{ uri: image }} style={styles.mb} />
+      <Card.Cover
+        source={{ uri: image }}
+        style={[styles.mb, { position: 'relative' }]}
+      />
       <Card.Content>
         <Text variant='titleLarge' style={styles.title}>
           {name}
@@ -29,12 +32,30 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
           <Text> ({ratings})</Text>
         </Text>
       </View>
-      <Card.Actions>
+      <Card.Actions
+        style={{
+          position: 'absolute',
+          top: 170,
+          right: 0,
+        }}
+      >
         <Pressable onPress={() => setIsFavorite(!isFavorite)}>
           {isFavorite ? (
-            <AntDesign name='heart' style={styles.icon} color='red' />
+            <Avatar.Icon
+              size={40}
+              style={{ backgroundColor: COLORS.primary }}
+              icon={() => (
+                <AntDesign name='heart' style={styles.icon} color='red' />
+              )}
+            />
           ) : (
-            <AntDesign name='hearto' style={styles.icon} color='red' />
+            <Avatar.Icon
+              size={40}
+              style={{ backgroundColor: COLORS.primary }}
+              icon={() => (
+                <AntDesign name='hearto' style={styles.icon} color='red' />
+              )}
+            />
           )}
         </Pressable>
       </Card.Actions>
@@ -58,8 +79,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   icon: {
-    paddingBottom: 10,
-    paddingRight: 10,
     fontSize: 24,
   },
   title: {
