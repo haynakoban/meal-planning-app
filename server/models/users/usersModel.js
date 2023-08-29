@@ -5,14 +5,6 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  provider: {
-    type: String,
-    required: false,
-  },
-  provider_id: {
-    type: String,
-    required: false,
-  },
   email: {
     type: String,
     required: true,
@@ -21,6 +13,18 @@ const usersSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    required: false,
+  },
+  provider: {
+    type: String,
+    required: false,
+  },
+  provider_id: {
+    type: String,
+    required: false,
+  },
+  favorites: {
+    type: Array,
     required: false,
   },
   createdAt: {

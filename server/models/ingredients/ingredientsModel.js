@@ -15,7 +15,7 @@ const ingredientsSchema = new mongoose.Schema({
     required: true,
   },
   facts: {
-    type: String,
+    type: Array,
     required: true,
   },
   createdAt: {

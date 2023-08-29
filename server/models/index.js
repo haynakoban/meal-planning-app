@@ -4,7 +4,7 @@ const Ingredients = require('./ingredients/ingredientsModel');
 const Recipes = require('./recipes/recipesModel');
 const Feedbacks = require('./feedbacks/feedbacksModel');
 const Preferences = require('./preferences/preferencesModel');
-const Diets = require('./diets/dietsModel');
+const Cuisines = require('./cuisines/cuisinesModel');
 const Plans = require('./plans/plansModel');
 
 module.exports = {
@@ -14,6 +14,6 @@ module.exports = {
   Recipes,
   Feedbacks,
   Preferences,
-  Diets,
   Plans,
+  Cuisines,
 };

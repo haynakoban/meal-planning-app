@@ -10,10 +10,6 @@ const preferencesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  facts: {
-    type: String,
-    required: true,
-  },
   description: {
     type: String,
     required: true,
