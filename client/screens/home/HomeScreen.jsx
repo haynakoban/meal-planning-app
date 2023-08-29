@@ -33,6 +33,14 @@ const HomeScreen = ({ navigation }) => {
       >
         Sign Up
       </Button>
+      <Button
+        style={{ margin: 2 }}
+        mode='contained'
+        uppercase
+        onPress={() => navigation.navigate('Favorites')}
+      >
+        Favorites
+      </Button>
     </View>
   );
 };
