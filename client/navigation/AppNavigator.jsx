@@ -32,7 +32,7 @@ const AppNavigator = () => {
           headerTitle: 'Recipe',
           headerTitleAlign: 'left',
           headerTitleStyle: {
-            fontFamily: FONT.medium,
+            fontFamily: FONT.semiBold,
             color: COLORS.primary,
             letterSpacing: 0.1,
           },

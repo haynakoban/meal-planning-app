@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, Text } from 'react-native';
 
 import FavoriteCard from './FavoriteCard';
 
-const data = [
+export const data = [
   {
     id: '1',
     name: 'Adobong Manok',
