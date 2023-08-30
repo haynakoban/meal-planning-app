@@ -12,7 +12,7 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
     <Card style={styles.card}>
       <Card.Cover
         source={{ uri: image }}
-        style={[styles.mb, { position: 'relative' }]}
+        style={[styles.mb, { position: 'relative', objectFit: 'cover' }]}
       />
       <Card.Content>
         <Text variant='titleLarge' style={styles.title}>
