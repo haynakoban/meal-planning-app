@@ -24,13 +24,13 @@ const FavoritesScreen = ({ navigation }) => {
       <FlatList
         style={container}
         data={DATA}
-        renderItem={({ item }) => (
+        renderItem={({ id, name, username, ratings, image }) => (
           <FavoriteCard
-            name={item.name}
-            username={item.username}
-            ratings={item.ratings}
-            image={item.image}
-            key={item.id}
+            name={name}
+            username={username}
+            ratings={ratings}
+            image={image}
+            key={id}
           />
         )}
         numColumns={2}
