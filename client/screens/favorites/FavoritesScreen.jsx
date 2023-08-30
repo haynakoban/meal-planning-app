@@ -83,13 +83,6 @@ const FavoritesScreen = ({ navigation }) => {
         )}
         numColumns={2}
       />
-      <View>
-        <Text>RECIPES</Text>
-        <Text>PLANNER</Text>
-        <Text>+</Text>
-        <Text>FAVORITES</Text>
-        <Text>ME</Text>
-      </View>
     </>
   );
 };
