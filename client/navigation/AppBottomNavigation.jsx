@@ -27,7 +27,7 @@ const AppBottomNavigation = () => {
           return route.name === 'Create Meal' ? (
             ''
           ) : (
-            <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.sm }}>
+            <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.xs }}>
               {route.name}
             </Text>
           );
@@ -47,7 +47,7 @@ const AppBottomNavigation = () => {
             iconName = focused ? 'person' : 'person-outline';
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={SIZES.lg} color={color} />;
         },
       })}
     >
