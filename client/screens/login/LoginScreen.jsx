@@ -8,7 +8,14 @@ import styles from '../../styles/login';
 import { COLORS } from '../../constants';
 
 const LoginScreen = ({ navigation }) => {
-  const { black, white, accent } = COLORS;
+  const { primary, black, white, accent } = COLORS;
+  const theme = {
+    colors: {
+      primary: black,
+      background: primary,
+    },
+    roundness: 999,
+  };
 
   const {
     container,

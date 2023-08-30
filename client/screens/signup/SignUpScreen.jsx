@@ -7,13 +7,14 @@ import styles from '../../styles/signup';
 import { COLORS } from '../../constants';
 
 const RegisterScreen = ({ navigation }) => {
-  const { white, accent } = COLORS;
+  const { primary, black, white, accent } = COLORS;
   const {
     container,
     bannerWrapper,
     bannerHeader,
     bannerDescription,
     registerWrapper,
+    mb,
     button,
     letterSpacing,
     footerWrapper,
@@ -22,6 +23,13 @@ const RegisterScreen = ({ navigation }) => {
     signUpButton,
     input,
   } = styles;
+  const theme = {
+    colors: {
+      primary: black,
+      background: primary,
+    },
+    roundness: 999,
+  };
 
   const [focusName, setFocusName] = useState(1);
   const [focusEmail, setFocusEmail] = useState(1);
