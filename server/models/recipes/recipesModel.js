@@ -42,18 +42,17 @@ const recipesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: Array,
+    required: true,
+  },
   preference: {
     type: Array,
     ref: 'Preferences',
     required: false,
   },
-  diet: {
-    type: Array,
-    ref: 'Diets',
-    required: false,
-  },
   image: {
-    type: Array,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Uploads',
     required: false,
   },

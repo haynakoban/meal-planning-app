@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
-const dietsSchema = new mongoose.Schema({
+const cuisinesSchema = new mongoose.Schema({
   admin_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Admins',
     required: true,
   },
   name: {
-    type: String,
-    required: true,
-  },
-  facts: {
     type: String,
     required: true,
   },
@@ -29,4 +25,4 @@ const dietsSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Diets', dietsSchema);
+module.exports = mongoose.model('Cuisines', cuisinesSchema);
