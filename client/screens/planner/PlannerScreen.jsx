@@ -1,10 +1,7 @@
 import React from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { ScrollView, View } from 'react-native';
 
 import PlansCard from '../../components/planner/PlansCard';
-import { Button } from 'react-native-paper';
-import { COLORS, FONT, SIZES } from '../../constants';
 
 const data = [
   {

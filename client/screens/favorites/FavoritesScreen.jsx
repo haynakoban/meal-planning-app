@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 
