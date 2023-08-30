@@ -5,7 +5,6 @@ import { AntDesign } from '@expo/vector-icons';
 import styles from '../../styles/favorites';
 
 const FavoriteCard = ({ name, username, ratings, image }) => {
-  console.log(name, username, ratings, image);
   const {
     card,
     cardAction,
