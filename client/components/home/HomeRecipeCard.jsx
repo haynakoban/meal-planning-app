@@ -7,7 +7,7 @@ import FavoriteCard from '../../components/favorites/FavoriteCard';
 import { COLORS, SIZES } from '../../constants';
 import styles from '../../styles/homeRecipes';
 
-import { data } from '../../screens/favorites/FavoritesScreen';
+import { DATA } from '../../constants';
 
 const HomeRecipeCard = ({ headerTitle, subTitle }) => {
   const navigation = useNavigation();
@@ -51,7 +51,7 @@ const HomeRecipeCard = ({ headerTitle, subTitle }) => {
       </View>
 
       <View style={cardWrapper}>
-        {data.map(({ id, name, username, ratings, image }) => (
+        {DATA.map(({ id, name, username, ratings, image }) => (
           <View key={id} style={cardContentWrapper}>
             <FavoriteCard
               name={name}

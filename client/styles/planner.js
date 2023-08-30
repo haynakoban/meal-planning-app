@@ -18,6 +18,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     objectFit: 'cover',
   },
+  cardWrapper: { width: '100%' },
+  plannerContainer: { marginBottom: SIZES.md },
+  plannerWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 4,
+    marginTop: 8,
+  },
   title: {
     fontFamily: FONT.bold,
     fontSize: SIZES.md,

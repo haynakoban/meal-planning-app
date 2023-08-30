@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native';
 import { COLORS, FONT, SIZES } from '../constants';
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 8,
+    elevation: 5,
+  },
   card: {
     backgroundColor: COLORS.white,
     borderRadius: SIZES.sm,
