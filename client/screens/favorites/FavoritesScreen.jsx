@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 
-import FavoriteCard from './FavoriteCard';
+import FavoriteCard from '../../components/favorites/FavoriteCard';
 
 export const data = [
   {

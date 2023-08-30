@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 import { data } from '../favorites/FavoritesScreen';
-import FavoriteCard from '../favorites/FavoriteCard';
+import FavoriteCard from '../../components/favorites/FavoriteCard';
 import { Button } from 'react-native-paper';
 import { COLORS, FONT, SIZES } from '../../constants';
 
