@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { Fragment, useLayoutEffect } from 'react';
 import { View, FlatList } from 'react-native';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
@@ -11,6 +11,7 @@ function CustomHeader() {
 
 const FavoritesScreen = ({ navigation }) => {
   const { container } = styles;
+
   // custom header/remove back button
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -19,23 +20,25 @@ const FavoritesScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <>
-      {/* loop favorite card */}
+    <Fragment>
       <FlatList
         style={container}
         data={DATA}
-        renderItem={({ id, name, username, ratings, image }) => (
-          <FavoriteCard
-            name={name}
-            username={username}
-            ratings={ratings}
-            image={image}
-            key={id}
-          />
-        )}
+        renderItem={({ item }) => {
+          const { name, username, ratings, image, id } = item;
+          return (
+            <FavoriteCard
+              name={name}
+              username={username}
+              ratings={ratings}
+              image={image}
+              key={id}
+            />
+          );
+        }}
         numColumns={2}
       />
-    </>
+    </Fragment>
   );
 };
 
