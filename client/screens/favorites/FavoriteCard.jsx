@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 5,
     marginRight: 5,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   ratings: {
     fontSize: 18,

@@ -44,6 +44,14 @@ export const data = [
     image:
       'https://images.aws.nestle.recipes/resized/8fa4b6a13f1d904c77b6f6da0cfe5c21_nks-b3-d02_640_944_531.jpg',
   },
+  {
+    id: '6',
+    name: 'Lumpiang Shanghai',
+    username: '@semicolon',
+    ratings: 132,
+    image:
+      'https://images.aws.nestle.recipes/resized/8fa4b6a13f1d904c77b6f6da0cfe5c21_nks-b3-d02_640_944_531.jpg',
+  },
 ];
 
 function CustomHeader() {
