@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { View } from 'react-native';
-import { Avatar, Text } from 'react-native-paper';
+import { Avatar, Modal, Portal, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -10,10 +11,16 @@ import {
   ProfileScreen,
 } from '../screens';
 import { COLORS, FONT, SIZES } from '../constants';
+import { FilterModal } from '../components/general/FilterDropdown';
 
 const Tab = createBottomTabNavigator();
 
 const AppBottomNavigation = () => {
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -32,7 +39,7 @@ const AppBottomNavigation = () => {
             </Text>
           );
         },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === 'Recipes') {
@@ -80,7 +87,13 @@ const AppBottomNavigation = () => {
                 style={{ marginRight: SIZES.sm }}
                 onPress={() => navigation.navigate('Search')}
               />
-              <Ionicons name='filter' size={26} color={COLORS.white} />
+              <Ionicons
+                name='filter'
+                size={26}
+                color={COLORS.white}
+                onPress={showModal}
+              />
+              <FilterModal visible={visible} hideModal={hideModal} />
             </View>
           ),
         })}
