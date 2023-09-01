@@ -7,6 +7,7 @@ import ProfileScreen from './profile/ProfileScreen';
 import RecipesScreen from './recipes/RecipesScreen';
 import SearchScreen from './search/SearchScreen';
 import SignUpScreen from './signup/SignUpScreen';
+import RecipesFormScreen from './recipes/RecipesFormScreen';
 
 export {
   CreateMealScreen,
@@ -18,4 +19,5 @@ export {
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
+  RecipesFormScreen,
 };
