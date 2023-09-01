@@ -77,3 +77,35 @@ export const homeData = [
     subTitle: 'Dinner',
   },
 ];
+
+export const mealTypes = [
+  'Dinner',
+  'Breakfast',
+  'Lunch',
+  'Snacks',
+  'Desserts',
+  'Appetizers',
+  'Sides',
+  'Salads',
+  'Soups',
+];
+
+export const allergies = [
+  'Milk (Dairy)',
+  'Egg',
+  'Peanut',
+  'Tree Nut',
+  'Soy',
+  'Wheat (Gluten)',
+  'Fish',
+  'Shellfish',
+  'Sesame',
+  'Mustard',
+  'Sulfite',
+  'Celery',
+  'Lupin',
+  'Mollusk',
+  'Corn',
+  'Meat',
+  'Nightshade',
+];
