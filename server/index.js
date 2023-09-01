@@ -23,6 +23,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/api/cuisines', require('./routes/cuisinesRoute'));
+app.use('/api/feedbacks', require('./routes/feedbacksRoute'));
+app.use('/api/ingredients', require('./routes/ingredientsRoute'));
+app.use('/api/meals', require('./routes/mealsRoute'));
+app.use('/api/preferences', require('./routes/preferencesRoute'));
+app.use('/api/recipes', require('./routes/recipesRoute'));
+app.use('/api/users', require('./routes/usersRoute'));
+
 http.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
