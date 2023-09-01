@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { Avatar, Modal, Portal, Text } from 'react-native-paper';
+import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
