@@ -7,13 +7,14 @@ import {
   TextInput,
   View,
   ScrollView,
-  Pressable,
   StyleSheet,
+  Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { RadioButton } from 'react-native-paper';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import { AntDesign, MaterialIcons, Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../constants';
 
@@ -58,6 +59,8 @@ const RecipesFormScreen = () => {
     }
   };
 
+  const [privacy, setPrivacy] = useState('public');
+  const [cookingTime, setCookingTime] = useState(5);
   const [openIngredients, setOpenIngredients] = useState(false);
   const [openRecipesType, setOpenRecipesType] = useState(false);
   const [openPreferences, setOpenPreferences] = useState(false);
@@ -76,11 +79,14 @@ const RecipesFormScreen = () => {
     { label: 'Ampalaya', value: 'ampalaya' },
   ]);
 
-  const [privacy, setPrivacy] = useState('public');
-
   // dropdown picker mode
   DropDownPicker.setMode('BADGE');
   DropDownPicker.setListMode('MODAL');
+
+  // submit form
+  function handleSubmit() {
+    console.log('recipe submitted');
+  }
 
   return (
     <ScrollView>
@@ -133,6 +139,7 @@ const RecipesFormScreen = () => {
             setValue={setIngredients}
             setItems={setData}
             showBadgeDot={false}
+            // itemKey="value" (id)
           />
         </ScrollView>
 
@@ -162,15 +169,7 @@ const RecipesFormScreen = () => {
             setValue={setRecipesType}
             setItems={setData}
             showBadgeDot={false}
-            selectedItemContainerStyle={{
-              backgroundColor: COLORS.accent,
-            }}
-            selectedItemLabelStyle={{
-              fontFamily: FONT.regular,
-            }}
-            listItemLabelStyle={{
-              fontFamily: FONT.regular,
-            }}
+            // itemKey="value" (id)
           />
         </View>
 
@@ -190,6 +189,7 @@ const RecipesFormScreen = () => {
             setValue={setPreferences}
             setItems={setData}
             showBadgeDot={false}
+            // itemKey="value" (id)
           />
         </View>
 
@@ -208,42 +208,152 @@ const RecipesFormScreen = () => {
             setValue={setCuisine}
             setItems={setData}
             showBadgeDot={false}
+            // itemKey="value" (id)
           />
         </View>
 
-        <View
-          style={[
-            styles.mt,
-            { flexDirection: 'row', gap: 20, justifyContent: 'center' },
-          ]}
-        >
+        <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
+        <View>
+          {/* 5 minutes */}
           <Pressable
-            value='public'
-            onPress={() => setPrivacy('public')}
-            style={[
-              styles.privacyStyle,
-              privacy === 'public'
-                ? { backgroundColor: COLORS.accent }
-                : { backgroundColor: COLORS.primary },
-            ]}
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(5)}
           >
-            <MaterialIcons name='public' size={24} color='black' />
-            <Text style={styles.smallLabel}>Public</Text>
+            <RadioButton
+              value={5}
+              status={cookingTime === 5 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(5)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              5 minutes
+            </Text>
           </Pressable>
+          {/* 10 minutes */}
           <Pressable
-            value='private'
-            onPress={() => setPrivacy('private')}
-            style={[
-              styles.privacyStyle,
-              privacy === 'private'
-                ? { backgroundColor: COLORS.accent }
-                : { backgroundColor: COLORS.primary },
-            ]}
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(10)}
           >
-            <Entypo name='lock' size={24} color='black' />
-            <Text style={styles.smallLabel}>Private</Text>
+            <RadioButton
+              value={10}
+              status={cookingTime === 10 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(10)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              10 minutes
+            </Text>
+          </Pressable>
+          {/* 20 minutes */}
+          <Pressable
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(20)}
+          >
+            <RadioButton
+              value={20}
+              status={cookingTime === 20 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(20)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              20 minutes
+            </Text>
+          </Pressable>
+          {/* 30 minutes */}
+          <Pressable
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(30)}
+          >
+            <RadioButton
+              value={30}
+              status={cookingTime === 30 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(30)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              30 minutes
+            </Text>
+          </Pressable>
+          {/* 1 hour */}
+          <Pressable
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(60)}
+          >
+            <RadioButton
+              value={60}
+              status={cookingTime === 60 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(60)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              1 hour
+            </Text>
+          </Pressable>
+          {/* 2 hour */}
+          <Pressable
+            style={styles.cookingTime}
+            onPress={() => setCookingTime(120)}
+          >
+            <RadioButton
+              value={120}
+              status={cookingTime === 120 ? 'checked' : 'unchecked'}
+              onPress={() => setCookingTime(120)}
+            />
+            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+              2 hours
+            </Text>
           </Pressable>
         </View>
+
+        <Text style={[styles.highlights, styles.mtxl]}>Recipe Privacy</Text>
+
+        <View>
+          <Pressable
+            style={[
+              styles.privacyStyle,
+              ,
+              privacy === 'public' ? { backgroundColor: COLORS.primary } : '',
+            ]}
+            onPress={() => setPrivacy('public')}
+          >
+            <RadioButton
+              value='public'
+              status={privacy === 'public' ? 'checked' : 'unchecked'}
+              onPress={() => setPrivacy('public')}
+            />
+            <View>
+              <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+                Public
+              </Text>
+              <Text style={{ fontFamily: FONT.regular, fontSize: SIZES.sm }}>
+                Anyone can see this recipe.
+              </Text>
+            </View>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.privacyStyle,
+              privacy === 'private' ? { backgroundColor: COLORS.primary } : '',
+            ]}
+            onPress={() => setPrivacy('private')}
+          >
+            <RadioButton
+              value='private'
+              status={privacy === 'private' ? 'checked' : 'unchecked'}
+              onPress={() => setPrivacy('private')}
+            />
+            <View>
+              <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
+                Private
+              </Text>
+              <Text style={{ fontFamily: FONT.regular, fontSize: SIZES.sm }}>
+                Only you can see this recipe.
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+
+        <Pressable
+          style={[styles.submitButton, styles.mtxl]}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.submitText}>Submit</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -258,7 +368,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderRadius: 3,
+    borderRadius: 30,
     padding: 15,
     paddingLeft: 20,
     paddingRight: 20,
@@ -272,7 +382,7 @@ const styles = StyleSheet.create({
   textarea: {
     height: 150,
     justifyContent: 'flex-start',
-    borderRadius: 3,
+    borderRadius: 15,
     padding: 15,
     paddingLeft: 20,
     paddingRight: 20,
@@ -281,7 +391,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.sm,
   },
   select: {
-    borderRadius: 3,
+    borderRadius: 30,
     fontFamily: FONT.regular,
     borderWidth: 1,
     paddingLeft: 10,
@@ -298,6 +408,9 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: SIZES.sm,
   },
+  mtxl: {
+    marginTop: SIZES.xl,
+  },
   mtlg: {
     marginTop: SIZES.lg,
   },
@@ -307,12 +420,12 @@ const styles = StyleSheet.create({
   highlights: {
     fontSize: SIZES.sm,
     fontFamily: FONT.medium,
-    marginBottom: 5,
+    marginBottom: SIZES.sm,
   },
   labels: {
-    fontSize: SIZES.medium,
+    fontSize: SIZES.md,
     fontFamily: FONT.semiBold,
-    marginBottom: 5,
+    marginBottom: SIZES.sm,
   },
   addLabel: {
     fontSize: SIZES.sm,
@@ -326,23 +439,34 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     height: 250,
-    borderRadius: 3,
+    borderRadius: 15,
   },
   hasImage: {
     width: '100%',
     objectFit: 'cover',
     height: 250,
-    borderRadius: 3,
+    borderRadius: 15,
     borderWidth: 1,
   },
   privacyStyle: {
-    width: 'auto',
-    padding: 15,
+    flexDirection: 'row',
     alignItems: 'center',
-    aspectRatio: 1 / 1,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: COLORS.gray2,
+    paddingVertical: 15,
+    paddingHorizontal: 5,
+    borderRadius: 3,
+  },
+  cookingTime: { flexDirection: 'row', alignItems: 'center' },
+  submitButton: {
+    borderRadius: 3,
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.accent,
+  },
+  submitText: {
+    fontSize: SIZES.lg,
+    fontFamily: FONT.semiBold,
+    color: 'white',
   },
 });
 
