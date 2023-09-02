@@ -4,9 +4,9 @@ import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
-  CreateMealScreen,
   FavoritesScreen,
   HomeScreen,
+  MealFormScreen,
   PlannerScreen,
   ProfileScreen,
 } from '../screens';
@@ -31,7 +31,7 @@ const AppBottomNavigation = () => {
         },
         headerTintColor: COLORS.primary,
         tabBarLabel: () => {
-          return route.name === 'Create Meal' ? (
+          return route.name === 'Meal Form' ? (
             ''
           ) : (
             <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.xs }}>
@@ -46,15 +46,21 @@ const AppBottomNavigation = () => {
             iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Planner') {
             iconName = focused ? 'calendar' : 'calendar-outline';
-          } else if (route.name === 'Create Meal') {
-            iconName = focused ? 'create' : 'create-outline';
+          } else if (route.name === 'Meal Form') {
+            iconName = focused ? 'add-circle-sharp' : 'add-circle-outline';
           } else if (route.name === 'Favorites') {
             iconName = focused ? 'heart' : 'heart-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
 
-          return <Ionicons name={iconName} size={SIZES.lg} color={color} />;
+          return (
+            <Ionicons
+              name={iconName}
+              size={route.name === 'Meal Form' ? SIZES.xxl + 8 : SIZES.lg}
+              color={color}
+            />
+          );
         },
       })}
     >
@@ -133,8 +139,8 @@ const AppBottomNavigation = () => {
         })}
       />
       <Tab.Screen
-        name='Create Meal'
-        component={CreateMealScreen}
+        name='Meal Form'
+        component={MealFormScreen}
         options={{
           headerTitleAlign: 'left',
           headerTitleStyle: {

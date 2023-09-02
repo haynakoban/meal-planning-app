@@ -1,13 +1,12 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { View } from 'react-native';
-import { Avatar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import {
   LoginScreen,
+  RecipesFormScreen,
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
-  RecipesFormScreen,
 } from '../screens';
 import { COLORS, FONT, SIZES } from '../constants';
 import AppBottomNavigation from './AppBottomNavigation';
