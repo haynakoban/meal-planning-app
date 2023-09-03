@@ -4,7 +4,11 @@ import { Avatar, Card } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 import styles from '../../styles/favorites';
 
+import { useNavigation } from '@react-navigation/native';
+
 const FavoriteCard = ({ name, username, ratings, image }) => {
+  const navigation = useNavigation();
+
   const {
     card,
     cardAction,
@@ -20,44 +24,48 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
   const [isFavorite, setIsFavorite] = useState(true);
 
   return (
-    <Card style={card}>
-      <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
-      <Card.Content>
-        <Text variant='titleLarge' style={title}>
-          {name}
-        </Text>
-        <Text variant='bodyMedium' style={usernameStyle}>
-          {username}
-        </Text>
-      </Card.Content>
-      <View style={cardBottom}>
-        <Text>
-          <AntDesign name='star' style={ratingsStyle} color='orange' />
-          <AntDesign name='star' style={ratingsStyle} color='orange' />
-          <AntDesign name='star' style={ratingsStyle} color='orange' />
-          <AntDesign name='star' style={ratingsStyle} color='orange' />
-          <AntDesign name='star' style={ratingsStyle} color='orange' />
-          <Text> ({ratings})</Text>
-        </Text>
-      </View>
-      <Card.Actions style={cardAction}>
-        <Pressable onPress={() => setIsFavorite(!isFavorite)}>
-          {isFavorite ? (
-            <Avatar.Icon
-              size={40}
-              style={AvatarIcon}
-              icon={() => <AntDesign name='heart' style={icon} color='red' />}
-            />
-          ) : (
-            <Avatar.Icon
-              size={40}
-              style={AvatarIcon}
-              icon={() => <AntDesign name='hearto' style={icon} color='red' />}
-            />
-          )}
-        </Pressable>
-      </Card.Actions>
-    </Card>
+    <Pressable onPress={() => navigation.navigate('Recipe', { id: 1 })}>
+      <Card style={card}>
+        <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
+        <Card.Content>
+          <Text variant='titleLarge' style={title}>
+            {name}
+          </Text>
+          <Text variant='bodyMedium' style={usernameStyle}>
+            {username}
+          </Text>
+        </Card.Content>
+        <View style={cardBottom}>
+          <Text>
+            <AntDesign name='star' style={ratingsStyle} color='orange' />
+            <AntDesign name='star' style={ratingsStyle} color='orange' />
+            <AntDesign name='star' style={ratingsStyle} color='orange' />
+            <AntDesign name='star' style={ratingsStyle} color='orange' />
+            <AntDesign name='star' style={ratingsStyle} color='orange' />
+            <Text> ({ratings})</Text>
+          </Text>
+        </View>
+        <Card.Actions style={cardAction}>
+          <Pressable onPress={() => setIsFavorite(!isFavorite)}>
+            {isFavorite ? (
+              <Avatar.Icon
+                size={40}
+                style={AvatarIcon}
+                icon={() => <AntDesign name='heart' style={icon} color='red' />}
+              />
+            ) : (
+              <Avatar.Icon
+                size={40}
+                style={AvatarIcon}
+                icon={() => (
+                  <AntDesign name='hearto' style={icon} color='red' />
+                )}
+              />
+            )}
+          </Pressable>
+        </Card.Actions>
+      </Card>
+    </Pressable>
   );
 };
 

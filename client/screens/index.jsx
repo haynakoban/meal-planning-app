@@ -7,6 +7,7 @@ import PlannerScreen from './planner/PlannerScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import RecipesFormScreen from './actions/RecipesFormScreen';
 import RecipesScreen from './recipes/RecipesScreen';
+import Recipe from './recipes/Recipe';
 import SearchScreen from './search/SearchScreen';
 import SignUpScreen from './signup/SignUpScreen';
 
@@ -22,4 +23,5 @@ export {
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
+  Recipe,
 };

@@ -8,6 +8,7 @@ import {
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
+  Recipe,
 } from '../screens';
 import { COLORS, FONT, SIZES } from '../constants';
 import AppBottomNavigation from './AppBottomNavigation';
@@ -80,6 +81,13 @@ const AppNavigator = () => {
       <Stack.Screen name='Search' component={SearchScreen} />
       <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
       <Stack.Screen name='Meal Form' component={MealFormScreen} />
+      <Stack.Screen
+        name='Recipe'
+        component={Recipe}
+        options={{
+          headerTitle: 'About',
+        }}
+      />
     </Stack.Navigator>
   );
 };
