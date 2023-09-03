@@ -19,8 +19,34 @@ import { AntDesign } from '@expo/vector-icons';
 import { COLORS, FONT, SIZES } from '../../constants';
 
 const RecipesFormScreen = () => {
-  const [image, setImage] = useState(null);
+  const [form, setForm] = useState({
+    name: '',
+    description: '',
+    procedure: '',
+    image: null,
+    privacy: 'public',
+    cookingTime: 5,
+  });
+
   const [permission, setPermission] = useState(false);
+
+  const [openIngredients, setOpenIngredients] = useState(false);
+  const [openRecipesType, setOpenRecipesType] = useState(false);
+  const [openPreferences, setOpenPreferences] = useState(false);
+  const [openCuisine, setOpenCuisine] = useState(false);
+  const [cuisine, setCuisine] = useState('');
+  const [ingredients, setIngredients] = useState([]);
+  const [recipesType, setRecipesType] = useState([]);
+  const [preferences, setPreferences] = useState([]);
+
+  const [data, setData] = useState([
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Egg Plant', value: 'eggplant' },
+    { label: 'Egg', value: 'egg' },
+    { label: 'Papaya', value: 'papaya' },
+    { label: 'Ampalaya', value: 'ampalaya' },
+  ]);
 
   // ask for storage permission
   useEffect(() => {
@@ -45,7 +71,10 @@ const RecipesFormScreen = () => {
       });
 
       if (!result.canceled) {
-        setImage(result.assets[0].uri);
+        setForm({
+          ...form,
+          image: result.assets[0].uri,
+        });
       }
     } else {
       // ask for storage permission if not yet granted
@@ -58,26 +87,6 @@ const RecipesFormScreen = () => {
       }
     }
   };
-
-  const [privacy, setPrivacy] = useState('public');
-  const [cookingTime, setCookingTime] = useState(5);
-  const [openIngredients, setOpenIngredients] = useState(false);
-  const [openRecipesType, setOpenRecipesType] = useState(false);
-  const [openPreferences, setOpenPreferences] = useState(false);
-  const [openCuisine, setOpenCuisine] = useState(false);
-  const [ingredients, setIngredients] = useState([]);
-  const [recipesType, setRecipesType] = useState([]);
-  const [preferences, setPreferences] = useState([]);
-  const [cuisine, setCuisine] = useState('');
-
-  const [data, setData] = useState([
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Egg Plant', value: 'eggplant' },
-    { label: 'Egg', value: 'egg' },
-    { label: 'Papaya', value: 'papaya' },
-    { label: 'Ampalaya', value: 'ampalaya' },
-  ]);
 
   // dropdown picker mode
   DropDownPicker.setMode('BADGE');
@@ -92,7 +101,7 @@ const RecipesFormScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.highlights}>Name & Photo</Text>
-        {image != null ? (
+        {form.image != null ? (
           <TouchableHighlight onPress={pickImage} style={styles.mb}>
             <Image source={{ uri: image }} style={styles.hasImage} />
           </TouchableHighlight>
@@ -108,12 +117,16 @@ const RecipesFormScreen = () => {
         <Text style={styles.labels}>Name</Text>
         <TextInput
           placeholder='Name of recipe'
+          value={form.name}
+          onChangeText={(text) => setForm({ ...form, name: text })}
           style={[styles.input, styles.mb, { borderWidth: 1 }]}
         />
 
         <Text style={[styles.labels]}>Description</Text>
         <TextInput
           placeholder='Add recipe description'
+          value={form.description}
+          onChangeText={(text) => setForm({ ...form, description: text })}
           style={[styles.textarea, styles.mb, { borderWidth: 1 }]}
           multiline={true}
           numberOfLines={10}
@@ -146,6 +159,8 @@ const RecipesFormScreen = () => {
         <Text style={[styles.labels, styles.mt]}>Procedure</Text>
         <TextInput
           placeholder='Add one procedure per line'
+          value={form.procedure}
+          onChangeText={(text) => setForm({ ...form, procedure: text })}
           style={[styles.textarea, styles.mb, { borderWidth: 1 }]}
           multiline={true}
           numberOfLines={10}
@@ -217,12 +232,12 @@ const RecipesFormScreen = () => {
           {/* 5 minutes */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(5)}
+            onPress={() => setForm({ ...form, cookingTime: 5 })}
           >
             <RadioButton
               value={5}
-              status={cookingTime === 5 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(5)}
+              status={form.cookingTime === 5 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 5 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               5 minutes
@@ -231,12 +246,12 @@ const RecipesFormScreen = () => {
           {/* 10 minutes */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(10)}
+            onPress={() => setForm({ ...form, cookingTime: 10 })}
           >
             <RadioButton
               value={10}
-              status={cookingTime === 10 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(10)}
+              status={form.cookingTime === 10 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 10 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               10 minutes
@@ -245,12 +260,12 @@ const RecipesFormScreen = () => {
           {/* 20 minutes */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(20)}
+            onPress={() => setForm({ ...form, cookingTime: 20 })}
           >
             <RadioButton
               value={20}
-              status={cookingTime === 20 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(20)}
+              status={form.cookingTime === 20 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 20 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               20 minutes
@@ -259,12 +274,12 @@ const RecipesFormScreen = () => {
           {/* 30 minutes */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(30)}
+            onPress={() => setForm({ ...form, cookingTime: 30 })}
           >
             <RadioButton
               value={30}
-              status={cookingTime === 30 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(30)}
+              status={form.cookingTime === 30 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 30 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               30 minutes
@@ -273,12 +288,12 @@ const RecipesFormScreen = () => {
           {/* 1 hour */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(60)}
+            onPress={() => setForm({ ...form, cookingTime: 60 })}
           >
             <RadioButton
               value={60}
-              status={cookingTime === 60 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(60)}
+              status={form.cookingTime === 60 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 60 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               1 hour
@@ -287,12 +302,12 @@ const RecipesFormScreen = () => {
           {/* 2 hour */}
           <Pressable
             style={styles.cookingTime}
-            onPress={() => setCookingTime(120)}
+            onPress={() => setForm({ ...form, cookingTime: 120 })}
           >
             <RadioButton
               value={120}
-              status={cookingTime === 120 ? 'checked' : 'unchecked'}
-              onPress={() => setCookingTime(120)}
+              status={form.cookingTime === 120 ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, cookingTime: 120 })}
             />
             <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
               2 hours
@@ -307,14 +322,16 @@ const RecipesFormScreen = () => {
             style={[
               styles.privacyStyle,
               ,
-              privacy === 'public' ? { backgroundColor: COLORS.primary } : '',
+              form.privacy === 'public'
+                ? { backgroundColor: COLORS.primary }
+                : '',
             ]}
-            onPress={() => setPrivacy('public')}
+            onPress={() => setForm({ ...form, privacy: 'public' })}
           >
             <RadioButton
               value='public'
-              status={privacy === 'public' ? 'checked' : 'unchecked'}
-              onPress={() => setPrivacy('public')}
+              status={form.privacy === 'public' ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, privacy: 'public' })}
             />
             <View>
               <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
@@ -328,14 +345,16 @@ const RecipesFormScreen = () => {
           <Pressable
             style={[
               styles.privacyStyle,
-              privacy === 'private' ? { backgroundColor: COLORS.primary } : '',
+              form.privacy === 'private'
+                ? { backgroundColor: COLORS.primary }
+                : '',
             ]}
-            onPress={() => setPrivacy('private')}
+            onPress={() => setForm({ ...form, privacy: 'private' })}
           >
             <RadioButton
               value='private'
-              status={privacy === 'private' ? 'checked' : 'unchecked'}
-              onPress={() => setPrivacy('private')}
+              status={form.privacy === 'private' ? 'checked' : 'unchecked'}
+              onPress={() => setForm({ ...form, privacy: 'private' })}
             />
             <View>
               <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
