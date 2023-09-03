@@ -167,10 +167,31 @@ const AppBottomNavigation = () => {
         name='Profile'
         component={ProfileScreen}
         options={{
-          headerTitleAlign: 'left',
+          headerTitle: '@haynakoban',
+          headerTitleAlign: 'center',
           headerTitleStyle: {
             fontFamily: FONT.bold,
+            fontSize: SIZES.sm + 2,
+            color: COLORS.primary,
           },
+          headerLeft: () => (
+            <View style={{ marginLeft: SIZES.md }}>
+              <Avatar.Image
+                size={32}
+                style={{ backgroundColor: COLORS.primary }}
+                source={require('../assets/images/logo.png')}
+              />
+            </View>
+          ),
+          headerRight: () => (
+            <View style={{ marginRight: SIZES.md }}>
+              <Ionicons
+                name='settings-outline'
+                size={SIZES.xl + 2}
+                color={COLORS.white}
+              />
+            </View>
+          ),
         }}
       />
     </Tab.Navigator>
