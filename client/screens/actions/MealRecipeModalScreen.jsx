@@ -49,7 +49,11 @@ const CreateMealRecipeModal = () => {
             icon={() => (
               <Ionicons name='book-outline' size={24} color='black' />
             )}
-            style={{ paddingHorizontal: 8, paddingVertical: 4 }}
+            style={{
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              borderRadius: 999,
+            }}
             labelStyle={{
               fontFamily: FONT.medium,
               fontSize: SIZES.md,
@@ -67,7 +71,11 @@ const CreateMealRecipeModal = () => {
             icon={() => (
               <Ionicons name='restaurant-outline' size={24} color='black' />
             )}
-            style={{ paddingHorizontal: 8, paddingVertical: 4 }}
+            style={{
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              borderRadius: 999,
+            }}
             labelStyle={{
               fontFamily: FONT.medium,
               fontSize: SIZES.md,
