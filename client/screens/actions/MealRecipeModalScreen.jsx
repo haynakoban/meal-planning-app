@@ -50,8 +50,6 @@ const CreateMealRecipeModal = () => {
               <Ionicons name='book-outline' size={24} color='black' />
             )}
             style={{
-              paddingHorizontal: 8,
-              paddingVertical: 4,
               borderRadius: 999,
             }}
             labelStyle={{
@@ -59,7 +57,11 @@ const CreateMealRecipeModal = () => {
               fontSize: SIZES.md,
               paddingLeft: 10,
             }}
-            contentStyle={{ justifyContent: 'flex-start' }}
+            contentStyle={{
+              justifyContent: 'flex-start',
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+            }}
             textColor={COLORS.black}
             onPress={() => navigation.navigate('Recipe Form')}
           >
@@ -72,8 +74,6 @@ const CreateMealRecipeModal = () => {
               <Ionicons name='restaurant-outline' size={24} color='black' />
             )}
             style={{
-              paddingHorizontal: 8,
-              paddingVertical: 4,
               borderRadius: 999,
             }}
             labelStyle={{
@@ -81,7 +81,11 @@ const CreateMealRecipeModal = () => {
               fontSize: SIZES.md,
               paddingLeft: 10,
             }}
-            contentStyle={{ justifyContent: 'flex-start' }}
+            contentStyle={{
+              justifyContent: 'flex-start',
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+            }}
             textColor={COLORS.black}
             onPress={() => navigation.navigate('Meal Form')}
           >
