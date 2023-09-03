@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   LoginScreen,
+  MealFormScreen,
   RecipesFormScreen,
   RecipesScreen,
   SearchScreen,
@@ -78,6 +79,7 @@ const AppNavigator = () => {
       />
       <Stack.Screen name='Search' component={SearchScreen} />
       <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
+      <Stack.Screen name='Meal Form' component={MealFormScreen} />
     </Stack.Navigator>
   );
 };

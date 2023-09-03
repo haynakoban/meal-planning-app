@@ -2,6 +2,7 @@ import FavoritesScreen from './favorites/FavoritesScreen';
 import HomeScreen from './home/HomeScreen';
 import LoginScreen from './login/LoginScreen';
 import MealFormScreen from './actions/MealFormScreen';
+import MealRecipeModalScreen from './actions/MealRecipeModalScreen';
 import PlannerScreen from './planner/PlannerScreen';
 import ProfileScreen from './profile/ProfileScreen';
 import RecipesFormScreen from './actions/RecipesFormScreen';
@@ -14,6 +15,7 @@ export {
   HomeScreen,
   LoginScreen,
   MealFormScreen,
+  MealRecipeModalScreen,
   PlannerScreen,
   ProfileScreen,
   RecipesFormScreen,

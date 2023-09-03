@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   FavoritesScreen,
   HomeScreen,
-  MealFormScreen,
+  MealRecipeModalScreen,
   PlannerScreen,
   ProfileScreen,
 } from '../screens';
@@ -31,7 +31,7 @@ const AppBottomNavigation = () => {
         },
         headerTintColor: COLORS.primary,
         tabBarLabel: () => {
-          return route.name === 'Meal Form' ? (
+          return route.name === 'Meal Recipe Modal' ? (
             ''
           ) : (
             <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.xs }}>
@@ -46,7 +46,7 @@ const AppBottomNavigation = () => {
             iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Planner') {
             iconName = focused ? 'calendar' : 'calendar-outline';
-          } else if (route.name === 'Meal Form') {
+          } else if (route.name === 'Meal Recipe Modal') {
             iconName = focused ? 'add-circle-sharp' : 'add-circle-outline';
           } else if (route.name === 'Favorites') {
             iconName = focused ? 'heart' : 'heart-outline';
@@ -57,7 +57,9 @@ const AppBottomNavigation = () => {
           return (
             <Ionicons
               name={iconName}
-              size={route.name === 'Meal Form' ? SIZES.xxl + 8 : SIZES.lg}
+              size={
+                route.name === 'Meal Recipe Modal' ? SIZES.xxl + 8 : SIZES.lg
+              }
               color={color}
             />
           );
@@ -139,13 +141,14 @@ const AppBottomNavigation = () => {
         })}
       />
       <Tab.Screen
-        name='Meal Form'
-        component={MealFormScreen}
+        name='Meal Recipe Modal'
+        component={MealRecipeModalScreen}
         options={{
           headerTitleAlign: 'left',
           headerTitleStyle: {
             fontFamily: FONT.bold,
           },
+          headerShown: false,
         }}
       />
 
