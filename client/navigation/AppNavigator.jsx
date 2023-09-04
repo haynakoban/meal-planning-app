@@ -10,8 +10,10 @@ import {
   SignUpScreen,
   Recipe,
 } from '../screens';
-import { COLORS, FONT, SIZES } from '../constants';
 import AppBottomNavigation from './AppBottomNavigation';
+
+import { COLORS } from '../constants';
+import styles from '../styles/appNavigation';
 
 const Stack = createStackNavigator();
 
@@ -19,9 +21,7 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: COLORS.accent,
-        },
+        headerStyle: styles.navigatorHeaderStyle,
         headerTintColor: COLORS.primary,
       }}
     >
@@ -42,22 +42,15 @@ const AppNavigator = () => {
         options={({ navigation, route }) => ({
           headerTitle: route.params.title,
           headerTitleAlign: 'left',
-          headerTitleStyle: {
-            fontFamily: FONT.medium,
-            color: COLORS.primary,
-            letterSpacing: 0.1,
-            marginLeft: -16,
-          },
-          headerTitleContainerStyle: {
-            alignItems: 'flex-start',
-          },
+          headerTitleStyle: styles.arHeaderTitleStyle,
+          headerTitleContainerStyle: styles.arHeaderTitleContainerStyle,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', marginRight: SIZES.md }}>
+            <View style={styles.arHeaderRightView}>
               <Ionicons
                 name='search'
                 size={26}
                 color={COLORS.white}
-                style={{ marginRight: SIZES.sm }}
+                style={styles.mr}
                 onPress={() => navigation.navigate('Search')}
               />
               <Ionicons name='filter' size={26} color={COLORS.white} />
@@ -71,9 +64,7 @@ const AppNavigator = () => {
         component={SignUpScreen}
         options={{
           headerTitleAlign: 'center',
-          headerTitleStyle: {
-            fontFamily: FONT.bold,
-          },
+          headerTitleStyle: styles.signUpHeaderTitleStyle,
         }}
       />
       <Stack.Screen name='Search' component={SearchScreen} />
