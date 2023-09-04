@@ -17,7 +17,7 @@ const SearchScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={[SHADOWS.small, styles.bg]}>
         <Text style={styles.headerTitle}>people recently searches</Text>
         <FlatList
