@@ -9,6 +9,9 @@ import {
   ingredients,
   CT,
   privacyData,
+  people,
+  searchesScreens,
+  recipeSearchData,
 } from './data';
 
 export {
@@ -20,6 +23,9 @@ export {
   ingredients,
   CT,
   privacyData,
+  people,
+  searchesScreens,
+  recipeSearchData,
   Logo,
   COLORS,
   FONT,

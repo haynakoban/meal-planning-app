@@ -195,6 +195,66 @@ export const privacyData = [
   },
 ];
 
+export const people = [
+  { key: 1, i: 'BC', name: 'Bryan Cortez' },
+  { key: 2, i: 'XV', name: 'Xenon Vergara' },
+  { key: 3, i: 'JA', name: 'Jeorge Agustin Jr.' },
+  { key: 4, i: 'RS', name: 'Rizza Mia Servanda' },
+  { key: 5, i: 'TR', name: 'Thea Mae Rirao' },
+  { key: 6, i: 'JL', name: 'Jeremy Roie Laxamana' },
+  { key: 7, i: 'AQ', name: 'Aaron Quesada' },
+  { key: 8, i: 'BE', name: 'Bien Enriquez' },
+];
+
+export const searchesScreens = [
+  { icon: 'book', label: 'Recipes', screen: 'Recipes' },
+  { icon: 'calendar', label: 'Meal Plans', screen: 'Planner' },
+  { icon: 'heart', label: 'Favorites', screen: 'Favorites' },
+];
+
+export const recipeSearchData = [
+  {
+    id: 1,
+    search: 'carbonara pasta recipe',
+  },
+  {
+    id: 2,
+    search: 'chicken Alfredo recipe',
+  },
+  {
+    id: 3,
+    search: 'vegetable stir-fry recipe',
+  },
+  {
+    id: 4,
+    search: 'chocolate chip cookie recipe',
+  },
+  {
+    id: 5,
+    search: 'Caesar salad recipe',
+  },
+  {
+    id: 6,
+    search: 'homemade pizza recipe',
+  },
+  {
+    id: 7,
+    search: 'spicy chicken curry recipe',
+  },
+  {
+    id: 8,
+    search: 'blueberry pancake recipe',
+  },
+  {
+    id: 9,
+    search: 'grilled steak recipe',
+  },
+  {
+    id: 10,
+    search: 'vegetarian lasagna recipe',
+  },
+];
+
 export const mealTypes = [
   'Dinner',
   'Breakfast',

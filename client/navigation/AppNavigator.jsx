@@ -1,5 +1,6 @@
+import { useState } from 'react';
+import { TextInput, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   LoginScreen,
@@ -12,12 +13,14 @@ import {
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 
-import { COLORS } from '../constants';
+import { COLORS, FONT, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
+  const [searchText, setSearchText] = useState('');
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -67,7 +70,23 @@ const AppNavigator = () => {
           headerTitleStyle: styles.signUpHeaderTitleStyle,
         }}
       />
-      <Stack.Screen name='Search' component={SearchScreen} />
+      <Stack.Screen
+        name='Search'
+        component={SearchScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.searchHeaderTitleStyle}>
+              <Ionicons name='search' size={SIZES.lg} color={COLORS.black} />
+              <TextInput
+                style={styles.searchTextInput}
+                placeholder='Search...'
+                onChangeText={(text) => setSearchText(text)}
+                value={searchText}
+              />
+            </View>
+          ),
+        }}
+      />
       <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
       <Stack.Screen name='Meal Form' component={MealFormScreen} />
       <Stack.Screen
