@@ -78,6 +78,123 @@ export const homeData = [
   },
 ];
 
+let desc =
+  'Heat oil in pan and sauté garlic and onions. Then add chicken to the pan and sear on all sides, until you have a little browning in the chicken skin._Pour in vinegar, soy sauce and water. Add bay leaves, pepper and Knorr Chicken Cubes. Bring to a boil over high heat then reduce heat to simmer, but do not cover the pan. Continue to simmer for 10 mins._Remove chicken pieces from sauce and fry in another pan until nicely browned._Put back fried chicken pieces into sauce. Add sugar and let simmer again for another 10 minutes or until sauce has thickened. Serve warm.';
+export const recipe = {
+  username: 'semicolon101010',
+  name: 'Adobong Manok',
+  description:
+    'Adobong manok is a method of marinating and stewing for any cut of meat or fish in a briny mixture of vinegar, soy sauce, and spices',
+  image:
+    'https://yummyfood.ph/wp-content/uploads/2021/08/Chicken-Adobo-Recipe.jpg',
+  procedure: desc.split('_'),
+  type: ['Lunch', 'Dinner'],
+  preferences: ['Sweet', 'Savory', 'Salted'],
+  cuisine: 'Ilocano',
+  privacy: 'public',
+  ratings: 4.5,
+  reviews: 187,
+  cookingTime: 60,
+  ingredients: [
+    {
+      id: 1,
+      ingredient: 'sugar',
+      measurement: 'teasepoon',
+      amount: '1/3',
+      description: 'this is description',
+    },
+    {
+      id: 2,
+      ingredient: 'carrot/s',
+      measurement: 'pound',
+      amount: '1',
+      description: '',
+    },
+    {
+      id: 3,
+      ingredient: 'chicken',
+      measurement: 'kg',
+      amount: '3',
+      description: 'description',
+    },
+  ],
+  facts: [
+    {
+      name: 'Calories',
+      value: 349,
+      measurement: '',
+      daily: 17.45,
+    },
+    {
+      name: 'Fat',
+      value: 19,
+      measurement: 'g',
+      daily: 29.23,
+    },
+    {
+      name: 'Carbs',
+      value: 4,
+      measurement: 'g',
+      daily: 1.33,
+    },
+    {
+      name: 'Fiber',
+      value: 1,
+      measurement: 'g',
+      daily: 4,
+    },
+    {
+      name: 'Protein',
+      value: 33,
+      measurement: 'g',
+      daily: 66,
+    },
+    {
+      name: 'Sugars',
+      value: 2,
+      measurement: 'g',
+      daily: 0,
+    },
+    {
+      name: 'Sodium',
+      value: 335,
+      measurement: 'mg',
+      daily: 13.96,
+    },
+  ],
+};
+
+export const ingredients = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Egg Plant', value: 'eggplant' },
+  { label: 'Egg', value: 'egg' },
+  { label: 'Papaya', value: 'papaya' },
+  { label: 'Ampalaya', value: 'ampalaya' },
+];
+
+export const CT = [
+  { t: 5, s: 'minutes' },
+  { t: 10, s: 'minutes' },
+  { t: 20, s: 'minutes' },
+  { t: 30, s: 'minutes' },
+  { t: 60, s: 'hour' },
+  { t: 120, s: 'hours' },
+];
+
+export const privacyData = [
+  {
+    privacy: 'public',
+    title: 'Public',
+    description: 'Anyone can see this recipe.',
+  },
+  {
+    privacy: 'private',
+    title: 'Private',
+    description: 'Only you can see this recipe.',
+  },
+];
+
 export const mealTypes = [
   'Dinner',
   'Breakfast',

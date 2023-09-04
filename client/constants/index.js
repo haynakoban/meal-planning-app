@@ -5,6 +5,10 @@ import {
   homeData as HOMEDATA,
   mealTypes,
   allergies,
+  recipe,
+  ingredients,
+  CT,
+  privacyData,
 } from './data';
 
 export {
@@ -12,6 +16,10 @@ export {
   HOMEDATA,
   mealTypes,
   allergies,
+  recipe,
+  ingredients,
+  CT,
+  privacyData,
   Logo,
   COLORS,
   FONT,

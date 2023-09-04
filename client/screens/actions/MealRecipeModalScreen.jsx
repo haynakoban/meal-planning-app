@@ -4,14 +4,25 @@ import { Text, Modal, Button, Avatar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-import { COLORS, FONT, SIZES } from '../../constants';
+import { COLORS, SIZES } from '../../constants';
+import styles from '../../styles/mealRecipeModal';
 
 const CreateMealRecipeModal = () => {
+  const {
+    borderRadius,
+    container,
+    modal,
+    modalButtonContent,
+    modalButtonLabel,
+    modalHeader,
+    modalWrapper,
+    mv,
+  } = styles;
   const navigation = useNavigation();
 
   return (
     <Fragment>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={container}>
         <Avatar.Image
           size={250}
           style={{ backgroundColor: 'transparent' }}
@@ -23,69 +34,41 @@ const CreateMealRecipeModal = () => {
         onDismiss={() => {
           navigation.goBack();
         }}
-        style={{ justifyContent: 'flex-end' }}
+        style={modal}
       >
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: 200,
-            padding: 16,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: FONT.medium,
-              fontSize: SIZES.md,
-              paddingBottom: SIZES.xl,
-            }}
-          >
-            Craft Your Signature Dish
-          </Text>
+        <View style={modalWrapper}>
+          <Text style={modalHeader}>Craft Your Signature Dish</Text>
 
           <Button
             mode='outlined'
             icon={() => (
-              <Ionicons name='book-outline' size={24} color='black' />
+              <Ionicons
+                name='book-outline'
+                size={SIZES.xl}
+                color={COLORS.black}
+              />
             )}
-            style={{
-              borderRadius: 999,
-            }}
-            labelStyle={{
-              fontFamily: FONT.medium,
-              fontSize: SIZES.md,
-              paddingLeft: 10,
-            }}
-            contentStyle={{
-              justifyContent: 'flex-start',
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
+            style={borderRadius}
+            labelStyle={modalButtonLabel}
+            contentStyle={modalButtonContent}
             textColor={COLORS.black}
             onPress={() => navigation.navigate('Recipe Form')}
           >
             Create a recipe
           </Button>
-          <View style={{ marginVertical: 8 }} />
+          <View style={mv} />
           <Button
             mode='outlined'
             icon={() => (
-              <Ionicons name='restaurant-outline' size={24} color='black' />
+              <Ionicons
+                name='restaurant-outline'
+                size={SIZES.xl}
+                color={COLORS.black}
+              />
             )}
-            style={{
-              borderRadius: 999,
-            }}
-            labelStyle={{
-              fontFamily: FONT.medium,
-              fontSize: SIZES.md,
-              paddingLeft: 10,
-            }}
-            contentStyle={{
-              justifyContent: 'flex-start',
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
+            style={borderRadius}
+            labelStyle={modalButtonLabel}
+            contentStyle={modalButtonContent}
             textColor={COLORS.black}
             onPress={() => navigation.navigate('Meal Form')}
           >
@@ -96,4 +79,5 @@ const CreateMealRecipeModal = () => {
     </Fragment>
   );
 };
+
 export default CreateMealRecipeModal;

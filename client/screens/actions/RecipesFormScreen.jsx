@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Image,
   Text,
@@ -7,7 +7,6 @@ import {
   TextInput,
   View,
   ScrollView,
-  StyleSheet,
   Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -16,7 +15,14 @@ import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AntDesign } from '@expo/vector-icons';
 
-import { COLORS, FONT, SIZES } from '../../constants';
+import {
+  COLORS,
+  SIZES,
+  ingredients as INGREDIENTS,
+  CT,
+  privacyData,
+} from '../../constants';
+import styles from '../../styles/recipeForm';
 
 const RecipesFormScreen = () => {
   const [form, setForm] = useState({
@@ -39,14 +45,7 @@ const RecipesFormScreen = () => {
   const [recipesType, setRecipesType] = useState([]);
   const [preferences, setPreferences] = useState([]);
 
-  const [data, setData] = useState([
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Egg Plant', value: 'eggplant' },
-    { label: 'Egg', value: 'egg' },
-    { label: 'Papaya', value: 'papaya' },
-    { label: 'Ampalaya', value: 'ampalaya' },
-  ]);
+  const [data, setData] = useState(INGREDIENTS);
 
   // ask for storage permission
   useEffect(() => {
@@ -108,7 +107,7 @@ const RecipesFormScreen = () => {
         ) : (
           <TouchableHighlight onPress={pickImage} style={styles.mb}>
             <View style={styles.noImage}>
-              <AntDesign name='camerao' size={24} color='black' />
+              <AntDesign name='camerao' size={SIZES.xl} color={COLORS.black} />
               <Text style={styles.addLabel}>Add Cover Photo</Text>
             </View>
           </TouchableHighlight>
@@ -119,7 +118,7 @@ const RecipesFormScreen = () => {
           placeholder='Name of recipe'
           value={form.name}
           onChangeText={(text) => setForm({ ...form, name: text })}
-          style={[styles.input, styles.mb, { borderWidth: 1 }]}
+          style={[styles.input, styles.mb, styles.borderWidth]}
         />
 
         <Text style={[styles.labels]}>Description</Text>
@@ -127,7 +126,7 @@ const RecipesFormScreen = () => {
           placeholder='Add recipe description'
           value={form.description}
           onChangeText={(text) => setForm({ ...form, description: text })}
-          style={[styles.textarea, styles.mb, { borderWidth: 1 }]}
+          style={[styles.textarea, styles.mb, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
         />
@@ -140,7 +139,7 @@ const RecipesFormScreen = () => {
         <ScrollView style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
-            style={{ borderWidth: 0, backgroundColor: 'none' }}
+            style={[styles.noBorderWidth, styles.noBG]}
             placeholder='Select ingredients'
             searchPlaceholder='Search ingredients'
             multiple={true}
@@ -161,7 +160,7 @@ const RecipesFormScreen = () => {
           placeholder='Add one procedure per line'
           value={form.procedure}
           onChangeText={(text) => setForm({ ...form, procedure: text })}
-          style={[styles.textarea, styles.mb, { borderWidth: 1 }]}
+          style={[styles.textarea, styles.mb, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
         />
@@ -229,142 +228,56 @@ const RecipesFormScreen = () => {
 
         <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
         <View>
-          {/* 5 minutes */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 5 })}
-          >
-            <RadioButton
-              value={5}
-              status={form.cookingTime === 5 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 5 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              5 minutes
-            </Text>
-          </Pressable>
-          {/* 10 minutes */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 10 })}
-          >
-            <RadioButton
-              value={10}
-              status={form.cookingTime === 10 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 10 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              10 minutes
-            </Text>
-          </Pressable>
-          {/* 20 minutes */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 20 })}
-          >
-            <RadioButton
-              value={20}
-              status={form.cookingTime === 20 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 20 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              20 minutes
-            </Text>
-          </Pressable>
-          {/* 30 minutes */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 30 })}
-          >
-            <RadioButton
-              value={30}
-              status={form.cookingTime === 30 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 30 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              30 minutes
-            </Text>
-          </Pressable>
-          {/* 1 hour */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 60 })}
-          >
-            <RadioButton
-              value={60}
-              status={form.cookingTime === 60 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 60 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              1 hour
-            </Text>
-          </Pressable>
-          {/* 2 hour */}
-          <Pressable
-            style={styles.cookingTime}
-            onPress={() => setForm({ ...form, cookingTime: 120 })}
-          >
-            <RadioButton
-              value={120}
-              status={form.cookingTime === 120 ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, cookingTime: 120 })}
-            />
-            <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-              2 hours
-            </Text>
-          </Pressable>
+          {CT.map((_, i) => {
+            const { t, s } = _;
+            return (
+              <Pressable
+                key={i}
+                style={styles.cookingTime}
+                onPress={() => setForm({ ...form, cookingTime: t })}
+              >
+                <RadioButton
+                  value={t}
+                  status={form.cookingTime === t ? 'checked' : 'unchecked'}
+                  onPress={() => setForm({ ...form, cookingTime: t })}
+                />
+                <Text style={styles.fffs}>
+                  {t === 60 ? '1' : t === 120 ? '2' : t} {s}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         <Text style={[styles.highlights, styles.mtxl]}>Recipe Privacy</Text>
 
         <View>
-          <Pressable
-            style={[
-              styles.privacyStyle,
-              ,
-              form.privacy === 'public'
-                ? { backgroundColor: COLORS.primary }
-                : '',
-            ]}
-            onPress={() => setForm({ ...form, privacy: 'public' })}
-          >
-            <RadioButton
-              value='public'
-              status={form.privacy === 'public' ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, privacy: 'public' })}
-            />
-            <View>
-              <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-                Public
-              </Text>
-              <Text style={{ fontFamily: FONT.regular, fontSize: SIZES.sm }}>
-                Anyone can see this recipe.
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.privacyStyle,
-              form.privacy === 'private'
-                ? { backgroundColor: COLORS.primary }
-                : '',
-            ]}
-            onPress={() => setForm({ ...form, privacy: 'private' })}
-          >
-            <RadioButton
-              value='private'
-              status={form.privacy === 'private' ? 'checked' : 'unchecked'}
-              onPress={() => setForm({ ...form, privacy: 'private' })}
-            />
-            <View>
-              <Text style={{ fontFamily: FONT.semiBold, fontSize: SIZES.md }}>
-                Private
-              </Text>
-              <Text style={{ fontFamily: FONT.regular, fontSize: SIZES.sm }}>
-                Only you can see this recipe.
-              </Text>
-            </View>
-          </Pressable>
+          {privacyData.map((_, i) => {
+            const { privacy, title, description } = _;
+            return (
+              <Pressable
+                key={i}
+                style={[
+                  styles.privacyStyle,
+                  ,
+                  form.privacy === privacy
+                    ? { backgroundColor: COLORS.primary }
+                    : '',
+                ]}
+                onPress={() => setForm({ ...form, privacy: privacy })}
+              >
+                <RadioButton
+                  value={privacy}
+                  status={form.privacy === privacy ? 'checked' : 'unchecked'}
+                  onPress={() => setForm({ ...form, privacy: privacy })}
+                />
+                <View>
+                  <Text style={styles.fffs}>{title}</Text>
+                  <Text style={styles.privactDescription}>{description}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
         </View>
 
         <Pressable
@@ -377,116 +290,5 @@ const RecipesFormScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'start',
-    padding: 8,
-  },
-  input: {
-    height: 50,
-    borderRadius: 30,
-    padding: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
-    fontFamily: FONT.regular,
-    fontSize: SIZES.sm,
-  },
-  smallLabel: {
-    fontFamily: FONT.regular,
-    fontSize: SIZES.sm,
-  },
-  textarea: {
-    height: 150,
-    justifyContent: 'flex-start',
-    borderRadius: 15,
-    padding: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
-    fontFamily: FONT.regular,
-    textAlignVertical: 'top',
-    fontSize: SIZES.sm,
-  },
-  select: {
-    borderRadius: 30,
-    fontFamily: FONT.regular,
-    borderWidth: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  ddPlaceholder: {
-    fontFamily: FONT.regular,
-    color: 'grey',
-    borderRadius: 3,
-    borderWidth: 0,
-    fontSize: SIZES.sm,
-  },
-  dd: { borderWidth: 0, backgroundColor: 'none' },
-  mb: {
-    marginBottom: SIZES.sm,
-  },
-  mtxl: {
-    marginTop: SIZES.xl,
-  },
-  mtlg: {
-    marginTop: SIZES.lg,
-  },
-  mt: {
-    marginTop: SIZES.sm,
-  },
-  highlights: {
-    fontSize: SIZES.sm,
-    fontFamily: FONT.medium,
-    marginBottom: SIZES.sm,
-  },
-  labels: {
-    fontSize: SIZES.md,
-    fontFamily: FONT.semiBold,
-    marginBottom: SIZES.sm,
-  },
-  addLabel: {
-    fontSize: SIZES.sm,
-    fontFamily: FONT.regular,
-    marginTop: SIZES.sm,
-  },
-  noImage: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    objectFit: 'cover',
-    width: '100%',
-    borderWidth: 1,
-    height: 250,
-    borderRadius: 15,
-  },
-  hasImage: {
-    width: '100%',
-    objectFit: 'cover',
-    height: 250,
-    borderRadius: 15,
-    borderWidth: 1,
-  },
-  privacyStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 5,
-    borderRadius: 3,
-  },
-  cookingTime: { flexDirection: 'row', alignItems: 'center' },
-  submitButton: {
-    borderRadius: 3,
-    padding: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.accent,
-  },
-  submitText: {
-    fontSize: SIZES.lg,
-    fontFamily: FONT.semiBold,
-    color: 'white',
-  },
-});
 
 export default RecipesFormScreen;
