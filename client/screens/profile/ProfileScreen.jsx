@@ -5,7 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { COLORS, FONT } from '../../constants';
 import styles from '../../styles/profile';
-import { PlannerScreen, HomeScreen } from '../index.jsx';
+import PlannerScreen from '../planner/PlannerScreen';
+import HomeScreen from '../home/HomeScreen';
 
 const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
