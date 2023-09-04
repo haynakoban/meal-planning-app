@@ -26,8 +26,6 @@ const AppBottomNavigation = () => {
       screenOptions={({ route }) => ({
         headerStyle: {
           backgroundColor: COLORS.accent,
-          borderBottomWidth: 1,
-          borderBottomColor: COLORS.primary,
         },
         headerTintColor: COLORS.primary,
         tabBarLabel: () => {

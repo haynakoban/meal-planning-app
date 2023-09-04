@@ -21,8 +21,6 @@ const AppNavigator = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor: COLORS.accent,
-          borderBottomWidth: 1,
-          borderBottomColor: COLORS.primary,
         },
         headerTintColor: COLORS.primary,
       }}
