@@ -10,6 +10,7 @@ import {
   SearchScreen,
   SignUpScreen,
   Recipe,
+  Meal,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 
@@ -92,6 +93,16 @@ const AppNavigator = () => {
       <Stack.Screen
         name='Recipe'
         component={Recipe}
+        options={{
+          headerTitle: 'About',
+          headerTitleAlign: 'left',
+          headerTitleStyle: styles.signUpHeaderTitleStyle,
+        }}
+      />
+
+      <Stack.Screen
+        name='Meal'
+        component={Meal}
         options={{
           headerTitle: 'About',
           headerTitleAlign: 'left',

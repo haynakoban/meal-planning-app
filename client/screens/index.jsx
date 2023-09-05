@@ -4,6 +4,7 @@ import LoginScreen from './login/LoginScreen';
 import MealFormScreen from './actions/MealFormScreen';
 import MealRecipeModalScreen from './actions/MealRecipeModalScreen';
 import PlannerScreen from './planner/PlannerScreen';
+import Meal from './planner/Meal';
 import ProfileScreen from './profile/ProfileScreen';
 import RecipesFormScreen from './actions/RecipesFormScreen';
 import RecipesScreen from './recipes/RecipesScreen';
@@ -24,4 +25,5 @@ export {
   SearchScreen,
   SignUpScreen,
   Recipe,
+  Meal,
 };
