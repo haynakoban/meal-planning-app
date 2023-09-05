@@ -73,6 +73,14 @@ const Recipe = () => {
         </View>
         <View style={bigDivider}></View>
         <View style={wrapper}>
+          <Text style={textMedium}>Description</Text>
+        </View>
+        <View style={divider}></View>
+        <View style={wrapper}>
+          <Text style={text}>{data.description}</Text>
+        </View>
+        <View style={bigDivider}></View>
+        <View style={wrapper}>
           <Text style={textMedium}>Ingredients</Text>
         </View>
         <View style={divider}></View>
