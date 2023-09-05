@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { View, FlatList } from 'react-native';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
@@ -20,25 +20,24 @@ const FavoritesScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <Fragment>
-      <FlatList
-        style={container}
-        data={DATA}
-        renderItem={({ item }) => {
-          const { name, username, ratings, image, id } = item;
-          return (
-            <FavoriteCard
-              name={name}
-              username={username}
-              ratings={ratings}
-              image={image}
-              key={id}
-            />
-          );
-        }}
-        numColumns={2}
-      />
-    </Fragment>
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      style={container}
+      data={DATA}
+      renderItem={({ item }) => {
+        const { name, username, ratings, image, id } = item;
+        return (
+          <FavoriteCard
+            name={name}
+            username={username}
+            ratings={ratings}
+            image={image}
+            key={id}
+          />
+        );
+      }}
+      numColumns={2}
+    />
   );
 };
 

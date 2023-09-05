@@ -24,8 +24,11 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
   const [isFavorite, setIsFavorite] = useState(true);
 
   return (
-    <Pressable onPress={() => navigation.navigate('Recipe', { id: 1 })}>
-      <Card style={card}>
+    <Pressable
+      onPress={() => navigation.navigate('Recipe', { id: 1 })}
+      style={card}
+    >
+      <Card>
         <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
         <Card.Content>
           <Text variant='titleLarge' style={title}>

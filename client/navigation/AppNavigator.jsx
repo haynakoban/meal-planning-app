@@ -94,6 +94,8 @@ const AppNavigator = () => {
         component={Recipe}
         options={{
           headerTitle: 'About',
+          headerTitleAlign: 'left',
+          headerTitleStyle: styles.signUpHeaderTitleStyle,
         }}
       />
     </Stack.Navigator>

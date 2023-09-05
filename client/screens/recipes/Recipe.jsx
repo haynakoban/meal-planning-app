@@ -1,13 +1,19 @@
 import { Fragment } from 'react';
-import { Image, ScrollView, View, Text } from 'react-native';
+import { Image, ScrollView, View, Text, FlatList } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import { COLORS, SIZES } from '../../constants';
 import styles from '../../styles/recipe';
+import styles2 from '../../styles/homeRecipes';
 import { recipe as data } from '../../constants';
+
+import FavoriteCard from '../../components/favorites/FavoriteCard';
+import { DATA } from '../../constants';
 
 const Recipe = () => {
   // const [id] = useState(route.params.id);
+  const { cardWrapper, cardContentWrapper } = styles2;
+
   const {
     bigDivider,
     container,
@@ -32,7 +38,7 @@ const Recipe = () => {
   } = styles;
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={container}>
         <Image src={data.image} style={imageStyle} />
         <View style={wrapper}>
@@ -121,6 +127,23 @@ const Recipe = () => {
             })}
           </View>
         </View>
+        <View style={bigDivider}></View>
+        <View style={wrapper}>
+          <Text style={textMedium}>Recommended Recipe</Text>
+        </View>
+      </View>
+      <View style={cardWrapper}>
+        {DATA.map(({ id, name, username, ratings, image }) => (
+          <View key={id} style={cardContentWrapper}>
+            <FavoriteCard
+              name={name}
+              username={username}
+              ratings={ratings}
+              image={image}
+              key={id}
+            />
+          </View>
+        ))}
       </View>
     </ScrollView>
   );

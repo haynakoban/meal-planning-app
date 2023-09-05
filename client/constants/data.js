@@ -189,6 +189,11 @@ export const privacyData = [
     description: 'Anyone can see this recipe.',
   },
   {
+    privacy: 'followers',
+    title: 'Followers',
+    description: 'Only your followers can see this recipe.',
+  },
+  {
     privacy: 'private',
     title: 'Private',
     description: 'Only you can see this recipe.',
