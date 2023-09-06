@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileText: {
-    width: 250,
-    textAlign: 'center',
+    width: 220,
+    textAlign: 'left',
   },
   name: {
     fontFamily: FONT.bold,
@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bio: {
-    fontFamily: FONT.regular,
-    fontSize: SIZES.sm + 2,
+    fontFamily: FONT.medium,
+    fontSize: SIZES.sm,
     lineHeight: SIZES.lg,
   },
   mv: {

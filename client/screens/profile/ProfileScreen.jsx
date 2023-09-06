@@ -3,7 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
-import { COLORS, FONT } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
 import styles from '../../styles/profile';
 import PlannerScreen from '../planner/PlannerScreen';
 import HomeScreen from '../home/HomeScreen';
@@ -27,24 +27,142 @@ const ProfileScreen = () => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={profileContainer}>
-        {/* make this conditional */}
-        <Avatar.Icon
-          size={100}
-          style={{ backgroundColor: COLORS.accent }}
-          icon={() => (
-            <Ionicons
-              name='ios-person-outline'
-              size={60}
-              color={COLORS.primary}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            paddingHorizontal: SIZES.md,
+            width: '100%',
+          }}
+        >
+          {/* make this conditional */}
+          <View style={{ marginVertical: SIZES.md }}>
+            <Avatar.Icon
+              size={100}
+              style={{
+                backgroundColor: COLORS.accent,
+              }}
+              icon={() => (
+                <Ionicons
+                  name='ios-person-outline'
+                  size={60}
+                  color={COLORS.primary}
+                />
+              )}
             />
-          )}
-        />
+          </View>
 
-        <View style={mv}>
-          <Text style={[name, profileText]}>Bryan D. Cortez</Text>
-          <Text multiline={true} style={[bio, profileText]}>
-            This is my bio
-          </Text>
+          <View style={[mv, profileText, { marginLeft: SIZES.sm }]}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode='tail'
+              style={[name, profileText]}
+            >
+              Bryan D. Cortez
+            </Text>
+
+            <Text
+              multiline={true}
+              style={[bio, profileText, { marginBottom: SIZES.sm + 2 }]}
+            >
+              this is my bio
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity
+                style={[
+                  groupButton,
+                  {
+                    width: 100,
+                    alignItems: 'flex-start',
+                    marginRight: 8,
+                  },
+                ]}
+                activeOpacity={1}
+                onPress={() => console.log('hello')}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <Text
+                    style={[
+                      groupButtonViewText,
+                      {
+                        fontFamily: FONT.bold,
+                        color: COLORS.black,
+                        marginRight: 4,
+                      },
+                    ]}
+                  >
+                    394
+                  </Text>
+                  <Text
+                    style={[
+                      groupButtonViewText,
+                      {
+                        fontFamily: FONT.semiBold,
+                        color: COLORS.black,
+                      },
+                    ]}
+                  >
+                    Following
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  groupButton,
+                  {
+                    width: 100,
+                    alignItems: 'flex-start',
+                  },
+                ]}
+                activeOpacity={1}
+                onPress={() => console.log('hello')}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <Text
+                    style={[
+                      groupButtonViewText,
+                      {
+                        fontFamily: FONT.bold,
+                        color: COLORS.black,
+                        marginRight: 4,
+                      },
+                    ]}
+                  >
+                    2.5k
+                  </Text>
+                  <Text
+                    style={[
+                      groupButtonViewText,
+                      {
+                        fontFamily: FONT.semiBold,
+                        color: COLORS.black,
+                      },
+                    ]}
+                  >
+                    Followers
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
 
         {/* group button */}
