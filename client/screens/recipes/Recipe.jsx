@@ -9,9 +9,13 @@ import { recipe as data } from '../../constants';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 import { DATA } from '../../constants';
+import { useState, useEffect } from 'react';
 
-const Recipe = () => {
+const Recipe = ({ route }) => {
   // const [id] = useState(route.params.id);
+  // useEffect(() => {
+  //   console.log(id);
+  // }, []);
   const { cardWrapper, cardContentWrapper } = styles2;
 
   const {

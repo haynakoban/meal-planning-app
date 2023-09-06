@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.bold,
   },
   searchHeaderTitleStyle: {
-    width: 300,
+    width: '100%',
     marginLeft: -SIZES.lg,
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   searchTextInput: {
-    flex: 1,
+    width: '100%',
     color: COLORS.black,
     paddingHorizontal: SIZES.sm,
     fontSize: SIZES.md,
