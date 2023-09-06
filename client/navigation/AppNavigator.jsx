@@ -11,6 +11,7 @@ import {
   SignUpScreen,
   Recipe,
   Meal,
+  SearchRecipe,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 
@@ -21,6 +22,7 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const [searchText, setSearchText] = useState('');
+  const [searchRecipe, setSearchRecipe] = useState('');
 
   return (
     <Stack.Navigator
@@ -83,6 +85,24 @@ const AppNavigator = () => {
                 placeholder='Search...'
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
+              />
+            </View>
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name='Search Recipe'
+        component={SearchRecipe}
+        options={{
+          headerTitle: () => (
+            <View style={styles.searchHeaderTitleStyle}>
+              <Ionicons name='search' size={SIZES.lg} color={COLORS.black} />
+              <TextInput
+                style={styles.searchTextInput}
+                placeholder='Search...'
+                onChangeText={(text) => setSearchRecipe(text)}
+                value={searchRecipe}
               />
             </View>
           ),

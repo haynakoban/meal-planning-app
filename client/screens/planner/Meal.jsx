@@ -7,9 +7,11 @@ import { COLORS, SIZES, recipe as data } from '../../constants';
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 import PlansCard from '../../components/planner/PlansCard';
 import { DATA } from '../../constants';
+import { useEffect, useState } from 'react';
 
-const Meal = () => {
+const Meal = ({ route }) => {
   // const [id] = useState(route.params.id);
+
   const { cardWrapper, cardContentWrapper } = styles2;
 
   const meal_plan_recipes = [

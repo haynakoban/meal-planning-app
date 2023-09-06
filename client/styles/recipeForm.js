@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
   },
   cookingTime: { flexDirection: 'row', alignItems: 'center' },
   submitButton: {
-    borderRadius: 3,
-    padding: 15,
+    borderRadius: 999,
+    padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.accent,
