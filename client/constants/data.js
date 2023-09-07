@@ -201,14 +201,14 @@ export const privacyData = [
 ];
 
 export const people = [
-  { key: 1, i: 'BC', name: 'Bryan Cortez' },
-  { key: 2, i: 'XV', name: 'Xenon Vergara' },
-  { key: 3, i: 'JA', name: 'Jeorge Agustin Jr.' },
-  { key: 4, i: 'RS', name: 'Rizza Mia Servanda' },
-  { key: 5, i: 'TR', name: 'Thea Mae Rirao' },
-  { key: 6, i: 'JL', name: 'Jeremy Roie Laxamana' },
-  { key: 7, i: 'AQ', name: 'Aaron Quesada' },
-  { key: 8, i: 'BE', name: 'Bien Enriquez' },
+  { key: 1, i: 'BC', name: 'Benjamin Carter' },
+  { key: 2, i: 'XV', name: 'Xander Vincent' },
+  { key: 3, i: 'JA', name: 'Juliana Anderson' },
+  { key: 4, i: 'RS', name: 'Rebecca Stevens' },
+  { key: 5, i: 'TR', name: 'Theodore Roberts' },
+  { key: 6, i: 'JL', name: 'Jonathan Lawson' },
+  { key: 7, i: 'AQ', name: 'Alexander Quinn' },
+  { key: 8, i: 'BE', name: 'Evelyn Bennett' },
 ];
 
 export const searchesScreens = [

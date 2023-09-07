@@ -24,7 +24,9 @@ const SearchScreen = () => {
           horizontal
           data={people}
           renderItem={({ item }) => (
-            <View style={styles.itemWrapper}>
+            <View
+              style={[styles.itemWrapper, { justifyContent: 'flex-start' }]}
+            >
               <Avatar.Text
                 size={45}
                 label={item.i}

@@ -165,7 +165,7 @@ const AppBottomNavigation = () => {
         name='Profile'
         component={ProfileScreen}
         options={{
-          headerTitle: '@haynakoban',
+          headerTitle: '@x_vincent',
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontFamily: FONT.bold,

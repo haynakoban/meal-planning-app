@@ -58,7 +58,7 @@ const ProfileScreen = () => {
               ellipsizeMode='tail'
               style={[name, profileText]}
             >
-              Bryan D. Cortez
+              Xander Vincent
             </Text>
 
             <Text
