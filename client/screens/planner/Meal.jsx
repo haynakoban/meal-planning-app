@@ -1,16 +1,43 @@
-import { Image, ScrollView, View, Text, FlatList } from 'react-native';
+import { Image, ScrollView, View, Text, Pressable } from 'react-native';
 
 import styles from '../../styles/recipe';
 import styles2 from '../../styles/homeRecipes';
 import { COLORS, SIZES, recipe as data } from '../../constants';
+import { Feather } from '@expo/vector-icons';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 import PlansCard from '../../components/planner/PlansCard';
-import { DATA } from '../../constants';
+import ReviewCard from '../../components/reviews/ReviewCard';
+
+import { DATA, reviews } from '../../constants';
 import { useEffect, useState } from 'react';
 
 const Meal = ({ route }) => {
   // const [id] = useState(route.params.id);
+
+  const [reviewsToShow, setReviewsToShow] = useState([]);
+  const reviewsPerPage = 2;
+  const [count, setCount] = useState(1);
+  const loopThroughReviews = (count) => {
+    for (
+      let i = count * reviewsPerPage - reviewsPerPage;
+      i < reviewsPerPage * count;
+      i++
+    ) {
+      if (reviews[i] !== undefined) {
+        setReviewsToShow((prev) => [...prev, reviews[i]]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    setCount((prevCount) => prevCount + 1);
+    loopThroughReviews(count);
+  }, []);
+  const handleShowMoreReviews = () => {
+    setCount((prevCount) => prevCount + 1);
+    loopThroughReviews(count);
+  };
 
   const { cardWrapper, cardContentWrapper } = styles2;
 
@@ -134,7 +161,31 @@ const Meal = ({ route }) => {
         <View style={wrapper}>
           <Text style={textMedium}>Recommended Meal Plan</Text>
         </View>
+        <View style={bigDivider}></View>
+        <View style={wrapper}>
+          <Text style={textMedium}>Reviews</Text>
+        </View>
+        <View style={divider}></View>
+        <View style={wrapper}>
+          <Pressable
+            style={[textMedium, { justifyContent: 'center' }]}
+            onPress={() => console.log('write a review')}
+          >
+            <Text style={text}>
+              <Feather name='edit' size={24} color='black' /> Write a Review
+            </Text>
+          </Pressable>
+        </View>
+        <View style={divider}></View>
+        <ReviewCard reviewsToRender={reviewsToShow} />
+        <Pressable
+          onPress={handleShowMoreReviews}
+          style={{ paddingVertical: 20 }}
+        >
+          <Text style={[text, { textAlign: 'center' }]}>Show more</Text>
+        </Pressable>
       </View>
+      <View style={bigDivider}></View>
       <View style={cardWrapper}>
         {DATA.map(({ id, name, description, username, image }) => (
           <View key={id} style={cardContentWrapper}>

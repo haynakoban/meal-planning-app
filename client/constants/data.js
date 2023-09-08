@@ -291,3 +291,38 @@ export const allergies = [
   'Meat',
   'Nightshade',
 ];
+
+export const reviews = [
+  {
+    id: 1,
+    image:
+      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    comment: 'dawdawdawdawd,awdjbagaw kj kjdajd adawdj dahawdkjdhawdawdkawdk',
+    username: 'semicolon101010',
+    date: new Date().toDateString(),
+  },
+  {
+    id: 2,
+    image:
+      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    comment: 'dawdawdawdawd,awdjbagaw kj kjdajd adawdj dahawdkjdhawdawdkawdk',
+    username: 'semicolon101010',
+    date: new Date().toDateString(),
+  },
+  {
+    id: 3,
+    image:
+      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    comment: 'dawdawdawdawd,awdjbagaw kj kjdajd adawdj dahawdkjdhawdawdkawdk',
+    username: 'semicolon101010',
+    date: new Date().toDateString(),
+  },
+  {
+    id: 4,
+    image:
+      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    comment: 'dawdawdawdawd,awdjbagaw kj kjdajd adawdj dahawdkjdhawdawdkawdk',
+    username: 'semicolon101010',
+    date: new Date().toDateString(),
+  },
+];

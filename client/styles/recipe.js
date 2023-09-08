@@ -43,6 +43,10 @@ const styles = StyleSheet.create({
     fontFamily: FONT.regular,
     fontSize: SIZES.md,
   },
+  textSm: {
+    fontFamily: FONT.regular,
+    fontSize: SIZES.sm,
+  },
   textBold: {
     fontFamily: FONT.bold,
     fontSize: SIZES.xl,
