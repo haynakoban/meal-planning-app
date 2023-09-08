@@ -2,7 +2,7 @@ const { Users } = require('../../models');
 const bcryptjs = require('bcryptjs');
 
 // create new user
-const createUser = async (req, res, next) => {
+const create = async (req, res, next) => {
   try {
     const { fullname, email, password } = req.body;
 
@@ -66,5 +66,5 @@ function generateUniqueUsername(fullName) {
 }
 
 module.exports = {
-  createUser,
+  create,
 };
