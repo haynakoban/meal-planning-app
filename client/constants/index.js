@@ -12,6 +12,7 @@ import {
   people,
   searchesScreens,
   recipeSearchData,
+  reviews,
 } from './data';
 
 export {
@@ -31,4 +32,5 @@ export {
   FONT,
   SIZES,
   SHADOWS,
+  reviews,
 };
