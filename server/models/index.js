@@ -6,6 +6,7 @@ const Feedbacks = require('./feedbacks/feedbacksModel');
 const Preferences = require('./preferences/preferencesModel');
 const Cuisines = require('./cuisines/cuisinesModel');
 const Plans = require('./plans/plansModel');
+const MealTypes = require('./meals/mealTypesModel');
 
 module.exports = {
   Users,
@@ -16,4 +17,5 @@ module.exports = {
   Preferences,
   Plans,
   Cuisines,
+  MealTypes,
 };
