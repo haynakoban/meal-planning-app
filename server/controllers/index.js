@@ -1,17 +1,19 @@
-const usersController = require('./users/usersController');
-const recipesController = require('./recipes/recipesController');
+const allergiesController = require('./allergies/allergiesController');
+const cuisinesController = require('./cuisines/cuisinesController');
 const feedbacksController = require('./feedbacks/feedbacksController');
 const ingredientsController = require('./ingredients/ingredientsController');
-const preferencesController = require('./preferences/preferencesController');
 const mealsController = require('./meals/mealsController');
-const cuisinesController = require('./cuisines/cuisinesController');
+const preferencesController = require('./preferences/preferencesController');
+const recipesController = require('./recipes/recipesController');
+const usersController = require('./users/usersController');
 
 module.exports = {
-  usersController,
-  recipesController,
+  allergiesController,
+  cuisinesController,
   feedbacksController,
   ingredientsController,
-  preferencesController,
   mealsController,
-  cuisinesController,
+  preferencesController,
+  recipesController,
+  usersController,
 };

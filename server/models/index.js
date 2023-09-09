@@ -1,21 +1,23 @@
-const Users = require('./users/usersModel');
 const Admins = require('./admins/adminsModel');
-const Ingredients = require('./ingredients/ingredientsModel');
-const Recipes = require('./recipes/recipesModel');
-const Feedbacks = require('./feedbacks/feedbacksModel');
-const Preferences = require('./preferences/preferencesModel');
+const Allergies = require('./allergies/allergiesModel');
 const Cuisines = require('./cuisines/cuisinesModel');
-const Plans = require('./plans/plansModel');
+const Feedbacks = require('./feedbacks/feedbacksModel');
+const Ingredients = require('./ingredients/ingredientsModel');
 const MealTypes = require('./meals/mealTypesModel');
+const Plans = require('./plans/plansModel');
+const Preferences = require('./preferences/preferencesModel');
+const Recipes = require('./recipes/recipesModel');
+const Users = require('./users/usersModel');
 
 module.exports = {
-  Users,
   Admins,
-  Ingredients,
-  Recipes,
-  Feedbacks,
-  Preferences,
-  Plans,
+  Allergies,
   Cuisines,
+  Feedbacks,
+  Ingredients,
   MealTypes,
+  Plans,
+  Preferences,
+  Recipes,
+  Users,
 };
