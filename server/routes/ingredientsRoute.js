@@ -7,6 +7,16 @@ const {
   checkSingleUniquenessMiddleware,
 } = require('../middlewares');
 
+// get method - get the list of ingredient
+// post method - create new ingredient
+router
+  .route('/')
+  .get(ingredientsController.list)
+  .post(
+    checkSingleUniquenessMiddleware(Ingredients),
+    ingredientsController.create
+  );
+
 // post method - create multiple ingredients
 router
   .route('/bulk')
@@ -15,11 +25,7 @@ router
     ingredientsController.bulkIngredients
   );
 
-// post method - create new ingredient
-router
-  .route('/')
-  .post(
-    checkSingleUniquenessMiddleware(Ingredients),
-    ingredientsController.create
-  );
+// get method - get single ingredient
+router.route('/:id').get(ingredientsController.show);
+
 module.exports = router;
