@@ -1,31 +1,9 @@
 const { Cuisines } = require('../../models');
-const { checkUniqueness, isNonEmptyArray } = require('../../lib');
 
 // bulk cuisines
 const bulkCuisines = async (req, res, next) => {
   try {
-    const cuisines = req.body;
-
-    if (!isNonEmptyArray(cuisines)) {
-      return res.status(400).json({
-        message: `The request must contain a non-empty array of data items for bulk creation`,
-        status: 'error occurred',
-        data: [],
-      });
-    }
-
-    const uniqueData = await checkUniqueness(Cuisines, cuisines);
-
-    // check if no items in the bulk request are unique.
-    if (uniqueData.length === 0) {
-      return res.status(400).json({
-        message: `All items in the bulk request are not unique`,
-        status: 'error occurred',
-        data: [],
-      });
-    }
-
-    const result = await Cuisines.insertMany(uniqueData);
+    const result = await Cuisines.insertMany(req.uniqueData);
 
     return res.status(201).json({
       message: `${result.length} cuisines inserted`,

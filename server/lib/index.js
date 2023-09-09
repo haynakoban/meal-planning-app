@@ -1,6 +1,5 @@
-const { checkUniqueness, isNonEmptyArray } = require('./validation');
+const { isNonEmptyArray } = require('./validation');
 
 module.exports = {
-  checkUniqueness,
   isNonEmptyArray,
 };
