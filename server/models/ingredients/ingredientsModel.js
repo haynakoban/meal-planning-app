@@ -12,7 +12,7 @@ const facts = {
 
 const ingredientsSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
-  category: { type: String, required: true },
+  category: { type: String, required: false },
   nutrition_facts: facts,
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },

@@ -2,14 +2,22 @@ const express = require('express');
 const router = express.Router();
 const { Cuisines } = require('../models');
 const { cuisinesController } = require('../controllers');
-const { checkUniquenessMiddleware } = require('../middlewares');
+const {
+  checkBulkUniquenessMiddleware,
+  checkSingleUniquenessMiddleware,
+} = require('../middlewares');
 
 // post method - create multiple cuisines
 router
   .route('/bulk')
-  .post(checkUniquenessMiddleware(Cuisines), cuisinesController.bulkCuisines);
+  .post(
+    checkBulkUniquenessMiddleware(Cuisines),
+    cuisinesController.bulkCuisines
+  );
 
 // post method - create new cuisine
-router.route('/').post(cuisinesController.create);
+router
+  .route('/')
+  .post(checkSingleUniquenessMiddleware(Cuisines), cuisinesController.create);
 
 module.exports = router;

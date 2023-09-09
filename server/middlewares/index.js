@@ -1,5 +1,9 @@
-const { checkUniquenessMiddleware } = require('./checkUniquenessMiddleware');
+const {
+  checkBulkUniquenessMiddleware,
+  checkSingleUniquenessMiddleware,
+} = require('./checkUniquenessMiddleware');
 
 module.exports = {
-  checkUniquenessMiddleware,
+  checkBulkUniquenessMiddleware,
+  checkSingleUniquenessMiddleware,
 };

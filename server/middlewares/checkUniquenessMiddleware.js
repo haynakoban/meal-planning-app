@@ -1,6 +1,6 @@
 const { isNonEmptyArray } = require('../lib');
 
-const checkUniquenessMiddleware = (model) => async (req, res, next) => {
+const checkBulkUniquenessMiddleware = (model) => async (req, res, next) => {
   const data = req.body;
   const uniqueData = [];
 
@@ -37,4 +37,34 @@ const checkUniquenessMiddleware = (model) => async (req, res, next) => {
   next();
 };
 
-module.exports = { checkUniquenessMiddleware };
+const checkSingleUniquenessMiddleware = (model) => async (req, res, next) => {
+  const data = req.body;
+
+  if (!data.name || !data) {
+    return res.status(400).json({
+      message: `The request must contain a property name called 'name'`,
+      status: 'error occurred',
+      data: {},
+    });
+  }
+
+  const existingItem = await model.findOne({
+    name: data.name,
+  });
+
+  if (existingItem) {
+    return res.status(400).json({
+      message: `Item is not unique`,
+      status: 'error occurred',
+      data: {},
+    });
+  }
+
+  req.uniqueData = data;
+  next();
+};
+
+module.exports = {
+  checkBulkUniquenessMiddleware,
+  checkSingleUniquenessMiddleware,
+};

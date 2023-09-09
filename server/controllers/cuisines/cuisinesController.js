@@ -6,38 +6,35 @@ const bulkCuisines = async (req, res, next) => {
     const result = await Cuisines.insertMany(req.uniqueData);
 
     return res.status(201).json({
-      message: `${result.length} cuisines inserted`,
+      message: `${result.length} items inserted successfully`,
       status: 'record created',
       data: result,
     });
   } catch (e) {
-    next(e);
+    return res.status(500).json({
+      message: 'Error occurred while creating the items',
+      status: 'error occurred',
+      data: [],
+    });
   }
 };
 
 // create new cuisine
 const create = async (req, res, next) => {
   try {
-    const cuisines = req.body;
+    const result = await Cuisines.create(req.uniqueData);
 
-    if (!cuisines.name) {
-      return res.status(400).json({
-        error: 'Request body must be have a property of name (cuisine)',
-      });
-    }
-
-    // if (cuisines.length === 0) {
-    //   throw new Error('No cuisines to insert');
-    // }
-
-    // const result = await Cuisines.insertMany(cuisines);
-
-    // return res.status(201).json({
-    //   total: `${result.length + 1} cuisine inserted`,
-    //   cuisines,
-    // });
+    return res.status(201).json({
+      message: `An item inserted successfully`,
+      status: 'record created',
+      data: result,
+    });
   } catch (e) {
-    next(e);
+    return res.status(500).json({
+      message: 'Error occurred while creating the item',
+      status: 'error occurred',
+      data: {},
+    });
   }
 };
 
