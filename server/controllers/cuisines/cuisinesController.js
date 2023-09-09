@@ -47,7 +47,8 @@ const list = async (req, res, next) => {
     // Query the database for cuisines, skipping the appropriate number of documents based on the page
     const cuisines = await Cuisines.find()
       .skip((page - 1) * perPage)
-      .limit(perPage);
+      .limit(perPage)
+      .select('_id name');
 
     // Get the total count of cuisines in the collection (for calculating total pages)
     const totalItems = await Cuisines.countDocuments();

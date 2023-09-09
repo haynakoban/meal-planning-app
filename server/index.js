@@ -9,6 +9,7 @@ require('dotenv').config();
 require('./config/db');
 
 const PORT = process.env.PORT || 5000;
+const HOST = 'localhost';
 
 app.use(
   cors({
@@ -31,6 +32,7 @@ app.use('/api/preferences', require('./routes/preferencesRoute'));
 app.use('/api/recipes', require('./routes/recipesRoute'));
 app.use('/api/users', require('./routes/usersRoute'));
 
-http.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
+// Listen on the specified IP address and port
+http.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}/`);
 });
