@@ -21,10 +21,6 @@ const useCuisinesStore = create((set) => ({
       console.error('Error fetching data:', error);
     }
   },
-  addBreakfast: (val) =>
-    set((state) => ({
-      breakfast: [...state.breakfast, val],
-    })),
 }));
 
 export default useCuisinesStore;
