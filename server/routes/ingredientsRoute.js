@@ -7,7 +7,7 @@ const {
   checkSingleUniquenessMiddleware,
 } = require('../middlewares');
 
-// get method - get the list of ingredient
+// get method - get the list of ingredients
 // post method - create new ingredient
 router
   .route('/')

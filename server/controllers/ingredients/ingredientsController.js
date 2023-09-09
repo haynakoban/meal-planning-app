@@ -45,7 +45,7 @@ const list = async (req, res, next) => {
 
   try {
     // Query the database for ingredients, skipping the appropriate number of documents based on the page
-    const items = await Ingredients.find()
+    const ingredients = await Ingredients.find()
       .skip((page - 1) * perPage)
       .limit(perPage);
 
@@ -61,7 +61,7 @@ const list = async (req, res, next) => {
       status: 'success',
       currentPage: page,
       totalPages,
-      data: items,
+      data: ingredients,
     });
   } catch (e) {
     return res.status(500).json({
