@@ -15,14 +15,9 @@ import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AntDesign } from '@expo/vector-icons';
 
-import {
-  COLORS,
-  SIZES,
-  ingredients as INGREDIENTS,
-  CT,
-  privacyData,
-} from '../../constants';
+import { COLORS, SIZES, CT, privacyData } from '../../constants';
 import styles from '../../styles/recipeForm';
+import useIngredientsStore from '../../store/useIngredientsStore';
 
 const RecipesFormScreen = () => {
   const [form, setForm] = useState({
@@ -36,16 +31,25 @@ const RecipesFormScreen = () => {
 
   const [permission, setPermission] = useState(false);
 
-  const [openIngredients, setOpenIngredients] = useState(false);
-  const [openRecipesType, setOpenRecipesType] = useState(false);
-  const [openPreferences, setOpenPreferences] = useState(false);
-  const [openCuisine, setOpenCuisine] = useState(false);
-  const [cuisine, setCuisine] = useState('');
-  const [ingredients, setIngredients] = useState([]);
-  const [recipesType, setRecipesType] = useState([]);
-  const [preferences, setPreferences] = useState([]);
+  // const [openIngredients, setOpenIngredients] = useState(false);
+  // const [openRecipesType, setOpenRecipesType] = useState(false);
+  // const [openPreferences, setOpenPreferences] = useState(false);
+  // const [openCuisine, setOpenCuisine] = useState(false);
+  // const [cuisine, setCuisine] = useState('');
+  // const [ingredientsValue, setIngredientsValue] = useState(null);
+  // const [recipesType, setRecipesType] = useState([]);
+  // const [preferences, setPreferences] = useState([]);
 
-  const [data, setData] = useState(INGREDIENTS);
+  const {
+    open,
+    value,
+    items,
+    setOpen,
+    setValue,
+    setItems,
+    listIngredients,
+    page,
+  } = useIngredientsStore();
 
   // ask for storage permission
   useEffect(() => {
@@ -59,6 +63,10 @@ const RecipesFormScreen = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    listIngredients(page);
+  }, [page, items]);
 
   const pickImage = async () => {
     if (permission) {
@@ -144,14 +152,13 @@ const RecipesFormScreen = () => {
             searchPlaceholder='Search ingredients'
             multiple={true}
             searchable={true}
-            open={openIngredients}
-            value={ingredients}
-            items={data}
-            setOpen={setOpenIngredients}
-            setValue={setIngredients}
-            setItems={setData}
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
             showBadgeDot={false}
-            // itemKey="value" (id)
           />
         </ScrollView>
 
@@ -167,7 +174,7 @@ const RecipesFormScreen = () => {
 
         <Text style={[styles.highlights, styles.mtlg]}>Recipe Information</Text>
 
-        <Text style={styles.labels}>Course Type</Text>
+        {/* <Text style={styles.labels}>Course Type</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -185,9 +192,9 @@ const RecipesFormScreen = () => {
             showBadgeDot={false}
             // itemKey="value" (id)
           />
-        </View>
+        </View> */}
 
-        <Text style={[styles.labels, styles.mt]}>Preference</Text>
+        {/* <Text style={[styles.labels, styles.mt]}>Preference</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -205,9 +212,9 @@ const RecipesFormScreen = () => {
             showBadgeDot={false}
             // itemKey="value" (id)
           />
-        </View>
+        </View> */}
 
-        <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
+        {/* <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -224,7 +231,7 @@ const RecipesFormScreen = () => {
             showBadgeDot={false}
             // itemKey="value" (id)
           />
-        </View>
+        </View> */}
 
         <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
         <View>

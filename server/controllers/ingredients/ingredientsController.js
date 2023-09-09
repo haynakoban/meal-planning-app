@@ -47,7 +47,8 @@ const list = async (req, res, next) => {
     // Query the database for ingredients, skipping the appropriate number of documents based on the page
     const ingredients = await Ingredients.find()
       .skip((page - 1) * perPage)
-      .limit(perPage);
+      .limit(perPage)
+      .select('_id name');
 
     // Get the total count of ingredients in the collection (for calculating total pages)
     const totalItems = await Ingredients.countDocuments();
