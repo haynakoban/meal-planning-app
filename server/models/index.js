@@ -1,5 +1,6 @@
 const Admins = require('./admins/adminsModel');
 const Allergies = require('./allergies/allergiesModel');
+const CookingTimes = require('./cooking/cookingTimeModel');
 const Cuisines = require('./cuisines/cuisinesModel');
 const Feedbacks = require('./feedbacks/feedbacksModel');
 const Ingredients = require('./ingredients/ingredientsModel');
@@ -12,6 +13,7 @@ const Users = require('./users/usersModel');
 module.exports = {
   Admins,
   Allergies,
+  CookingTimes,
   Cuisines,
   Feedbacks,
   Ingredients,

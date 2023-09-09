@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/allergies', require('./routes/allergiesRoute'));
+app.use('/api/cooking', require('./routes/cookingTimesRoute'));
 app.use('/api/cuisines', require('./routes/cuisinesRoute'));
 app.use('/api/feedbacks', require('./routes/feedbacksRoute'));
 app.use('/api/ingredients', require('./routes/ingredientsRoute'));

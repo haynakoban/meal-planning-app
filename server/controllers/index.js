@@ -1,4 +1,5 @@
 const allergiesController = require('./allergies/allergiesController');
+const cookingTimeController = require('./cooking/cookingTimeController');
 const cuisinesController = require('./cuisines/cuisinesController');
 const feedbacksController = require('./feedbacks/feedbacksController');
 const ingredientsController = require('./ingredients/ingredientsController');
@@ -9,6 +10,7 @@ const usersController = require('./users/usersController');
 
 module.exports = {
   allergiesController,
+  cookingTimeController,
   cuisinesController,
   feedbacksController,
   ingredientsController,
