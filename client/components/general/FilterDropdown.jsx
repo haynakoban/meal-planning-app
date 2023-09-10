@@ -1,13 +1,19 @@
 import { useState } from 'react';
-import { ScrollView, SectionList } from 'react-native';
+import {
+  ScrollView,
+  SectionList,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { COLORS, FONT } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
 import styles from '../../styles/filterDropDown';
 import useFilterStore from '../../store/useFilterStore';
 
-const FilterDropdown = () => {
+const FilterDropdown = ({ hideModal }) => {
   const [openSections, setOpenSections] = useState(['Meal Types']);
   const [selectedButtons, setSelectedButtons] = useState({});
   const { filters } = useFilterStore();
@@ -49,6 +55,46 @@ const FilterDropdown = () => {
 
   return (
     <ScrollView>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          paddingBottom: 12,
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          borderColor: COLORS.lightBlack,
+          borderBottomWidth: 1,
+        }}
+      >
+        <TouchableOpacity onPress={hideModal}>
+          <Ionicons name='close' size={SIZES.xl + 4} color={COLORS.black} />
+        </TouchableOpacity>
+        <Text
+          style={{
+            fontFamily: FONT.medium,
+            fontSize: SIZES.md + 1,
+            marginHorizontal: 8,
+            flexGrow: 1,
+          }}
+        >
+          Filter Recipes
+        </Text>
+        <Button
+          mode='contained-tonal'
+          style={{
+            paddingHorizontal: 6,
+            borderRadius: 12,
+          }}
+          labelStyle={{
+            fontFamily: FONT.bold,
+            fontSize: SIZES.sm - 1,
+          }}
+          compact={true}
+          onPress={() => setSelectedButtons({})}
+        >
+          Clear All
+        </Button>
+      </View>
       <SectionList
         scrollEnabled={false}
         sections={filters}
@@ -123,7 +169,7 @@ export const FilterModal = ({ visible, hideModal }) => {
         onDismiss={hideModal}
         contentContainerStyle={modalContainer}
       >
-        <FilterDropdown />
+        <FilterDropdown hideModal={hideModal} />
       </Modal>
     </Portal>
   );
