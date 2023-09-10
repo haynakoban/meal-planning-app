@@ -1,175 +1,118 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, FlatList } from 'react-native';
+import { ScrollView, SectionList } from 'react-native';
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { COLORS, FONT, mealTypes } from '../../constants';
+import { COLORS, FONT } from '../../constants';
 import styles from '../../styles/filterDropDown';
-import useCuisinesStore from '../../store/useCuisinesStore';
+import useFilterStore from '../../store/useFilterStore';
 
 const FilterDropdown = () => {
-  const [page, setPage] = useState(1);
-  // meal types state
-  const [selectedMealType, setSelectedMealType] = useState([]);
-  const [mealTypeVisible, setMealTypeVisible] = useState(false);
-
-  const { listCuisines, cuisines } = useCuisinesStore();
+  const [openSections, setOpenSections] = useState(['Meal Types']);
+  const [selectedButtons, setSelectedButtons] = useState({});
+  const { fetchApiData, filters } = useFilterStore();
   const {
     buttonContent,
     buttonLabel,
     pd,
-    dropdown,
     dropdownButtonLabel,
     dropdownButtonContent,
   } = styles;
-  // cuisines state
-  const [selectedCuisines, setSelectedCuisines] = useState([]);
-  const [cuisinesVisible, setCuisinesVisible] = useState(false);
 
   useEffect(() => {
-    listCuisines(page);
-  }, [page]);
+    fetchApiData();
+  }, []);
 
-  const loadMoreData = () => {
-    setPage(page + 1);
-  };
-
-  // handle dropdown toggle visibility
-  const toggleDropdownVisibility = (stateItems, stateFunction) => {
-    stateFunction(!stateItems);
-  };
-
-  // handle toggle selection
-  const toggleItemSelection = (stateItems, stateFunction, value) => {
-    if (stateItems.includes(value)) {
-      stateFunction(stateItems.filter((selected) => selected !== value));
+  // Function to toggle section open/close
+  const toggleSection = (sectionTitle) => {
+    if (openSections.includes(sectionTitle)) {
+      setOpenSections(openSections.filter((title) => title !== sectionTitle));
     } else {
-      stateFunction([...stateItems, value]);
+      setOpenSections([...openSections, sectionTitle]);
     }
+  };
+
+  // handle toggle button selection
+  const toggleButtonSelection = (title, id) => {
+    setSelectedButtons((prevSelectedButtons) => {
+      const sectionButtons = prevSelectedButtons[title] || [];
+
+      if (sectionButtons.includes(id)) {
+        return {
+          ...prevSelectedButtons,
+          [title]: sectionButtons.filter((_id) => _id !== id),
+        };
+      } else {
+        return {
+          ...prevSelectedButtons,
+          [title]: [...sectionButtons, id],
+        };
+      }
+    });
   };
 
   return (
     <ScrollView>
-      <Button
-        onPress={() =>
-          toggleDropdownVisibility(mealTypeVisible, setMealTypeVisible)
-        }
-        textColor={COLORS.black}
-        icon={() =>
-          mealTypeVisible ? (
-            <Ionicons name='chevron-up' size={24} color='black' />
-          ) : (
-            <Ionicons name='chevron-down' size={24} color='black' />
-          )
-        }
-        labelStyle={dropdownButtonLabel}
-        contentStyle={dropdownButtonContent}
-      >
-        Meal Type
-      </Button>
-
-      {mealTypeVisible && (
-        <FlatList
-          scrollEnabled={false}
-          style={dropdown}
-          keyExtractor={(item) => item}
-          data={mealTypes}
-          renderItem={({ item }) => (
-            <Button
-              onPress={() =>
-                toggleItemSelection(selectedMealType, setSelectedMealType, item)
+      <SectionList
+        scrollEnabled={false}
+        sections={filters}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={({ item, section }) => {
+          if (openSections.includes(section.title)) {
+            return (
+              <Button
+                icon={() => {
+                  if (selectedButtons[section.title]?.includes(item._id)) {
+                    return <Ionicons name='checkbox' size={24} color='black' />;
+                  } else {
+                    return (
+                      <MaterialCommunityIcons
+                        name='checkbox-blank-outline'
+                        size={24}
+                        color='black'
+                      />
+                    );
+                  }
+                }}
+                contentStyle={[buttonContent, pd]}
+                labelStyle={[
+                  buttonLabel,
+                  {
+                    fontFamily: selectedButtons[section.title]?.includes(
+                      item._id
+                    )
+                      ? FONT.semiBold
+                      : FONT.medium,
+                  },
+                ]}
+                textColor={COLORS.black}
+                onPress={() => toggleButtonSelection(section.title, item._id)}
+              >
+                {item?.time || item.name}
+              </Button>
+            );
+          } else {
+            return null;
+          }
+        }}
+        renderSectionHeader={({ section: { title } }) => (
+          <Button
+            textColor={COLORS.black}
+            icon={() => {
+              if (openSections.includes(title)) {
+                return <Ionicons name='chevron-down' size={24} color='black' />;
+              } else {
+                return <Ionicons name='chevron-up' size={24} color='black' />;
               }
-              icon={() =>
-                selectedMealType.includes(item) ? (
-                  <Ionicons name='checkbox' size={24} color='black' />
-                ) : (
-                  <MaterialCommunityIcons
-                    name='checkbox-blank-outline'
-                    size={24}
-                    color='black'
-                  />
-                )
-              }
-              contentStyle={[buttonContent, pd]}
-              labelStyle={[
-                buttonLabel,
-                {
-                  fontFamily: selectedMealType.includes(item)
-                    ? FONT.semiBold
-                    : FONT.medium,
-                },
-              ]}
-              textColor={COLORS.black}
-            >
-              {item}
-            </Button>
-          )}
-        />
-      )}
-
-      {/* cuisines */}
-      <Button
-        onPress={() =>
-          toggleDropdownVisibility(cuisinesVisible, setCuisinesVisible)
-        }
-        textColor={COLORS.black}
-        icon={() =>
-          cuisinesVisible ? (
-            <Ionicons name='chevron-up' size={24} color='black' />
-          ) : (
-            <Ionicons name='chevron-down' size={24} color='black' />
-          )
-        }
-        labelStyle={dropdownButtonLabel}
-        contentStyle={dropdownButtonContent}
-      >
-        Cuisines
-      </Button>
-
-      {cuisinesVisible && (
-        <FlatList
-          scrollEnabled={false}
-          style={dropdown}
-          keyExtractor={(item) => item?._id}
-          data={cuisines}
-          renderItem={({ item }) => (
-            <Button
-              onPress={() =>
-                toggleItemSelection(
-                  selectedCuisines,
-                  setSelectedCuisines,
-                  item._id
-                )
-              }
-              icon={() =>
-                selectedCuisines.includes(item._id) ? (
-                  <Ionicons name='checkbox' size={24} color='black' />
-                ) : (
-                  <MaterialCommunityIcons
-                    name='checkbox-blank-outline'
-                    size={24}
-                    color='black'
-                  />
-                )
-              }
-              contentStyle={[buttonContent, pd]}
-              labelStyle={[
-                buttonLabel,
-                {
-                  fontFamily: selectedCuisines.includes(item._id)
-                    ? FONT.semiBold
-                    : FONT.medium,
-                },
-              ]}
-              textColor={COLORS.black}
-            >
-              {item.name}
-            </Button>
-          )}
-          onEndReached={loadMoreData}
-          onEndReachedThreshold={0.1}
-        />
-      )}
+            }}
+            labelStyle={dropdownButtonLabel}
+            contentStyle={dropdownButtonContent}
+            onPress={() => toggleSection(title)}
+          >
+            {title}
+          </Button>
+        )}
+      />
     </ScrollView>
   );
 };

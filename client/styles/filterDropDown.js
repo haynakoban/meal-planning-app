@@ -13,10 +13,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
-  dropdown: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
   pd: {
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -29,6 +25,7 @@ const styles = StyleSheet.create({
     paddingLeft: SIZES.xs,
     width: '100%',
     textAlign: 'left',
+    textTransform: 'capitalize',
   },
   dropdownButtonLabel: { fontFamily: FONT.semiBold, fontSize: SIZES.md },
   dropdownButtonContent: {
