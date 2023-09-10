@@ -25,9 +25,10 @@ router
     ingredientsController.bulkIngredients
   );
 
+// get method - get the paginated list of ingredients
+router.route('/list').get(ingredientsController.paginatedList);
+
 // get method - get single ingredient
 router.route('/:id').get(ingredientsController.show);
-
-router.route('/show/all').get(ingredientsController.allList);
 
 module.exports = router;

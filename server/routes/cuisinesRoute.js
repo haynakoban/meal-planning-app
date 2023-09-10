@@ -22,8 +22,10 @@ router
     cuisinesController.bulkCuisines
   );
 
+// get method - get the paginated list of cuisines
+router.route('/list').get(cuisinesController.paginatedList);
+
 // get method - get single cuisine
 router.route('/:id').get(cuisinesController.show);
-router.route('/show/all').get(cuisinesController.allList);
 
 module.exports = router;

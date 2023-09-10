@@ -40,6 +40,26 @@ const create = async (req, res, next) => {
 
 // get the list of cuisines
 const list = async (req, res, next) => {
+  try {
+    const cuisines = await Cuisines.find().select('_id name');
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: 'Items retrieved successfully',
+      status: 'success',
+      data: cuisines,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// get the paginated list of cuisines
+const paginatedList = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const perPage = 20;
 
@@ -104,31 +124,10 @@ const show = async (req, res, next) => {
   }
 };
 
-// get the list of cuisines
-const allList = async (req, res, next) => {
-  try {
-    // Query the database for cuisines and get all data
-    const cuisines = await Cuisines.find();
-
-    // Return the paginated data along with pagination information
-    res.json({
-      message: 'Items retrieved successfully',
-      status: 'success',
-      data: cuisines,
-    });
-  } catch (e) {
-    return res.status(500).json({
-      message: 'Internal Server Error',
-      status: 'error occurred',
-      data: [],
-    });
-  }
-};
-
 module.exports = {
   bulkCuisines,
   create,
   list,
+  paginatedList,
   show,
-  allList,
 };
