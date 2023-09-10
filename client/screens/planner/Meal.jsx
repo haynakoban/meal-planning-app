@@ -11,6 +11,7 @@ import ReviewCard from '../../components/reviews/ReviewCard';
 
 import { DATA, reviews } from '../../constants';
 import { useEffect, useState } from 'react';
+import ReviewModal from '../../components/modals/ReviewModal';
 
 const Meal = ({ route }) => {
   // const [id] = useState(route.params.id);
@@ -70,6 +71,14 @@ const Meal = ({ route }) => {
         'https://yummyfood.ph/wp-content/uploads/2021/08/Chicken-Adobo-Recipe.jpg',
     },
   ];
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const user_id = 123;
+  const id = 'daw231awe9';
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const {
     bigDivider,
@@ -169,7 +178,7 @@ const Meal = ({ route }) => {
         <View style={wrapper}>
           <Pressable
             style={[textMedium, { justifyContent: 'center' }]}
-            onPress={() => console.log('write a review')}
+            onPress={() => setModalVisible(true)}
           >
             <Text style={text}>
               <Feather name='edit' size={24} color='black' /> Write a Review
@@ -199,6 +208,12 @@ const Meal = ({ route }) => {
           </View>
         ))}
       </View>
+      <ReviewModal
+        visible={modalVisible}
+        data={{ user_id, id }}
+        type='meal'
+        onClose={closeModal}
+      />
     </ScrollView>
   );
 };
