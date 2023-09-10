@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,15 +14,21 @@ import {
   SearchRecipe,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
+import useFilterStore from '../store/useFilterStore';
 
-import { COLORS, FONT, SIZES } from '../constants';
+import { COLORS, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
+  const { fetchApiData } = useFilterStore();
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
+
+  useEffect(() => {
+    fetchApiData();
+  }, []);
 
   return (
     <Stack.Navigator

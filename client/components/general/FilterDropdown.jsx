@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, SectionList } from 'react-native';
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -10,7 +10,7 @@ import useFilterStore from '../../store/useFilterStore';
 const FilterDropdown = () => {
   const [openSections, setOpenSections] = useState(['Meal Types']);
   const [selectedButtons, setSelectedButtons] = useState({});
-  const { fetchApiData, filters } = useFilterStore();
+  const { filters } = useFilterStore();
   const {
     buttonContent,
     buttonLabel,
@@ -18,10 +18,6 @@ const FilterDropdown = () => {
     dropdownButtonLabel,
     dropdownButtonContent,
   } = styles;
-
-  useEffect(() => {
-    fetchApiData();
-  }, []);
 
   // Function to toggle section open/close
   const toggleSection = (sectionTitle) => {
