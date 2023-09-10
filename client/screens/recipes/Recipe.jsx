@@ -11,6 +11,7 @@ import FavoriteCard from '../../components/favorites/FavoriteCard';
 import ReviewCard from '../../components/reviews/ReviewCard';
 
 import { useState, useEffect } from 'react';
+import ReviewModal from '../../components/modals/ReviewModal';
 
 const Recipe = ({ route }) => {
   // const [id] = useState(route.params.id);
@@ -67,6 +68,14 @@ const Recipe = ({ route }) => {
     wrapper,
     wrapperAccent,
   } = styles;
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const user_id = 123;
+  const id = 'daw231awe9';
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -174,7 +183,7 @@ const Recipe = ({ route }) => {
         <View style={wrapper}>
           <Pressable
             style={[textMedium, { justifyContent: 'center' }]}
-            onPress={() => console.log('write a review')}
+            onPress={() => setModalVisible(true)}
           >
             <Text style={text}>
               <Feather name='edit' size={24} color='black' /> Write a Review
@@ -209,6 +218,12 @@ const Recipe = ({ route }) => {
           </View>
         ))}
       </View>
+      <ReviewModal
+        visible={modalVisible}
+        data={{ user_id, id }}
+        type='recipe'
+        onClose={closeModal}
+      />
     </ScrollView>
   );
 };

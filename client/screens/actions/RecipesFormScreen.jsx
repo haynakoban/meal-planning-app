@@ -25,7 +25,7 @@ const RecipesFormScreen = () => {
   const [form, setForm] = useState({
     name: '',
     description: '',
-    procedure: '',
+    procedure: null,
     image: null,
     privacy: 'public',
     cookingTime: 5,
@@ -122,7 +122,7 @@ const RecipesFormScreen = () => {
 
   // submit form
   function handleSubmit() {
-    console.log('recipe submitted');
+    console.log(form);
   }
 
   const openModal = (id) => {
@@ -216,7 +216,14 @@ const RecipesFormScreen = () => {
         <TextInput
           placeholder='Add one procedure per line'
           value={form.procedure}
-          onChangeText={(text) => setForm({ ...form, procedure: text })}
+          onChangeText={(text) =>
+            setForm({
+              ...form,
+              procedure: text.split('\n').filter(function (line) {
+                return line.trim() !== '';
+              }),
+            })
+          }
           style={[styles.textarea, styles.mb, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
