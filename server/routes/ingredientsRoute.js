@@ -28,4 +28,6 @@ router
 // get method - get single ingredient
 router.route('/:id').get(ingredientsController.show);
 
+router.route('/show/all').get(ingredientsController.allList);
+
 module.exports = router;

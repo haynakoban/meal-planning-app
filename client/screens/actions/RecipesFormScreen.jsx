@@ -15,9 +15,11 @@ import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AntDesign } from '@expo/vector-icons';
 
-import { COLORS, SIZES, CT, privacyData } from '../../constants';
+import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useIngredientsStore from '../../store/useIngredientsStore';
+import useCuisinesStore from '../../store/useCuisinesStore';
+import ModifyIngredientModal from '../../components/modals/ModifyIngredientModal';
 
 const RecipesFormScreen = () => {
   const [form, setForm] = useState({
@@ -48,8 +50,21 @@ const RecipesFormScreen = () => {
     setValue,
     setItems,
     listIngredients,
-    page,
+    clearValue,
+    selected,
   } = useIngredientsStore();
+
+  const openCuisine = useCuisinesStore((state) => state.open);
+  const setOpenCuisine = useCuisinesStore((state) => state.setOpen);
+  const cuisineValue = useCuisinesStore((state) => state.value);
+  const cuisines = useCuisinesStore((state) => state.items);
+  const setCuisine = useCuisinesStore((state) => state.setItems);
+  const setCuisineValue = useCuisinesStore((state) => state.setValue);
+  const listCuisines = useCuisinesStore((state) => state.listCuisines);
+  const clearCuisine = useCuisinesStore((state) => state.clearCuisine);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState('');
 
   // ask for storage permission
   useEffect(() => {
@@ -65,8 +80,14 @@ const RecipesFormScreen = () => {
   }, []);
 
   useEffect(() => {
-    listIngredients(page);
-  }, [page, items]);
+    console.log(selected);
+    console.log(value);
+    console.log(cuisines);
+    clearValue([]);
+    clearCuisine([]);
+    listIngredients();
+    listCuisines();
+  }, []);
 
   const pickImage = async () => {
     if (permission) {
@@ -103,6 +124,16 @@ const RecipesFormScreen = () => {
   function handleSubmit() {
     console.log('recipe submitted');
   }
+
+  const openModal = (id) => {
+    setSelectedData(id); // Set the data you want to pass to the modal
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setSelectedData('');
+    setModalVisible(false);
+  };
 
   return (
     <ScrollView>
@@ -161,6 +192,25 @@ const RecipesFormScreen = () => {
             showBadgeDot={false}
           />
         </ScrollView>
+        <View style={{ marginTop: 10 }}></View>
+
+        {value &&
+          value.map((item, index) => {
+            return (
+              <Pressable
+                key={item[0]}
+                style={{
+                  padding: 15,
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 8,
+                  marginBottom: 5,
+                }}
+                onPress={() => openModal({ id: item[0], name: item[1] })}
+              >
+                <Text style={styles.smallLabel}>{item[1]}</Text>
+              </Pressable>
+            );
+          })}
 
         <Text style={[styles.labels, styles.mt]}>Procedure</Text>
         <TextInput
@@ -214,7 +264,7 @@ const RecipesFormScreen = () => {
           />
         </View> */}
 
-        {/* <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
+        <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -223,15 +273,15 @@ const RecipesFormScreen = () => {
             searchPlaceholder='Search cuisine'
             searchable={true}
             open={openCuisine}
-            value={cuisine}
-            items={data}
+            value={cuisineValue}
+            items={cuisines}
             setOpen={setOpenCuisine}
-            setValue={setCuisine}
-            setItems={setData}
+            setValue={setCuisineValue}
+            setItems={setCuisine}
             showBadgeDot={false}
             // itemKey="value" (id)
           />
-        </View> */}
+        </View>
 
         <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
         <View>
@@ -294,6 +344,12 @@ const RecipesFormScreen = () => {
           <Text style={styles.submitText}>Submit</Text>
         </Pressable>
       </View>
+
+      <ModifyIngredientModal
+        visible={modalVisible}
+        data={selectedData}
+        onClose={closeModal}
+      />
     </ScrollView>
   );
 };
