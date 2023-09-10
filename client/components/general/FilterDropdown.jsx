@@ -114,7 +114,7 @@ const FilterDropdown = () => {
         }
         textColor={COLORS.black}
         icon={() =>
-          mealTypeVisible ? (
+          cuisinesVisible ? (
             <Ionicons name='chevron-up' size={24} color='black' />
           ) : (
             <Ionicons name='chevron-down' size={24} color='black' />

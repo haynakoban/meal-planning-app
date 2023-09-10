@@ -4,6 +4,9 @@ const { Allergies } = require('../models');
 const { allergiesController } = require('../controllers');
 const { checkBulkUniquenessMiddleware } = require('../middlewares');
 
+// get method - get the list of allergies
+router.route('/').get(allergiesController.list);
+
 // post method - create multiple allergies
 router
   .route('/bulk')
