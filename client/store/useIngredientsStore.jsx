@@ -18,7 +18,7 @@ const useIngredientsStore = create((set) => ({
 
   listIngredients: async () => {
     try {
-      const response = await axios.get(`ingredients/show/all`);
+      const response = await axios.get(`ingredients/list`);
 
       if (response && response.data && response.data) {
         const newData = response.data.data;

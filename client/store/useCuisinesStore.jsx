@@ -16,7 +16,7 @@ const useCuisinesStore = create((set) => ({
 
   listCuisines: async () => {
     try {
-      const response = await axios.get(`cuisines/show/all`);
+      const response = await axios.get(`cuisines/list`);
 
       if (response && response.data && response.data) {
         const newData = response.data.data;
