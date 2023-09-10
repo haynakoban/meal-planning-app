@@ -104,9 +104,31 @@ const show = async (req, res, next) => {
   }
 };
 
+// get all list of ingredients
+const allList = async (req, res, next) => {
+  try {
+    // Query the database for ingredients, skipping the appropriate number of documents based on the page
+    const ingredients = await Ingredients.find();
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: 'Items retrieved successfully',
+      status: 'success',
+      data: ingredients,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkIngredients,
   create,
   list,
   show,
+  allList,
 };

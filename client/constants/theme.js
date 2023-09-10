@@ -11,6 +11,8 @@ const COLORS = {
 
   black: '#000000',
   lightBlack: '#00000080',
+
+  danger: '#ff605c',
 };
 
 const FONT = {

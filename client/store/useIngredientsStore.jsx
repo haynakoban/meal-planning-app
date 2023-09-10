@@ -2,19 +2,23 @@ import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
 
 const useIngredientsStore = create((set) => ({
-  page: 1,
   open: false,
-  value: null,
+  value: [],
   items: [],
+  selected: [],
 
-  setPage: () => set((state) => state.page + 1),
   setOpen: (open) => set({ open }),
-  setValue: (callback) => set((state) => ({ value: callback(state.value) })),
+  setValue: (callback) =>
+    set((state) => ({
+      value: callback(state.value),
+      selected: callback(state.value),
+    })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
+  clearValue: () => set({ value: [], items: [], selected: [] }),
 
-  listIngredients: async (page) => {
+  listIngredients: async () => {
     try {
-      const response = await axios.get(`ingredients?page=${page}`);
+      const response = await axios.get(`ingredients/show/all`);
 
       if (response && response.data && response.data) {
         const newData = response.data.data;
@@ -22,7 +26,7 @@ const useIngredientsStore = create((set) => ({
         if (Array.isArray(newData) && newData.length > 0) {
           // Transform the data to use '_id' as 'value' and 'name' as 'label'
           const transformedData = newData.map((item) => ({
-            value: item._id,
+            value: [item._id, item.name],
             label: item.name,
           }));
 

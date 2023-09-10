@@ -104,9 +104,31 @@ const show = async (req, res, next) => {
   }
 };
 
+// get the list of cuisines
+const allList = async (req, res, next) => {
+  try {
+    // Query the database for cuisines and get all data
+    const cuisines = await Cuisines.find();
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: 'Items retrieved successfully',
+      status: 'success',
+      data: cuisines,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkCuisines,
   create,
   list,
   show,
+  allList,
 };
