@@ -35,6 +35,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
+  buttonNextStyle: {
+    backgroundColor: COLORS.accent,
+    paddingHorizontal: SIZES.xxl,
+    paddingVertical: SIZES.sm,
+    borderRadius: 999,
+    color: COLORS.white,
+  },
+  buttonPreviousStyle: {
+    backgroundColor: COLORS.gray,
+    paddingHorizontal: SIZES.xxl,
+    paddingVertical: SIZES.sm,
+    borderRadius: 999,
+    color: COLORS.white,
+  },
 });
 
 export default styles;

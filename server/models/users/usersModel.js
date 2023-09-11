@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const public_metrics = {
-  followers_count: { type: Number, required: false, default: 0 },
-  following_count: { type: Number, required: false, default: 0 },
+  followers: { type: Array, ref: 'Users', required: false },
   following: { type: Array, ref: 'Users', required: false },
 };
 
@@ -16,6 +15,7 @@ const usersSchema = new mongoose.Schema({
   provider_id: { type: String, required: false },
   favorites: { type: Array, required: false },
   public_metrics,
+  filtered: { type: Boolean, default: false },
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },
 });
