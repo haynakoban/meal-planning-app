@@ -6,18 +6,27 @@ const feedbacksSchema = new mongoose.Schema({
     ref: 'Users',
     required: true,
   },
-  recipe_id: {
+  // Reference to either a Recipe or a Meal
+  foodItem: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Recipes',
+    refPath: 'foodItemType',
+    required: true,
+  },
+  // Type of the referenced food item (Recipe or Meal)
+  foodItemType: {
+    type: String,
+    enum: ['Recipe', 'Meal'],
     required: true,
   },
   comment: {
     type: String,
     required: false,
   },
-  ratings: {
+  rating: {
     type: Number,
-    required: false,
+    required: true,
+    min: 1,
+    max: 5,
   },
   createdAt: {
     type: Date,

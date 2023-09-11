@@ -24,6 +24,13 @@ const useFilterStore = create((set) => ({
       data: [],
     },
   ],
+  filteredData: {
+    meal_types: [],
+    cuisines: [],
+    preferences: [],
+    cooking_time: [],
+    allergies: [],
+  },
 
   fetchApiData: async () => {
     try {
@@ -86,6 +93,10 @@ const useFilterStore = create((set) => ({
       console.error('Error fetching data:', error);
     }
   },
+  // setFilteredData: (data, type) =>
+  //   set({
+  //     [type]: [...state[type], data],
+  //   }),
 }));
 
 export default useFilterStore;
