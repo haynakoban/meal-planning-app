@@ -78,4 +78,91 @@ const create = async (req, res, next) => {
   }
 };
 
-module.exports = { bulkUsers, create };
+// get the list of users
+const list = async (req, res, next) => {
+  try {
+    const users = await Users.find().select(
+      '-password -createdAt -updatedAt -__v'
+    );
+
+    res.json({
+      message: `${users.length} items retrieved successfully`,
+      status: 'success',
+      data: users,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// get the paginated list of users
+const paginatedList = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 20;
+
+  try {
+    // Query the database for users, skipping the appropriate number of documents based on the page
+    const users = await Users.find()
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .select('-password -createdAt -updatedAt -__v');
+
+    // Get the total count of users in the collection (for calculating total pages)
+    const totalItems = await Users.countDocuments();
+
+    // Calculate the total number of pages based on the total count and items per page
+    const totalPages = Math.ceil(totalItems / perPage);
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: `${users.length} items retrieved successfully`,
+      status: 'success',
+      currentPage: page,
+      totalPages,
+      data: users,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// get single user
+const show = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the user by its unique ID
+    const user = await Users.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the user data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: user,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+module.exports = { bulkUsers, create, list, paginatedList, show };

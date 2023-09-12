@@ -26,7 +26,7 @@ const list = async (req, res, next) => {
 
     // Return the paginated data along with pagination information
     res.json({
-      message: 'Items retrieved successfully',
+      message: `${mealtypes.length} items retrieved successfully`,
       status: 'success',
       data: mealtypes,
     });

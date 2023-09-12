@@ -10,6 +10,7 @@ const {
 // post method - create new user
 router
   .route('/')
+  .get(usersController.list)
   .post(
     checkSingleUniquenessMiddleware(Users, 'email'),
     usersController.create
@@ -22,5 +23,11 @@ router
     checkBulkUniquenessMiddleware(Users, 'email'),
     usersController.bulkUsers
   );
+
+// get method - get the paginated list of users
+router.route('/list').get(usersController.paginatedList);
+
+// get method - get single user
+router.route('/:id').get(usersController.show);
 
 module.exports = router;
