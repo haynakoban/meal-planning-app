@@ -1,16 +1,51 @@
 const { Users } = require('../../models');
 const bcryptjs = require('bcryptjs');
+const { generateUniqueUsername } = require('../../lib');
+
+// bulk users
+const bulkUsers = async (req, res, next) => {
+  const updatedUsers = req.uniqueData.map((user) => {
+    const hashPassword = bcryptjs.hashSync(user.password, 10); // hash the password for basic security
+    return {
+      ...user,
+      password: hashPassword,
+      username: generateUniqueUsername(user.fullname),
+    };
+  });
+
+  try {
+    const result = await Users.insertMany(updatedUsers);
+
+    return res.status(201).json({
+      message: `${result.length} items inserted successfully`,
+      status: 'record created',
+      data: result,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Error occurred while creating the items',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
 
 // create new user
 const create = async (req, res, next) => {
   try {
-    const { fullname, email, password } = req.body;
+    const { fullname, email, password, registrationMethod, image } = req.body;
 
     // if one is empty or missing the result return false, otherwise true.
-    const canSave = [fullname, email, password].every(Boolean);
+    const canSave = [fullname, email, password, registrationMethod].every(
+      Boolean
+    );
 
     if (!canSave)
-      return res.status(400).json({ err: 'required field must be filled' });
+      return res.status(400).json({
+        message: 'Required filled must contain value',
+        status: 'error occurred',
+        data: {},
+      });
 
     // hash the password for basic security
     const hashPassword = await bcryptjs.hash(password, 10);
@@ -22,49 +57,25 @@ const create = async (req, res, next) => {
       email,
       username,
       password: hashPassword,
+      registrationMethod,
+      image,
     });
 
-    if (!user) return res.json({ err: 'error' });
+    if (!user)
+      return res.json({
+        message: 'Error occurred while creating the items',
+        status: 'error occurred',
+        data: {},
+      });
 
-    return res.status(201).json({ user });
+    return res.status(201).json({
+      message: `An item inserted successfully`,
+      status: 'record created',
+      data: user,
+    });
   } catch (e) {
     next(e);
   }
 };
 
-const usedRandomNumbers = new Set();
-
-function generateUniqueUsername(fullName) {
-  // Split the full name into an array of words
-  const nameWords = fullName.trim().split(' ');
-
-  // Initialize username
-  let username = 'user_';
-
-  // Loop through the name words and add the first letter of each word to the username
-  for (const word of nameWords) {
-    if (word.length > 0) {
-      username += word[0].toLowerCase();
-    }
-  }
-
-  let randomNumber;
-  do {
-    // Generate a random number between 1 and 999,999,999,999,999
-    randomNumber = Math.floor(Math.random() * 999_999_999_999_999) + 1;
-    // Format the random number to have leading zeros if needed
-    randomNumber = randomNumber.toString().padStart(15, '0');
-  } while (usedRandomNumbers.has(randomNumber));
-
-  // Add the random number to the username
-  username += randomNumber;
-
-  // Add the used random number to the set
-  usedRandomNumbers.add(randomNumber);
-
-  return username;
-}
-
-module.exports = {
-  create,
-};
+module.exports = { bulkUsers, create };
