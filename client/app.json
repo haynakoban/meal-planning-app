@@ -31,7 +31,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "scheme": ["meal-planning-app", "fb1646439895855834"]
+    }
   }
 }
