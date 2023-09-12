@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { MealTypes } = require('../models');
+const { Meals, MealTypes } = require('../models');
 const { mealsController } = require('../controllers');
 const { checkBulkUniquenessMiddleware } = require('../middlewares');
 

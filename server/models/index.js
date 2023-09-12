@@ -4,8 +4,8 @@ const CookingTimes = require('./cooking/cookingTimeModel');
 const Cuisines = require('./cuisines/cuisinesModel');
 const Feedbacks = require('./feedbacks/feedbacksModel');
 const Ingredients = require('./ingredients/ingredientsModel');
+const Meals = require('./meals/mealsModel');
 const MealTypes = require('./meals/mealTypesModel');
-const Plans = require('./plans/plansModel');
 const Preferences = require('./preferences/preferencesModel');
 const Recipes = require('./recipes/recipesModel');
 const Users = require('./users/usersModel');
@@ -17,8 +17,8 @@ module.exports = {
   Cuisines,
   Feedbacks,
   Ingredients,
+  Meals,
   MealTypes,
-  Plans,
   Preferences,
   Recipes,
   Users,
