@@ -68,7 +68,57 @@ const checkSingleUniquenessMiddleware =
     next();
   };
 
+const bulkMealsDataMiddleware = async (req, res, next) => {
+  const data = req.body;
+
+  if (!isNonEmptyArray(data)) {
+    return res.status(400).json({
+      message: `The request must contain a non-empty array of data items for bulk creation`,
+      status: 'error occurred',
+      data: [],
+    });
+  }
+
+  for (const item of data) {
+    const { user_id, meals_info, privacy, name, day } = item;
+
+    const canSave =
+      [user_id, privacy, name, day].every(Boolean) && meals_info.length > 0;
+
+    if (!canSave)
+      return res.status(400).json({
+        message: 'Required filled must contain value',
+        status: 'error occurred',
+        data: [],
+      });
+  }
+
+  req.uniqueData = data;
+  next();
+};
+
+const mealDataMiddleware = async (req, res, next) => {
+  const data = req.body;
+
+  const { user_id, meals_info, privacy, name, day } = data;
+
+  const canSave =
+    [user_id, privacy, name, day].every(Boolean) && meals_info.length > 0;
+
+  if (!canSave)
+    return res.status(400).json({
+      message: 'Required filled must contain value',
+      status: 'error occurred',
+      data: [],
+    });
+
+  req.uniqueData = data;
+  next();
+};
+
 module.exports = {
+  bulkMealsDataMiddleware,
   checkBulkUniquenessMiddleware,
   checkSingleUniquenessMiddleware,
+  mealDataMiddleware,
 };
