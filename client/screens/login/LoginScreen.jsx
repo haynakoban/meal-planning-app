@@ -1,13 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { View, TextInput } from 'react-native';
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import * as Facebook from 'expo-auth-session/providers/facebook';
+import * as WebBrowser from 'expo-web-browser';
+
+WebBrowser.maybeCompleteAuthSession();
+
 import styles from '../../styles/login';
 import { COLORS } from '../../constants';
 
 const LoginScreen = ({ navigation }) => {
+  const [user, setUser] = useState(null);
+  const [resquest, response, promptAsync] = Facebook.useAuthRequest({
+    clientId: '1646439895855834',
+  });
+
+  useEffect(() => {
+    if (response && response.type == 'success' && response.authentication) {
+      async () => {
+        const userInfoResponse = await fetch(
+          `https://graph.facebook.com/me?access_token=${response.authentication.accessToken}&fields=id,name,picture.type(large)`
+        );
+        const userInfo = await userInfoResponse.json();
+        setUser(userInfo);
+      };
+    }
+  }, [response]);
+
+  const handlePressAsync = async () => {
+    const result = await promptAsync();
+    if (result.type !== 'success') {
+      alert('Uh oh, something went wrong!');
+      return;
+    }
+  };
+
   const { black, white, accent } = COLORS;
 
   const {
@@ -84,6 +114,7 @@ const LoginScreen = ({ navigation }) => {
         </View>
         <View style={socialWrapper}>
           <Button
+            onPress={handlePressAsync}
             icon={() => (
               <FontAwesome5 name='facebook' size={24} color={black} />
             )}

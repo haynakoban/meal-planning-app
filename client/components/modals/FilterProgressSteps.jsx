@@ -5,7 +5,12 @@ import { COLORS, FONT, SIZES } from '../../constants';
 import styles from '../../styles/filterDropDown';
 
 const FilterProgressSteps = ({ setFiltered }) => {
-  const { buttonNextStyle, buttonPreviousStyle } = styles;
+  const {
+    buttonNextStyle,
+    buttonNextTextStyle,
+    buttonPreviousStyle,
+    buttonPreviousTextStyle,
+  } = styles;
 
   const defaultScrollViewProps = {
     keyboardShouldPersistTaps: 'handled',
@@ -41,59 +46,54 @@ const FilterProgressSteps = ({ setFiltered }) => {
         activeStepNumColor={COLORS.white}
       >
         <ProgressStep
-          label='Meal Types'
+          label='Meal Type'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
-          nextBtnTextStyle={buttonNextStyle}
+          nextBtnTextStyle={buttonNextTextStyle}
+          nextBtnStyle={buttonNextStyle}
         >
           <View style={{ alignItems: 'center' }}>
             <Text>Meal Types Check Box</Text>
           </View>
         </ProgressStep>
         <ProgressStep
-          label='Cuisines'
+          label='Cuisine'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
-          nextBtnTextStyle={buttonNextStyle}
-          previousBtnTextStyle={buttonPreviousStyle}
+          nextBtnTextStyle={buttonNextTextStyle}
+          nextBtnStyle={buttonNextStyle}
+          previousBtnTextStyle={buttonPreviousTextStyle}
+          previousBtnStyle={buttonPreviousStyle}
         >
           <View style={{ alignItems: 'center' }}>
             <Text>Cuisine Check Box</Text>
           </View>
         </ProgressStep>
         <ProgressStep
-          label='Preferences'
+          label='Preference'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
-          nextBtnTextStyle={buttonNextStyle}
-          previousBtnTextStyle={buttonPreviousStyle}
+          nextBtnTextStyle={buttonNextTextStyle}
+          nextBtnStyle={buttonNextStyle}
+          previousBtnTextStyle={buttonPreviousTextStyle}
+          previousBtnStyle={{ margin: 0, padding: 0, textAlign: 'left' }}
         >
           <View style={{ alignItems: 'center' }}>
             <Text>Preferences Check Box</Text>
           </View>
         </ProgressStep>
         <ProgressStep
-          label='Cooking Time'
-          onNext={onNextStep}
-          onPrevious={onPrevStep}
-          scrollViewProps={defaultScrollViewProps}
-          nextBtnTextStyle={buttonNextStyle}
-          previousBtnTextStyle={buttonPreviousStyle}
-        >
-          <View style={{ alignItems: 'center' }}>
-            <Text>Cooking Time Check Box</Text>
-          </View>
-        </ProgressStep>
-        <ProgressStep
-          label='Allergies'
+          label='Allergy'
           onPrevious={onPrevStep}
           onSubmit={onSubmitSteps}
           scrollViewProps={defaultScrollViewProps}
-          nextBtnTextStyle={buttonNextStyle}
-          previousBtnTextStyle={buttonPreviousStyle}
+          nextBtnTextStyle={buttonNextTextStyle}
+          nextBtnStyle={buttonNextStyle}
+          previousBtnTextStyle={buttonPreviousTextStyle}
+          previousBtnStyle={{ margin: 0, padding: 0, textAlign: 'left' }}
         >
           <View style={{ alignItems: 'center' }}>
             <Text>Allergies Check Box</Text>

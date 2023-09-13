@@ -7,7 +7,7 @@ const ingredientsObj = {
     required: true,
   },
   measurement: { type: String, required: true },
-  ammount: { type: String, required: true },
+  amount: { type: Number, required: true },
   description: { type: String, required: true },
 };
 
@@ -17,18 +17,46 @@ const recipesSchema = new mongoose.Schema({
     ref: 'Users',
     required: true,
   },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  procedure: { type: String, required: true },
-  type: { type: Array, required: true },
-  ingredients: { type: Array, ingredientsObj },
-  preference: { type: Array, ref: 'Preferences', required: false },
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  procedure: {
+    type: Array,
+    required: true,
+  },
+  type: {
+    type: Array,
+    ref: 'Meal_Types',
+    required: true,
+  },
+  ingredients: {
+    type: Array,
+    ref: 'Ingredients',
+    ingredientsObj,
+    required: true,
+  },
+  preferences: {
+    type: Array,
+    ref: 'Preferences',
+    required: false,
+  },
+  cuisines: {
+    type: Array,
+    ref: 'Cuisines',
+    required: false,
+  },
+  cooking_time: { type: Number, required: false },
   image: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Uploads',
     required: false,
   },
-  privacy: { type: Boolean, required: true },
+  privacy: { type: String, required: true },
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },
 });

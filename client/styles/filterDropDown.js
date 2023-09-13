@@ -35,19 +35,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  buttonNextStyle: {
+  buttonNextTextStyle: {
     backgroundColor: COLORS.accent,
-    paddingHorizontal: SIZES.xxl,
-    paddingVertical: SIZES.sm,
+    paddingHorizontal: SIZES.xl,
+    paddingVertical: SIZES.xs,
     borderRadius: 999,
     color: COLORS.white,
+    fontFamily: FONT.regular,
+    fontSize: SIZES.md,
+  },
+  buttonNextStyle: {
+    margin: 0,
+    padding: 0,
+    textAlign: 'right',
+  },
+  buttonPreviousTextStyle: {
+    backgroundColor: COLORS.gray,
+    paddingHorizontal: SIZES.xl,
+    paddingVertical: SIZES.xs,
+    borderRadius: 999,
+    color: COLORS.white,
+    fontFamily: FONT.regular,
+    fontSize: SIZES.md,
   },
   buttonPreviousStyle: {
-    backgroundColor: COLORS.gray,
-    paddingHorizontal: SIZES.xxl,
-    paddingVertical: SIZES.sm,
-    borderRadius: 999,
-    color: COLORS.white,
+    margin: 0,
+    padding: 0,
+    textAlign: 'left',
   },
 });
 
