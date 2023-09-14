@@ -19,28 +19,30 @@ import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useIngredientsStore from '../../store/useIngredientsStore';
 import useCuisinesStore from '../../store/useCuisinesStore';
+import useMealTypeStore from '../../store/useMealTypeStore';
 import ModifyIngredientModal from '../../components/modals/ModifyIngredientModal';
+import usePreferencesStore from '../../store/usePreferencesStore';
+import axios from 'axios';
 
-const RecipesFormScreen = () => {
+const RecipesFormScreen = ({ navigation }) => {
+  const [err, setErr] = useState({
+    name: false,
+    description: false,
+    procedure: false,
+    ingredients: false,
+    meal_types: false,
+  });
+
   const [form, setForm] = useState({
     name: '',
     description: '',
-    procedure: null,
+    procedure: [],
     image: null,
     privacy: 'public',
     cookingTime: 5,
   });
 
   const [permission, setPermission] = useState(false);
-
-  // const [openIngredients, setOpenIngredients] = useState(false);
-  // const [openRecipesType, setOpenRecipesType] = useState(false);
-  // const [openPreferences, setOpenPreferences] = useState(false);
-  // const [openCuisine, setOpenCuisine] = useState(false);
-  // const [cuisine, setCuisine] = useState('');
-  // const [ingredientsValue, setIngredientsValue] = useState(null);
-  // const [recipesType, setRecipesType] = useState([]);
-  // const [preferences, setPreferences] = useState([]);
 
   const {
     open,
@@ -51,9 +53,10 @@ const RecipesFormScreen = () => {
     setItems,
     listIngredients,
     clearValue,
-    selected,
   } = useIngredientsStore();
 
+  // cuisine
+  const selected = useIngredientsStore((state) => state.selected);
   const openCuisine = useCuisinesStore((state) => state.open);
   const setOpenCuisine = useCuisinesStore((state) => state.setOpen);
   const cuisineValue = useCuisinesStore((state) => state.value);
@@ -63,8 +66,32 @@ const RecipesFormScreen = () => {
   const listCuisines = useCuisinesStore((state) => state.listCuisines);
   const clearCuisine = useCuisinesStore((state) => state.clearCuisine);
 
+  // mealtype
+  const openMealType = useMealTypeStore((state) => state.open);
+  const setOpenMealtype = useMealTypeStore((state) => state.setOpen);
+  const mealTypeValue = useMealTypeStore((state) => state.value);
+  const meal_types = useMealTypeStore((state) => state.items);
+  const setMealType = useMealTypeStore((state) => state.setItems);
+  const setMealTypeValue = useMealTypeStore((state) => state.setValue);
+  const listMealTypes = useMealTypeStore((state) => state.listMealTypes);
+  const clearMealType = useMealTypeStore((state) => state.clearMealType);
+
+  // preferences
+  const openPreferences = usePreferencesStore((state) => state.open);
+  const setOpenPreferences = usePreferencesStore((state) => state.setOpen);
+  const preferencesValue = usePreferencesStore((state) => state.value);
+  const preferences = usePreferencesStore((state) => state.items);
+  const setPreferences = usePreferencesStore((state) => state.setItems);
+  const setPreferencesValue = usePreferencesStore((state) => state.setValue);
+  const listPreferences = usePreferencesStore((state) => state.listPreferences);
+  const clearPreferences = usePreferencesStore(
+    (state) => state.clearPreferences
+  );
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState('');
+
+  const removeSelected = useIngredientsStore((state) => state.removeSelected);
 
   // ask for storage permission
   useEffect(() => {
@@ -80,14 +107,29 @@ const RecipesFormScreen = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selected);
-    console.log(value);
-    console.log(cuisines);
     clearValue([]);
     clearCuisine([]);
+    clearMealType([]);
+    clearPreferences([]);
     listIngredients();
     listCuisines();
+    listMealTypes();
+    listPreferences();
   }, []);
+
+  useEffect(() => {
+    setErr({
+      ...err,
+      ingredients: false,
+    });
+  }, [value]);
+
+  useEffect(() => {
+    setErr({
+      ...err,
+      meal_types: false,
+    });
+  }, [mealTypeValue]);
 
   const pickImage = async () => {
     if (permission) {
@@ -121,12 +163,61 @@ const RecipesFormScreen = () => {
   DropDownPicker.setListMode('MODAL');
 
   // submit form
-  function handleSubmit() {
-    console.log(form);
-  }
+  const handleSubmit = async () => {
+    try {
+      const getSelectedData = selected.filter((selectedItem) =>
+        value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
+      );
+      const isImageValid = form.image !== null && form.image !== '';
+      const isNameValid = form.name !== null && form.name !== '';
+      const isDescriptionValid =
+        form.description !== null && form.description !== '';
+      const isProcedureValid = form.procedure.length > 0;
+      const isIngredientsValid =
+        getSelectedData.length > 0 && getSelectedData.length === value.length;
+      const isMealTypeValid = mealTypeValue.length > 0;
+
+      const err = {
+        name: !isNameValid,
+        description: !isDescriptionValid,
+        procedure: !isProcedureValid,
+        image: !isImageValid,
+        ingredients: !isIngredientsValid,
+        meal_types: !isMealTypeValid,
+      };
+
+      if (Object.values(err).some((value) => value)) {
+        setErr(err);
+        return;
+      }
+
+      const data = {
+        user_id: '64fed498bd3961e7d1c3c0df',
+        name: form.name,
+        description: form.description,
+        procedure: form.procedure?.filter((item) => item != '') || [],
+        image: form.image,
+        privacy: form.privacy,
+        cooking_time: form.cookingTime,
+        ingredients: getSelectedData,
+        meal_types: mealTypeValue,
+        cuisines: cuisineValue,
+        preferences: preferencesValue,
+      };
+
+      console.log(data); // getting data
+      const response = await axios.post(`recipes`, data); // error here
+      console.log(response.data); // or error here
+      if (response.status === 'success') {
+        navigation.navigate('Recipes');
+      }
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  };
 
   const openModal = (id) => {
-    setSelectedData(id); // Set the data you want to pass to the modal
+    setSelectedData(id);
     setModalVisible(true);
   };
 
@@ -135,16 +226,20 @@ const RecipesFormScreen = () => {
     setModalVisible(false);
   };
 
+  const checkIfIdExists = (id) => {
+    return selected.some((item) => item.ingredients_id === id);
+  };
+
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='always'>
       <View style={styles.container}>
         <Text style={styles.highlights}>Name & Photo</Text>
         {form.image != null ? (
-          <TouchableHighlight onPress={pickImage} style={styles.mb}>
-            <Image source={{ uri: image }} style={styles.hasImage} />
+          <TouchableHighlight onPress={pickImage}>
+            <Image source={{ uri: form.image }} style={styles.hasImage} />
           </TouchableHighlight>
         ) : (
-          <TouchableHighlight onPress={pickImage} style={styles.mb}>
+          <TouchableHighlight onPress={pickImage}>
             <View style={styles.noImage}>
               <AntDesign name='camerao' size={SIZES.xl} color={COLORS.black} />
               <Text style={styles.addLabel}>Add Cover Photo</Text>
@@ -152,23 +247,61 @@ const RecipesFormScreen = () => {
           </TouchableHighlight>
         )}
 
-        <Text style={styles.labels}>Name</Text>
+        <Text style={[styles.labels, { marginTop: SIZES.sm }]}>Name</Text>
         <TextInput
           placeholder='Name of recipe'
           value={form.name}
-          onChangeText={(text) => setForm({ ...form, name: text })}
-          style={[styles.input, styles.mb, styles.borderWidth]}
+          onChangeText={(text) => {
+            setForm({ ...form, name: text });
+            setErr({
+              ...err,
+              name: false,
+            });
+          }}
+          style={[styles.input, styles.borderWidth]}
         />
+        {err.name && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Name field is requried.
+          </Text>
+        )}
 
-        <Text style={[styles.labels]}>Description</Text>
+        <Text style={[styles.labels, { marginTop: SIZES.sm }]}>
+          Description
+        </Text>
         <TextInput
           placeholder='Add recipe description'
           value={form.description}
-          onChangeText={(text) => setForm({ ...form, description: text })}
-          style={[styles.textarea, styles.mb, styles.borderWidth]}
+          onChangeText={(text) => {
+            setForm({ ...form, description: text });
+            setErr({
+              ...err,
+              description: false,
+            });
+          }}
+          style={[styles.textarea, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
         />
+        {err.description && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Description field is requried.
+          </Text>
+        )}
 
         <Text style={[styles.highlights, styles.mtlg]}>
           Ingredients & Procedure
@@ -192,8 +325,7 @@ const RecipesFormScreen = () => {
             showBadgeDot={false}
           />
         </ScrollView>
-        <View style={{ marginTop: 10 }}></View>
-
+        {value && <View style={{ marginTop: 10 }}></View>}
         {value &&
           value.map((item, index) => {
             return (
@@ -204,34 +336,80 @@ const RecipesFormScreen = () => {
                   backgroundColor: COLORS.primary,
                   borderRadius: 8,
                   marginBottom: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                 }}
-                onPress={() => openModal({ id: item[0], name: item[1] })}
+                onPress={() => {
+                  openModal({ id: item[0], name: item[1] });
+                  setErr({
+                    ...err,
+                    ingredients: false,
+                  });
+                }}
               >
                 <Text style={styles.smallLabel}>{item[1]}</Text>
+                {checkIfIdExists(item[0]) ? (
+                  <AntDesign
+                    name='checkcircle'
+                    size={20}
+                    color={COLORS.accent}
+                  />
+                ) : (
+                  <Text style={[styles.smallLabel, { color: COLORS.danger }]}>
+                    Setup Required
+                  </Text>
+                )}
               </Pressable>
             );
           })}
+        {err.ingredients && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Please select and setup the ingredients.
+          </Text>
+        )}
 
         <Text style={[styles.labels, styles.mt]}>Procedure</Text>
         <TextInput
           placeholder='Add one procedure per line'
-          value={form.procedure}
-          onChangeText={(text) =>
+          value={(form.procedure || []).join('\n')}
+          onChangeText={(text) => {
             setForm({
               ...form,
-              procedure: text.split('\n').filter(function (line) {
-                return line.trim() !== '';
-              }),
-            })
-          }
-          style={[styles.textarea, styles.mb, styles.borderWidth]}
+              procedure: text.split('\n'),
+            });
+            setErr({
+              ...err,
+              procedure: false,
+            });
+          }}
+          style={[styles.textarea, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
+          textAlignVertical='top'
         />
+        {err.procedure && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Procedure field is required.
+          </Text>
+        )}
 
         <Text style={[styles.highlights, styles.mtlg]}>Recipe Information</Text>
 
-        {/* <Text style={styles.labels}>Course Type</Text>
+        <Text style={styles.labels}>Meal Type</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -240,18 +418,29 @@ const RecipesFormScreen = () => {
             searchPlaceholder='Search course type'
             multiple={true}
             searchable={true}
-            open={openRecipesType}
-            value={recipesType}
-            items={data}
-            setOpen={setOpenRecipesType}
-            setValue={setRecipesType}
-            setItems={setData}
+            open={openMealType}
+            value={mealTypeValue}
+            items={meal_types}
+            setOpen={setOpenMealtype}
+            setValue={setMealTypeValue}
+            setItems={setMealType}
             showBadgeDot={false}
-            // itemKey="value" (id)
           />
-        </View> */}
+        </View>
+        {err.meal_types && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Please select meal type.
+          </Text>
+        )}
 
-        {/* <Text style={[styles.labels, styles.mt]}>Preference</Text>
+        <Text style={[styles.labels, styles.mt]}>Preference</Text>
         <View style={styles.select}>
           <DropDownPicker
             placeholderStyle={styles.ddPlaceholder}
@@ -261,15 +450,14 @@ const RecipesFormScreen = () => {
             multiple={true}
             searchable={true}
             open={openPreferences}
-            value={preferences}
-            items={data}
+            value={preferencesValue}
+            items={preferences}
             setOpen={setOpenPreferences}
-            setValue={setPreferences}
-            setItems={setData}
+            setValue={setPreferencesValue}
+            setItems={setPreferences}
             showBadgeDot={false}
-            // itemKey="value" (id)
           />
-        </View> */}
+        </View>
 
         <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
         <View style={styles.select}>
@@ -278,6 +466,7 @@ const RecipesFormScreen = () => {
             style={styles.dd}
             placeholder='Select cuisine'
             searchPlaceholder='Search cuisine'
+            multiple={true}
             searchable={true}
             open={openCuisine}
             value={cuisineValue}
@@ -286,7 +475,6 @@ const RecipesFormScreen = () => {
             setValue={setCuisineValue}
             setItems={setCuisine}
             showBadgeDot={false}
-            // itemKey="value" (id)
           />
         </View>
 
@@ -352,11 +540,13 @@ const RecipesFormScreen = () => {
         </Pressable>
       </View>
 
-      <ModifyIngredientModal
-        visible={modalVisible}
-        data={selectedData}
-        onClose={closeModal}
-      />
+      {modalVisible && (
+        <ModifyIngredientModal
+          visible={modalVisible}
+          data={selectedData}
+          onClose={closeModal}
+        />
+      )}
     </ScrollView>
   );
 };

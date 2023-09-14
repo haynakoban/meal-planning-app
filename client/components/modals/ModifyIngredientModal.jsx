@@ -1,11 +1,77 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Text, TextInput, View, Pressable, Modal } from 'react-native';
 
-import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
+import { COLORS, SIZES, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useIngredientsStore from '../../store/useIngredientsStore';
 
 const ModifyIngredientModal = ({ visible, data, onClose }) => {
+  const selected = useIngredientsStore((state) => state.selected);
+
+  const useIngredientsStoreSelected = useIngredientsStore((state) =>
+    state.filteredData(data.id)
+  );
+
+  const filteredData = useIngredientsStoreSelected(
+    useIngredientsStore.getState()
+  );
+
+  const setSelectedIngredients = useIngredientsStore(
+    (state) => state.setSelectedIngredients
+  );
+
+  const [err, setErr] = useState({});
+
+  const [ingredientInfo, setIngredientInfo] = useState({});
+
+  useEffect(() => {
+    setErr({
+      amount: false,
+      measurement: false,
+    });
+
+    setTimeout(() => {
+      if (filteredData.length > 0) {
+        setIngredientInfo({
+          ingredients_id: data.id,
+          amount: filteredData[0]?.amount,
+          measurement: filteredData[0]?.measurement,
+          description: filteredData[0]?.description,
+        });
+      } else {
+        setIngredientInfo({
+          ingredients_id: data.id,
+          amount: null,
+          measurement: '',
+          description: '',
+        });
+      }
+    }, Math.floor(Math.random() * 1000));
+  }, []);
+
+  const handleSave = () => {
+    let isAmountValid =
+      ingredientInfo.amount !== null && ingredientInfo.amount !== '';
+    let isMeasurementValid =
+      ingredientInfo.measurement !== null && ingredientInfo.measurement !== '';
+
+    if (!isAmountValid || !isMeasurementValid) {
+      setErr({
+        amount: !isAmountValid,
+        measurement: !isMeasurementValid,
+      });
+      return;
+    }
+
+    setSelectedIngredients({
+      ...ingredientInfo,
+      amount: ingredientInfo.amount * 1,
+      ingredients_id: data.id,
+    });
+    onClose(false);
+    setIngredientInfo({});
+  };
+
   return (
     <Modal
       animationType='slide' // You can change this to 'fade', 'slide', or 'none'
@@ -35,7 +101,7 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
               { textAlign: 'center', marginTop: 10, marginBottom: 25 },
             ]}
           >
-            Edit Ingrediet
+            Edit Ingredient
           </Text>
           <Text
             style={[
@@ -63,45 +129,79 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             <View style={{ width: '48%' }}>
               <Text style={[styles.addLabel, styles.mb]}>Ammount</Text>
               <TextInput
+                keyboardType='numeric'
                 placeholder='Ammount'
-                value=''
-                // onChangeText={(text) => setForm({ ...form, name: text })}
+                value={ingredientInfo.amount?.toString()}
+                onChangeText={(text) =>
+                  setIngredientInfo({
+                    ...ingredientInfo,
+                    amount: text.replace(/[^0-9.]/g, ''),
+                  })
+                }
                 style={[
-                  styles.mb,
                   styles.borderWidth,
                   {
-                    padding: 15,
+                    paddingHorizontal: 15,
+                    paddingVertical: 10,
                     borderRadius: 999,
                     fontSize: SIZES.sm,
                     fontFamily: FONT.regular,
                   },
                 ]}
               />
+              {err.amount && (
+                <Text
+                  style={{
+                    color: COLORS.danger,
+                    fontFamily: FONT.regular,
+                    fontSize: SIZES.sm,
+                    textAlign: 'center',
+                  }}
+                >
+                  This field is requried.
+                </Text>
+              )}
             </View>
             <View style={{ width: '48%' }}>
               <Text style={[styles.addLabel, styles.mb]}>Measurement</Text>
               <TextInput
                 placeholder='Measurement'
-                value=''
-                // onChangeText={(text) => setForm({ ...form, name: text })}
+                value={ingredientInfo.measurement}
+                onChangeText={(text) =>
+                  setIngredientInfo({ ...ingredientInfo, measurement: text })
+                }
                 style={[
-                  styles.mb,
                   styles.borderWidth,
                   {
-                    padding: 15,
+                    paddingHorizontal: 15,
+                    paddingVertical: 10,
                     borderRadius: 999,
                     fontSize: SIZES.sm,
                     fontFamily: FONT.regular,
                   },
                 ]}
               />
+              {err.measurement && (
+                <Text
+                  style={{
+                    color: COLORS.danger,
+                    fontFamily: FONT.regular,
+                    fontSize: SIZES.sm,
+                    textAlign: 'center',
+                  }}
+                >
+                  This field is requried.
+                </Text>
+              )}
             </View>
           </View>
           <Text style={[styles.addLabel, styles.mb]}>Description</Text>
           <TextInput
             placeholder='Description'
-            value=''
-            // onChangeText={(text) => setForm({ ...form, name: text })}
+            value={ingredientInfo.description}
+            onChangeText={(text) =>
+              setIngredientInfo({ ...ingredientInfo, description: text })
+            }
             style={[
               styles.textarea,
               styles.borderWidth,
@@ -110,6 +210,26 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             multiline={true}
             numberOfLines={10}
           />
+          <Pressable
+            style={{
+              padding: 15,
+              backgroundColor: COLORS.accent,
+              borderRadius: 999,
+              marginTop: SIZES.lg,
+            }}
+            onPress={handleSave}
+          >
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.white,
+                fontFamily: FONT.medium,
+                fontSize: SIZES.md,
+              }}
+            >
+              Save
+            </Text>
+          </Pressable>
           <Pressable
             style={{
               padding: 15,
