@@ -142,7 +142,7 @@ const MealFormScreen = () => {
   DropDownPicker.setListMode('MODAL');
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='always'>
       <View style={styles.container}>
         <Text style={styles.highlights}>Name & Photo</Text>
         {form.image != null ? (

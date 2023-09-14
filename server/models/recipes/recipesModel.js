@@ -11,7 +11,7 @@ const ingredients = {
   },
   measurement: { type: String, required: true },
   amount: { type: Number, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
 };
 
 const user_id = {
@@ -34,7 +34,7 @@ const recipesSchema = new mongoose.Schema({
   meal_types: { type: Array, ref: 'Meal_Types', required: true },
   preferences: { type: Array, ref: 'Preferences', required: false },
   cuisines: { type: Array, ref: 'Cuisines', required: false },
-  cooking_time: { type: Number, required: false },
+  cooking_time: { type: Number, required: true },
   ingredients,
   image,
   privacy: { type: String, required: true },

@@ -11,7 +11,6 @@ const useIngredientsStore = create((set) => ({
   setValue: (callback) =>
     set((state) => ({
       value: callback(state.value),
-      selected: callback(state.value),
     })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
   clearValue: () => set({ value: [], items: [], selected: [] }),
@@ -38,6 +37,36 @@ const useIngredientsStore = create((set) => ({
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+  },
+
+  setSelectedIngredients: (data) => {
+    set((state) => {
+      const updatedSelected = (state.selected || []).map((item) =>
+        item.ingredients_id === data.ingredients_id ? data : item
+      );
+
+      if (
+        !updatedSelected.some(
+          (item) => item.ingredients_id === data.ingredients_id
+        )
+      ) {
+        return { selected: [...state.selected, data] };
+      }
+      return { selected: updatedSelected };
+    });
+  },
+
+  removeSelected: (ingredients_id) =>
+    set((state) => ({
+      selected: state.selected.filter(
+        (selected) => selected.ingredients_id !== ingredients_id
+      ),
+    })),
+
+  filteredData: (filter) => (state) => {
+    return (
+      state.selected?.filter((item) => item.ingredients_id == filter) || []
+    );
   },
 }));
 
