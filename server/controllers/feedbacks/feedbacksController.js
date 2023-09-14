@@ -19,7 +19,7 @@ const bulkFeedbacks = async (req, res, next) => {
   }
 };
 
-// create new ingredient
+// create new feedback
 const create = async (req, res, next) => {
   try {
     const result = await Feedbacks.create(req.uniqueData);
@@ -38,7 +38,7 @@ const create = async (req, res, next) => {
   }
 };
 
-// get list of ingredients
+// get list of feedbacks
 const list = async (req, res, next) => {
   try {
     const feedbacks = await Feedbacks.find().select(
@@ -47,7 +47,7 @@ const list = async (req, res, next) => {
 
     // Return the paginated data along with pagination information
     res.json({
-      message: 'Items retrieved successfully',
+      message: `${feedbacks.length} items retrieved successfully`,
       status: 'success',
       data: feedbacks,
     });
@@ -80,7 +80,7 @@ const paginatedList = async (req, res, next) => {
 
     // Return the paginated data along with pagination information
     res.json({
-      message: 'Items retrieved successfully',
+      message: `${feedbacks.length} items retrieved successfully`,
       status: 'success',
       currentPage: page,
       totalPages,
@@ -95,12 +95,12 @@ const paginatedList = async (req, res, next) => {
   }
 };
 
-// get single ingredient
+// get single feedback
 const show = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    // Query the database to find the ingredient by its unique ID
+    // Query the database to find the feedback by its unique ID
     const feedback = await Feedbacks.findOne({ _id: id });
 
     if (!feedback) {
@@ -111,7 +111,7 @@ const show = async (req, res, next) => {
       });
     }
 
-    // Return the ingredient data
+    // Return the feedback data
     res.json({
       message: 'Item retrieved successfully',
       status: 'success',

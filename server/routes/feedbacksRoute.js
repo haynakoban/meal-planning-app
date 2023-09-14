@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Feedbacks } = require('../models');
 const { feedbacksController } = require('../controllers');
 const {
-  checkBulkUniquenessMiddleware,
-  checkSingleUniquenessMiddleware,
+  bulkFeedbacksDataMiddleware,
+  feebackDataMiddleware,
 } = require('../middlewares');
 
 // get method - get the list of feedbacks
@@ -12,15 +11,12 @@ const {
 router
   .route('/')
   .get(feedbacksController.list)
-  .post(checkSingleUniquenessMiddleware(Feedbacks), feedbacksController.create);
+  .post(feebackDataMiddleware, feedbacksController.create);
 
 // post method - create multiple feedbacks
 router
   .route('/bulk')
-  .post(
-    checkBulkUniquenessMiddleware(Feedbacks),
-    feedbacksController.bulkFeedbacks
-  );
+  .post(bulkFeedbacksDataMiddleware, feedbacksController.bulkFeedbacks);
 
 // get method - get the paginated list of feedbacks
 router.route('/list').get(feedbacksController.paginatedList);
