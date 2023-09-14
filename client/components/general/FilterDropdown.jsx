@@ -15,8 +15,7 @@ import useFilterStore from '../../store/useFilterStore';
 
 const FilterDropdown = ({ hideModal }) => {
   const [openSections, setOpenSections] = useState(['Meal Types']);
-  const [selectedButtons, setSelectedButtons] = useState({});
-  const { filters } = useFilterStore();
+  const { filters, filteredData, setFilteredData } = useFilterStore();
   const {
     buttonContent,
     buttonLabel,
@@ -32,25 +31,6 @@ const FilterDropdown = ({ hideModal }) => {
     } else {
       setOpenSections([...openSections, sectionTitle]);
     }
-  };
-
-  // handle toggle button selection
-  const toggleButtonSelection = (title, id) => {
-    setSelectedButtons((prevSelectedButtons) => {
-      const sectionButtons = prevSelectedButtons[title] || [];
-
-      if (sectionButtons.includes(id)) {
-        return {
-          ...prevSelectedButtons,
-          [title]: sectionButtons.filter((_id) => _id !== id),
-        };
-      } else {
-        return {
-          ...prevSelectedButtons,
-          [title]: [...sectionButtons, id],
-        };
-      }
-    });
   };
 
   return (
@@ -104,7 +84,7 @@ const FilterDropdown = ({ hideModal }) => {
             return (
               <Button
                 icon={() => {
-                  if (selectedButtons[section.title]?.includes(item._id)) {
+                  if (filteredData[section.title]?.includes(item._id)) {
                     return <Ionicons name='checkbox' size={24} color='black' />;
                   } else {
                     return (
@@ -120,15 +100,13 @@ const FilterDropdown = ({ hideModal }) => {
                 labelStyle={[
                   buttonLabel,
                   {
-                    fontFamily: selectedButtons[section.title]?.includes(
-                      item._id
-                    )
+                    fontFamily: filteredData[section.title]?.includes(item._id)
                       ? FONT.semiBold
                       : FONT.medium,
                   },
                 ]}
                 textColor={COLORS.black}
-                onPress={() => toggleButtonSelection(section.title, item._id)}
+                onPress={() => setFilteredData(section.title, item._id)}
               >
                 {item?.time || item.name}
               </Button>
