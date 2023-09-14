@@ -5,12 +5,19 @@ import { COLORS, FONT, SIZES } from '../constants';
 const styles = StyleSheet.create({
   input: {
     height: 50,
-    marginBottom: 12,
+    marginTop: 12,
     borderRadius: 999,
     padding: 15,
     paddingLeft: 20,
     paddingRight: 20,
     fontFamily: FONT.regular,
+  },
+  error: {
+    color: 'red',
+    fontFamily: FONT.medium,
+    fontSize: SIZES.sm,
+    paddingLeft: SIZES.xs,
+    marginTop: 4,
   },
   container: {
     flex: 1,

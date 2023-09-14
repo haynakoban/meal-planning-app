@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +15,7 @@ import {
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
+import useAuthStore from '../store/useAuthStore';
 
 import { COLORS, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
@@ -25,6 +26,7 @@ const AppNavigator = () => {
   const { fetchApiData } = useFilterStore();
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
+  const { isLoggedIn } = useAuthStore();
 
   useEffect(() => {
     fetchApiData();
@@ -37,104 +39,119 @@ const AppNavigator = () => {
         headerTintColor: COLORS.primary,
       }}
     >
-      <Stack.Screen
-        name='BottomNavigation'
-        component={AppBottomNavigation}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='Login'
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
+      {isLoggedIn ? (
+        <Fragment>
+          <Stack.Screen
+            name='BottomNavigation'
+            component={AppBottomNavigation}
+            options={{ headerShown: false }}
+          />
 
-      <Stack.Screen
-        name='Show All Recipes'
-        component={RecipesScreen}
-        options={({ navigation, route }) => ({
-          headerTitle: route.params.title,
-          headerTitleAlign: 'left',
-          headerTitleStyle: styles.arHeaderTitleStyle,
-          headerTitleContainerStyle: styles.arHeaderTitleContainerStyle,
-          headerRight: () => (
-            <View style={styles.arHeaderRightView}>
-              <Ionicons
-                name='search'
-                size={26}
-                color={COLORS.white}
-                style={styles.mr}
-                onPress={() => navigation.navigate('Search')}
-              />
-              <Ionicons name='filter' size={26} color={COLORS.white} />
-            </View>
-          ),
-        })}
-      />
+          <Stack.Screen
+            name='Show All Recipes'
+            component={RecipesScreen}
+            options={({ navigation, route }) => ({
+              headerTitle: route.params.title,
+              headerTitleAlign: 'left',
+              headerTitleStyle: styles.arHeaderTitleStyle,
+              headerTitleContainerStyle: styles.arHeaderTitleContainerStyle,
+              headerRight: () => (
+                <View style={styles.arHeaderRightView}>
+                  <Ionicons
+                    name='search'
+                    size={26}
+                    color={COLORS.white}
+                    style={styles.mr}
+                    onPress={() => navigation.navigate('Search')}
+                  />
+                  <Ionicons name='filter' size={26} color={COLORS.white} />
+                </View>
+              ),
+            })}
+          />
 
-      <Stack.Screen
-        name='Sign Up'
-        component={SignUpScreen}
-        options={{
-          headerTitleAlign: 'center',
-          headerTitleStyle: styles.signUpHeaderTitleStyle,
-        }}
-      />
-      <Stack.Screen
-        name='Search'
-        component={SearchScreen}
-        options={{
-          headerTitle: () => (
-            <View style={styles.searchHeaderTitleStyle}>
-              <Ionicons name='search' size={SIZES.lg} color={COLORS.black} />
-              <TextInput
-                style={styles.searchTextInput}
-                placeholder='Search...'
-                onChangeText={(text) => setSearchText(text)}
-                value={searchText}
-              />
-            </View>
-          ),
-        }}
-      />
+          <Stack.Screen
+            name='Search'
+            component={SearchScreen}
+            options={{
+              headerTitle: () => (
+                <View style={styles.searchHeaderTitleStyle}>
+                  <Ionicons
+                    name='search'
+                    size={SIZES.lg}
+                    color={COLORS.black}
+                  />
+                  <TextInput
+                    style={styles.searchTextInput}
+                    placeholder='Search...'
+                    onChangeText={(text) => setSearchText(text)}
+                    value={searchText}
+                  />
+                </View>
+              ),
+            }}
+          />
 
-      <Stack.Screen
-        name='Search Recipe'
-        component={SearchRecipe}
-        options={{
-          headerTitle: () => (
-            <View style={styles.searchHeaderTitleStyle}>
-              <Ionicons name='search' size={SIZES.lg} color={COLORS.black} />
-              <TextInput
-                style={styles.searchTextInput}
-                placeholder='Search...'
-                onChangeText={(text) => setSearchRecipe(text)}
-                value={searchRecipe}
-              />
-            </View>
-          ),
-        }}
-      />
-      <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
-      <Stack.Screen name='Meal Form' component={MealFormScreen} />
-      <Stack.Screen
-        name='Recipe'
-        component={Recipe}
-        options={{
-          headerTitle: 'About',
-          headerTitleAlign: 'left',
-          headerTitleStyle: styles.signUpHeaderTitleStyle,
-        }}
-      />
+          <Stack.Screen
+            name='Search Recipe'
+            component={SearchRecipe}
+            options={{
+              headerTitle: () => (
+                <View style={styles.searchHeaderTitleStyle}>
+                  <Ionicons
+                    name='search'
+                    size={SIZES.lg}
+                    color={COLORS.black}
+                  />
+                  <TextInput
+                    style={styles.searchTextInput}
+                    placeholder='Search...'
+                    onChangeText={(text) => setSearchRecipe(text)}
+                    value={searchRecipe}
+                  />
+                </View>
+              ),
+            }}
+          />
+          <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
+          <Stack.Screen name='Meal Form' component={MealFormScreen} />
+          <Stack.Screen
+            name='Recipe'
+            component={Recipe}
+            options={{
+              headerTitle: 'About',
+              headerTitleAlign: 'left',
+              headerTitleStyle: styles.signUpHeaderTitleStyle,
+            }}
+          />
 
-      <Stack.Screen
-        name='Meal'
-        component={Meal}
-        options={{
-          headerTitle: 'About',
-          headerTitleAlign: 'left',
-          headerTitleStyle: styles.signUpHeaderTitleStyle,
-        }}
-      />
+          <Stack.Screen
+            name='Meal'
+            component={Meal}
+            options={{
+              headerTitle: 'About',
+              headerTitleAlign: 'left',
+              headerTitleStyle: styles.signUpHeaderTitleStyle,
+            }}
+          />
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Stack.Screen
+            name='Login'
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='Sign Up'
+            component={SignUpScreen}
+            options={{
+              headerTitleAlign: 'center',
+              headerTitleStyle: styles.signUpHeaderTitleStyle,
+            }}
+          />
+        </Fragment>
+      )}
     </Stack.Navigator>
   );
 };
