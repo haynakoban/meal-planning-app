@@ -3,6 +3,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { View, TextInput } from 'react-native';
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthStore from '../../store/useAuthStore';
+import axios from '../../lib/axiosConfig';
 
 // import * as Facebook from 'expo-auth-session/providers/facebook';
 // import * as WebBrowser from 'expo-web-browser';
@@ -62,10 +65,43 @@ const LoginScreen = ({ navigation }) => {
     buttonText,
     signUpButton,
     input,
+    error,
   } = styles;
 
+  const { login } = useAuthStore();
   const [focusEmail, setFocusEmail] = useState(1);
   const [focusPassword, setFocusPassword] = useState(1);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [err, setError] = useState('');
+
+  const handleLogin = () => {
+    if (!email && !password) {
+      setError('Username/email and password field is required');
+      return;
+    } else {
+      axios
+        .post('users/auth/login', {
+          email,
+          password,
+        })
+        .then(async (res) => {
+          if (res.data?.status === 'success') {
+            // Store the token in AsyncStorage
+            await AsyncStorage.setItem('@user', JSON.stringify(res.data.data));
+            login();
+            setError('');
+            navigation.navigate('BottomNavigation');
+          }
+        })
+        .catch((e) => {
+          if (e.response.status === 404 || e.response.status === 401) {
+            setError('Invalid username/email or password');
+          }
+        });
+    }
+  };
 
   return (
     <SafeAreaView style={container}>
@@ -77,17 +113,23 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={loginWrapper}>
         <TextInput
-          placeholder='Email'
+          placeholder='Username or Email'
           onFocus={() => setFocusEmail(2)}
           onBlur={() => setFocusEmail(1)}
           style={[input, { borderWidth: focusEmail }]}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
         />
+        {err ? <Text style={error}>{err}</Text> : null}
+
         <TextInput
           secureTextEntry
           placeholder='Password'
           onFocus={() => setFocusPassword(2)}
           onBlur={() => setFocusPassword(1)}
           style={[input, { borderWidth: focusPassword }]}
+          onChangeText={(text) => setPassword(text)}
+          value={password}
         />
 
         <Button
@@ -105,6 +147,7 @@ const LoginScreen = ({ navigation }) => {
           style={button}
           labelStyle={[letterSpacing, buttonText]}
           textColor={white}
+          onPress={() => handleLogin()}
         >
           Sign In
         </Button>

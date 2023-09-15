@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { Button, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { COLORS, FONT, SIZES } from '../../constants';
 import styles from '../../styles/profile';
@@ -53,6 +54,10 @@ const ProfileScreen = () => {
           </View>
 
           <View style={[mv, profileText, { marginLeft: SIZES.sm }]}>
+            <Button
+              title='logout'
+              onPress={() => AsyncStorage.removeItem('@user')}
+            />
             <Text
               numberOfLines={1}
               ellipsizeMode='tail'
