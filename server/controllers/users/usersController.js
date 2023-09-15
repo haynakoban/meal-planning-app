@@ -165,4 +165,43 @@ const show = async (req, res, next) => {
   }
 };
 
-module.exports = { bulkUsers, create, list, paginatedList, show };
+// validate the user && log the user in
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if either username or email exists in the database
+    const user = await Users.findOne({ $or: [{ username: email }, { email }] });
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Check the provided password against the stored hash
+    if (bcryptjs.compareSync(password, user.password)) {
+      return res.json({
+        message: 'Authentication successful',
+        status: 'success',
+        data: user,
+      });
+    } else {
+      return res.status(401).json({
+        message: 'Authentication failed',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+module.exports = { bulkUsers, create, list, login, paginatedList, show };

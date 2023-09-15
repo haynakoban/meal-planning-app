@@ -27,6 +27,9 @@ router
 // get method - get the paginated list of users
 router.route('/list').get(usersController.paginatedList);
 
+// post method - log the user
+router.route('/auth/login').post(usersController.login);
+
 // get method - get single user
 router.route('/:id').get(usersController.show);
 

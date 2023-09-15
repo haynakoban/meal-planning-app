@@ -24,12 +24,14 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const { fetchApiData } = useFilterStore();
+  const { isLoggedIn, getUserInfo, userInfo } = useAuthStore();
+
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
-  const { isLoggedIn } = useAuthStore();
 
   useEffect(() => {
     fetchApiData();
+    getUserInfo();
   }, []);
 
   return (
