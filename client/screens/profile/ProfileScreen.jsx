@@ -1,16 +1,24 @@
-import { useState } from 'react';
-import { Button, ScrollView, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { COLORS, FONT, SIZES } from '../../constants';
+import useAuthStore from '../../store/useAuthStore';
 import styles from '../../styles/profile';
+import { formatNumber } from '../../lib/formatNumber';
 import PlannerScreen from '../planner/PlannerScreen';
 import HomeScreen from '../home/HomeScreen';
 
 const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
+  const [refreshing, setRefreshing] = useState(false);
+  const { userInfo, getUserInfo, setUserInfo } = useAuthStore();
 
   const {
     profileContainer,
@@ -25,8 +33,27 @@ const ProfileScreen = () => {
     groupButtonWrapper,
   } = styles;
 
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+
+    setUserInfo(userInfo?._id);
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
       <View style={profileContainer}>
         <View
           style={{
@@ -38,39 +65,45 @@ const ProfileScreen = () => {
         >
           {/* make this conditional */}
           <View style={{ marginVertical: SIZES.md }}>
-            <Avatar.Icon
-              size={100}
-              style={{
-                backgroundColor: COLORS.accent,
-              }}
-              icon={() => (
-                <Ionicons
-                  name='ios-person-outline'
-                  size={60}
-                  color={COLORS.primary}
-                />
-              )}
-            />
+            {userInfo?.image ? (
+              <Avatar.Image
+                size={100}
+                style={{
+                  backgroundColor: COLORS.accent,
+                }}
+                source={{ uri: userInfo?.image }}
+              />
+            ) : (
+              <Avatar.Icon
+                size={100}
+                style={{
+                  backgroundColor: COLORS.accent,
+                }}
+                icon={() => (
+                  <Ionicons
+                    name='ios-person-outline'
+                    size={60}
+                    color={COLORS.primary}
+                  />
+                )}
+              />
+            )}
           </View>
 
           <View style={[mv, profileText, { marginLeft: SIZES.sm }]}>
-            <Button
-              title='logout'
-              onPress={() => AsyncStorage.removeItem('@user')}
-            />
             <Text
               numberOfLines={1}
               ellipsizeMode='tail'
               style={[name, profileText]}
             >
-              Xander Vincent
+              {userInfo?.fullname}
             </Text>
 
             <Text
               multiline={true}
               style={[bio, profileText, { marginBottom: SIZES.sm + 2 }]}
             >
-              this is my bio
+              {userInfo?.bio || 'this is my bio'}
             </Text>
             <View
               style={{
@@ -108,7 +141,7 @@ const ProfileScreen = () => {
                       },
                     ]}
                   >
-                    394
+                    {formatNumber(userInfo?.public_metrics?.following?.length)}
                   </Text>
                   <Text
                     style={[
@@ -151,7 +184,7 @@ const ProfileScreen = () => {
                       },
                     ]}
                   >
-                    2.5k
+                    {formatNumber(userInfo?.public_metrics?.followers?.length)}
                   </Text>
                   <Text
                     style={[
