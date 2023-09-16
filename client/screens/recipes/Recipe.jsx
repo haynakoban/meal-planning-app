@@ -12,12 +12,20 @@ import ReviewCard from '../../components/reviews/ReviewCard';
 
 import { useState, useEffect } from 'react';
 import ReviewModal from '../../components/modals/ReviewModal';
+import useRecipeStore from '../../store/useRecipeStore';
+import NotFound from '../../assets/images/image-not-found.jpg';
+import RatingCard from '../../components/ratings/RatingCard';
+import useAuthStore from '../../store/useAuthStore';
 
 const Recipe = ({ route }) => {
-  // const [id] = useState(route.params.id);
-  // useEffect(() => {
-  //   console.log(id);
-  // }, []);
+  const userInfo = useAuthStore((state) => state.userInfo);
+  const recipe_id = route.params.id;
+  const recipe = useRecipeStore((state) => state.recipe);
+  const singleRecipe = useRecipeStore((state) => state.singleRecipes);
+
+  useEffect(() => {
+    singleRecipe(recipe_id);
+  }, []);
 
   const [reviewsToShow, setReviewsToShow] = useState([]);
   const reviewsPerPage = 2;
@@ -70,36 +78,46 @@ const Recipe = ({ route }) => {
   } = styles;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const user_id = 123;
-  const id = 'daw231awe9';
 
   const closeModal = () => {
     setModalVisible(false);
   };
 
+  let calculated = 0;
+  for (let i = 0; i < recipe?.feedbacks?.length; i++) {
+    calculated += parseInt(recipe?.feedbacks[i].rating);
+  }
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={container}>
-        <Image src={data.image} style={imageStyle} />
+        {/* {recipe?.image ? (
+          <Image src={recipe?.image} style={imageStyle} />
+        ) : (
+        )} */}
+        <Image source={NotFound} style={imageStyle} />
         <View style={wrapper}>
-          <Text style={textBold}>{data.name}</Text>
-          <Text style={label}>@{data.username}</Text>
+          <Text style={textBold}>{recipe?.name}</Text>
+          <Text style={label}>@{recipe?.user_id?.username}</Text>
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
           <View style={reviewTab}>
             <View>
-              <Text>
-                {[0, 1, 2, 3, 4].map((_, i) => {
-                  <AntDesign
-                    key={i}
-                    name='star'
-                    style={ratingsStyle}
-                    color='orange'
-                  />;
-                })}
-              </Text>
-              <Text style={text}>{data.reviews} Reviews</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <RatingCard rating={calculated / recipe?.feedbacks?.length} />
+                <Text style={text}>
+                  {(calculated / recipe?.feedbacks?.length).toFixed(1)}
+                </Text>
+              </View>
+              <Text style={text}>{recipe?.feedbacks?.length} Reviews</Text>
             </View>
             <View style={flexRow}>
               <Ionicons
@@ -107,7 +125,7 @@ const Recipe = ({ route }) => {
                 size={SIZES.xl}
                 color={COLORS.black}
               />
-              <Text>{data.cookingTime} minutes</Text>
+              <Text>{recipe.cooking_time} minutes</Text>
             </View>
           </View>
         </View>
@@ -117,7 +135,7 @@ const Recipe = ({ route }) => {
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
-          <Text style={text}>{data.description}</Text>
+          <Text style={text}>{recipe.description}</Text>
         </View>
         <View style={bigDivider}></View>
         <View style={wrapper}>
@@ -125,11 +143,11 @@ const Recipe = ({ route }) => {
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
-          {data.ingredients.map((item) => {
+          {recipe?.ingredients?.map((item, index) => {
             return (
-              <Text key={item.id} style={text}>
+              <Text key={index} style={text}>
                 - {item.amount} {item.measurement} {item.ingredient}
-                {item.description == '' ? '' : ' (' + item.description + ')'}
+                {item?.description == '' ? '' : ' (' + item.description + ')'}
               </Text>
             );
           })}
@@ -140,7 +158,7 @@ const Recipe = ({ route }) => {
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
-          {data.procedure.map((item, index) => {
+          {recipe?.procedure?.map((item, index) => {
             return (
               <Text key={index} style={[text, mb]}>
                 {index + 1}. {item}
@@ -159,7 +177,7 @@ const Recipe = ({ route }) => {
           </View>
           <View style={dividerBlue}></View>
           <View>
-            {data.facts.map((item, i) => {
+            {data?.facts?.map((item, i) => {
               return (
                 <Fragment key={i}>
                   <View style={flexRowBetweenInside}>
@@ -198,29 +216,10 @@ const Recipe = ({ route }) => {
         >
           <Text style={[text, { textAlign: 'center' }]}>Show more</Text>
         </Pressable>
-        <View style={divider}></View>
-
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>Recommended Recipe</Text>
-        </View>
-      </View>
-      <View style={cardWrapper}>
-        {DATA.map(({ id, name, username, ratings, image }) => (
-          <View key={id} style={cardContentWrapper}>
-            <FavoriteCard
-              name={name}
-              username={username}
-              ratings={ratings}
-              image={image}
-              key={id}
-            />
-          </View>
-        ))}
       </View>
       <ReviewModal
         visible={modalVisible}
-        data={{ user_id, id }}
+        data={{ user_id: userInfo?._id, recipe_id }}
         type='recipe'
         onClose={closeModal}
       />

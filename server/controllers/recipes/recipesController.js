@@ -48,7 +48,11 @@ const create = async (req, res, next) => {
 // get the list of recipes
 const list = async (req, res, next) => {
   try {
-    const recipes = await Recipes.find().select();
+    // const recipes = await Recipes.find().select();
+    const recipes = await Recipes.find()
+      .populate({ path: 'user_id', select: 'fullname username' })
+      .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .select('-createAt -__v');
 
     // Return the paginated data along with pagination information
     res.json({
@@ -127,7 +131,10 @@ const show = async (req, res, next) => {
 
   try {
     // Query the database to find the recipe by its unique ID
-    const recipe = await Recipes.findOne({ _id: id });
+    const recipe = await Recipes.findOne({ _id: id })
+      .populate({ path: 'user_id', select: 'fullname username' })
+      .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .select('-createAt -__v');
 
     if (!recipe) {
       return res.status(404).json({

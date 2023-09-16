@@ -14,7 +14,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { RadioButton } from 'react-native-paper';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import {
+  AntDesign,
+  Ionicons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 
 import {
   COLORS,
@@ -27,42 +31,24 @@ import {
 } from '../../constants';
 import styles from '../../styles/recipeForm';
 import FavoriteCard from '../../components/favorites/FavoriteCard';
-import SearchRecipe from '../search/SearchRecipe';
+import useAuthStore from '../../store/useAuthStore';
+import useRecipeStore from '../../store/useRecipeStore';
 
 import { useNavigation } from '@react-navigation/native';
 
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 
 const MealFormScreen = () => {
+  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const userInfo = useAuthStore((state) => state.userInfo);
   const breakfastArray = useMealPlanRecipe((state) => state.breakfast);
   const snacksArray = useMealPlanRecipe((state) => state.snacks);
   const lunchArray = useMealPlanRecipe((state) => state.lunch);
   const dinnerArray = useMealPlanRecipe((state) => state.dinner);
 
-  useEffect(() => {
-    let data = [
-      { breakfast: breakfastArray },
-      { snacks: snacksArray },
-      { lunch: lunchArray },
-      { dinner: dinnerArray },
-    ];
-
-    console.log(data);
-  }, [breakfastArray, snacksArray, lunchArray, lunchArray, dinnerArray]);
-
-  const navigation = useNavigation();
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    procedure: '',
-    image: null,
-    privacy: 'public',
-    cookingTime: 5,
-  });
-
   const [permission, setPermission] = useState(false);
   const [openDay, setOpenDay] = useState(false);
-  const [day, setDay] = useState([]);
+  const [day, setDay] = useState(null);
   const [data, setData] = useState([
     {
       label: 'Monday',
@@ -93,6 +79,35 @@ const MealFormScreen = () => {
       value: 7,
     },
   ]);
+
+  const [err, setErr] = useState({
+    name: false,
+    description: false,
+    privacy: false,
+    day: false,
+    data: false,
+  });
+
+  useEffect(() => {
+    console.log('breakfast: ', breakfastArray);
+    console.log('snacks: ', snacksArray);
+    console.log('lunch: ', lunchArray);
+    console.log('dinner: ', dinnerArray);
+  }, [breakfastArray, snacksArray, lunchArray, dinnerArray]);
+
+  useEffect(() => {
+    if (err.day === true) {
+      setErr({ ...err, day: false });
+    }
+  }, [day]);
+
+  const navigation = useNavigation();
+  const [form, setForm] = useState({
+    name: '',
+    description: '',
+    image: null,
+    privacy: 'public',
+  });
 
   // ask for storage permission
   useEffect(() => {
@@ -136,7 +151,46 @@ const MealFormScreen = () => {
 
   // submit form
   function handleSubmit() {
-    console.log('recipe submitted');
+    let meals = [
+      { breakfast: breakfastArray },
+      { snacks: snacksArray },
+      { lunch: lunchArray },
+      { dinner: dinnerArray },
+    ];
+
+    const isNameValid = form.name !== null && form.name !== '';
+    const isDescriptionValid =
+      form.description !== null && form.description !== '';
+    const isDayValid = day !== null && day !== 0;
+    // const isDataValid =
+    //   meals[0].breakfast.length !== 0 &&
+    //   meals[0].snacks.length !== 0 &&
+    //   meals[0].lunch.length !== 0 &&
+    //   meals[0].dinner.length !== 0;
+
+    const err = {
+      name: !isNameValid,
+      description: !isDescriptionValid,
+      day: !isDayValid,
+      // data: !isDataValid,
+    };
+
+    if (Object.values(err).some((value) => value)) {
+      setErr(err);
+      return;
+    }
+
+    const data = {
+      user_id: userInfo._id,
+      name: form.name,
+      description: form.description,
+      image: form.image,
+      privacy: form.privacy,
+      day: day,
+      data: meals,
+    };
+
+    console.log(data);
   }
 
   DropDownPicker.setListMode('MODAL');
@@ -147,7 +201,7 @@ const MealFormScreen = () => {
         <Text style={styles.highlights}>Name & Photo</Text>
         {form.image != null ? (
           <TouchableHighlight onPress={pickImage} style={styles.mb}>
-            <Image source={{ uri: image }} style={styles.hasImage} />
+            <Image source={{ uri: form.image }} style={styles.hasImage} />
           </TouchableHighlight>
         ) : (
           <TouchableHighlight onPress={pickImage} style={styles.mb}>
@@ -158,23 +212,78 @@ const MealFormScreen = () => {
           </TouchableHighlight>
         )}
 
+        {form.image && (
+          <Pressable
+            onPress={() =>
+              setForm({
+                ...form,
+                image: null,
+              })
+            }
+          >
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: SIZES.sm,
+              }}
+            >
+              <MaterialCommunityIcons
+                name='delete-circle'
+                size={SIZES.xxl}
+                color={COLORS.danger}
+              />
+            </View>
+          </Pressable>
+        )}
+
         <Text style={styles.labels}>Name</Text>
         <TextInput
           placeholder='Name of meal plan'
           value={form.name}
-          onChangeText={(text) => setForm({ ...form, name: text })}
+          onChangeText={(text) => {
+            setForm({ ...form, name: text.trim() });
+            setErr({ ...err, name: false });
+          }}
           style={[styles.input, styles.mb, styles.borderWidth]}
         />
+        {err.name && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Name field is requried.
+          </Text>
+        )}
 
         <Text style={[styles.labels]}>Description</Text>
         <TextInput
           placeholder='Add meal plan description'
           value={form.description}
-          onChangeText={(text) => setForm({ ...form, description: text })}
+          onChangeText={(text) => {
+            setForm({ ...form, description: text });
+            setErr({ ...err, description: false });
+          }}
           style={[styles.textarea, styles.mb, styles.borderWidth]}
           multiline={true}
           numberOfLines={10}
         />
+        {err.description && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Description field is requried.
+          </Text>
+        )}
 
         <Text style={[styles.highlights, styles.mtlg]}>
           Daily Plan Information
@@ -192,9 +301,20 @@ const MealFormScreen = () => {
             setValue={setDay}
             setItems={setData}
             showBadgeDot={false}
-            // itemKey="value" (id)
           />
         </View>
+        {err.day && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Please select day of plan.
+          </Text>
+        )}
 
         <View
           style={[
@@ -278,104 +398,132 @@ const MealFormScreen = () => {
             </View>
           </Pressable>
         </View>
+        {err.data && (
+          <Text
+            style={{
+              color: COLORS.danger,
+              fontFamily: FONT.regular,
+              fontSize: SIZES.sm,
+              textAlign: 'center',
+            }}
+          >
+            Please add atleast 1 recipe.
+          </Text>
+        )}
         <View>
           <View style={styles.mtlg}>
             <Text style={[styles.labels]}>Breakfast</Text>
             <View>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={DATA}
-                renderItem={({ item }) => {
-                  const { name, username, ratings, image, id } = item;
-                  return (
-                    <View style={{ width: 250 }}>
-                      <FavoriteCard
-                        name={name}
-                        username={username}
-                        ratings={ratings}
-                        image={image}
-                        key={id}
-                      />
-                    </View>
-                  );
-                }}
-                horizontal
-              />
+              {breakfastArray.length > 0 ? (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={DATA}
+                  renderItem={({ item }) => {
+                    const { name, username, ratings, image, id } = item;
+                    return (
+                      <View style={{ width: 250 }}>
+                        <FavoriteCard
+                          name={name}
+                          username={username}
+                          ratings={ratings}
+                          image={image}
+                          key={id}
+                        />
+                      </View>
+                    );
+                  }}
+                  horizontal
+                />
+              ) : (
+                <Text style={styles.highlights}>Add Recipe</Text>
+              )}
             </View>
           </View>
 
           <View style={styles.mtlg}>
             <Text style={[styles.labels]}>Snacks</Text>
             <View>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={DATA}
-                renderItem={({ item }) => {
-                  const { name, username, ratings, image, id } = item;
-                  return (
-                    <View style={{ width: 250 }}>
-                      <FavoriteCard
-                        name={name}
-                        username={username}
-                        ratings={ratings}
-                        image={image}
-                        key={id}
-                      />
-                    </View>
-                  );
-                }}
-                horizontal
-              />
+              {snacksArray.length > 0 ? (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={DATA}
+                  renderItem={({ item }) => {
+                    const { name, username, ratings, image, id } = item;
+                    return (
+                      <View style={{ width: 250 }}>
+                        <FavoriteCard
+                          name={name}
+                          username={username}
+                          ratings={ratings}
+                          image={image}
+                          key={id}
+                        />
+                      </View>
+                    );
+                  }}
+                  horizontal
+                />
+              ) : (
+                <Text style={styles.highlights}>Add Recipe</Text>
+              )}
             </View>
           </View>
 
           <View style={styles.mtlg}>
             <Text style={[styles.labels]}>Lunch</Text>
             <View>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={DATA}
-                renderItem={({ item }) => {
-                  const { name, username, ratings, image, id } = item;
-                  return (
-                    <View style={{ width: 250 }}>
-                      <FavoriteCard
-                        name={name}
-                        username={username}
-                        ratings={ratings}
-                        image={image}
-                        key={id}
-                      />
-                    </View>
-                  );
-                }}
-                horizontal
-              />
+              {lunchArray.length > 0 ? (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={DATA}
+                  renderItem={({ item }) => {
+                    const { name, username, ratings, image, id } = item;
+                    return (
+                      <View style={{ width: 250 }}>
+                        <FavoriteCard
+                          name={name}
+                          username={username}
+                          ratings={ratings}
+                          image={image}
+                          key={id}
+                        />
+                      </View>
+                    );
+                  }}
+                  horizontal
+                />
+              ) : (
+                <Text style={styles.highlights}>Add Recipe</Text>
+              )}
             </View>
           </View>
 
           <View style={styles.mtlg}>
             <Text style={[styles.labels]}>Dinner</Text>
             <View>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={DATA}
-                renderItem={({ item }) => {
-                  const { name, username, ratings, image, id } = item;
-                  return (
-                    <View style={{ width: 250 }}>
-                      <FavoriteCard
-                        name={name}
-                        username={username}
-                        ratings={ratings}
-                        image={image}
-                        key={id}
-                      />
-                    </View>
-                  );
-                }}
-                horizontal
-              />
+              {dinnerArray.length > 0 ? (
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={DATA}
+                  renderItem={({ item }) => {
+                    const { name, username, ratings, image, id } = item;
+                    return (
+                      <View style={{ width: 250 }}>
+                        <FavoriteCard
+                          name={name}
+                          username={username}
+                          ratings={ratings}
+                          image={image}
+                          key={id}
+                        />
+                      </View>
+                    );
+                  }}
+                  horizontal
+                />
+              ) : (
+                <Text style={styles.highlights}>Add Recipe</Text>
+              )}
             </View>
           </View>
         </View>

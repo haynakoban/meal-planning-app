@@ -1,5 +1,6 @@
 import { COLORS, FONT, SIZES, SHADOWS } from './theme';
 import Logo from './images';
+import { calculateCalorie } from './calculateCalorie';
 import {
   data as DATA,
   homeData as HOMEDATA,
@@ -34,3 +35,5 @@ export {
   SHADOWS,
   reviews,
 };
+
+export { calculateCalorie };

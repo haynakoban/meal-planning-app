@@ -8,24 +8,44 @@ const useMealPlanRecipe = create((set) => ({
   // fetchRecipes: async () => {
   //     const res = 'link'
   // }
-  addBreakfast: (val) =>
+  addBreakfast: (id) =>
     set((state) => ({
-      breakfast: [...state.breakfast, val],
+      breakfast: [...state.breakfast, id],
     })),
 
-  addSnacks: (val) =>
+  addSnacks: (id) =>
     set((state) => ({
-      snacks: [...state.snacks, val],
+      snacks: [...state.snacks, id],
     })),
 
-  addLunch: (val) =>
+  addLunch: (id) =>
     set((state) => ({
-      lunch: [...state.lunch, val],
+      lunch: [...state.lunch, id],
     })),
 
-  addDinner: (val) =>
+  addDinner: (id) =>
     set((state) => ({
-      dinner: [...state.dinner, val],
+      dinner: [...state.dinner, id],
+    })),
+
+  removeBreakfast: (id) =>
+    set((state) => ({
+      breakfast: state.breakfast.filter((item) => item !== id),
+    })),
+
+  removeSnacks: (id) =>
+    set((state) => ({
+      snacks: state.snacks.filter((item) => item !== id),
+    })),
+
+  removeLunch: (id) =>
+    set((state) => ({
+      lunch: state.lunch.filter((item) => item !== id),
+    })),
+
+  removeDinner: (id) =>
+    set((state) => ({
+      dinner: state.dinner.filter((item) => item !== id),
     })),
 }));
 

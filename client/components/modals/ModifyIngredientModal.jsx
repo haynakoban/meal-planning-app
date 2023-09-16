@@ -6,6 +6,18 @@ import styles from '../../styles/recipeForm';
 import useIngredientsStore from '../../store/useIngredientsStore';
 
 const ModifyIngredientModal = ({ visible, data, onClose }) => {
+  function convertMixedNumberToDecimal(input) {
+    const cleanInput = input.replace(/[^\d\s/]/g, ''); // Remove all non-digit, non-space, non-slash characters
+    const parts = cleanInput.split(/[\s/]+/);
+
+    const wholeNumber = parseFloat(parts[0]);
+    const numerator = parseFloat(parts[1]);
+    const denominator = parseFloat(parts[2]);
+    const decimal = wholeNumber + numerator / denominator;
+
+    return decimal;
+  }
+
   const selected = useIngredientsStore((state) => state.selected);
 
   const useIngredientsStoreSelected = useIngredientsStore((state) =>
@@ -65,7 +77,7 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
 
     setSelectedIngredients({
       ...ingredientInfo,
-      amount: ingredientInfo.amount * 1,
+      amount: convertMixedNumberToDecimal(ingredientInfo.amount),
       ingredients_id: data.id,
     });
     onClose(false);
@@ -129,13 +141,12 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             <View style={{ width: '48%' }}>
               <Text style={[styles.addLabel, styles.mb]}>Ammount</Text>
               <TextInput
-                keyboardType='numeric'
                 placeholder='Ammount'
-                value={ingredientInfo.amount?.toString()}
+                value={ingredientInfo.amount}
                 onChangeText={(text) =>
                   setIngredientInfo({
                     ...ingredientInfo,
-                    amount: text.replace(/[^0-9.]/g, ''),
+                    amount: text,
                   })
                 }
                 style={[

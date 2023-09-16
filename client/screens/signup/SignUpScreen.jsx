@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import { View, TextInput } from 'react-native';
+import { View, TextInput, ScrollView } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import styles from '../../styles/signup';
 import { COLORS } from '../../constants';
 import axios from '../../lib/axiosConfig';
+import useAuthStore from '../../store/useAuthStore';
+import { useNavigation } from '@react-navigation/native';
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = () => {
+  const navigation = useNavigation();
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
   const { white, accent } = COLORS;
   const {
     container,
@@ -175,114 +179,124 @@ const RegisterScreen = ({ navigation }) => {
           password,
           registrationMethod: 'email',
         })
-        .then((res) => console.log(res.data))
+        .then((res) => {
+          if (res.data?.data) {
+            setUserInfo(res.data?.data._id);
+            navigation.navigate('Loading');
+          }
+        })
         .catch((e) => console.error(e));
     }
   };
 
   return (
-    <SafeAreaView style={container}>
-      <View style={bannerWrapper}>
-        <Text style={bannerHeader}>Create Your Account</Text>
-        <Text style={bannerDescription}>
-          Please enter info to create account
-        </Text>
-      </View>
-
-      <View style={registerWrapper}>
-        <TextInput
-          placeholder='Full Name'
-          onFocus={() => setFocusName(2)}
-          onBlur={() => {
-            setFocusName(1);
-            validateFullNameOnBlur();
-          }}
-          style={[input, { borderWidth: focusName }]}
-          onChangeText={(text) => {
-            setFullName(text);
-            validateFullName(text);
-          }}
-        />
-        {fullNameError ? <Text style={error}>{fullNameError}</Text> : null}
-
-        <TextInput
-          placeholder='Email'
-          onFocus={() => setFocusEmail(2)}
-          onBlur={() => {
-            setFocusEmail(1);
-            validateEmailOnBlur();
-          }}
-          style={[input, { borderWidth: focusEmail }]}
-          onChangeText={(text) => {
-            setEmail(text);
-            validateEmail(text);
-          }}
-        />
-        {emailError ? <Text style={error}>{emailError}</Text> : null}
-
-        <TextInput
-          secureTextEntry
-          placeholder='Password'
-          onFocus={() => setFocusPassword(2)}
-          onBlur={() => {
-            setFocusPassword(1);
-            validatePasswordOnBlur();
-          }}
-          style={[input, { borderWidth: focusPassword }]}
-          onChangeText={(text) => {
-            setPassword(text);
-            validatePassword(text);
-          }}
-        />
-        {passwordError.length > 0
-          ? passwordError.map((errorMessage) => (
-              <Text key={errorMessage} style={error}>
-                * {errorMessage}
-              </Text>
-            ))
-          : null}
-
-        <TextInput
-          secureTextEntry
-          placeholder='Confirm Password'
-          onFocus={() => setFocusConfirmPassword(2)}
-          onBlur={() => {
-            setFocusConfirmPassword(1);
-            validateConfirmPasswordOnBlur();
-          }}
-          style={[input, { borderWidth: focusConfirmPassword }]}
-          onChangeText={(text) => {
-            setConfirmPassword(text);
-            validateConfirmPassword(text);
-          }}
-        />
-        {confirmPasswordError ? (
-          <Text style={error}>{confirmPasswordError}</Text>
-        ) : null}
-
-        <Button
-          uppercase
-          style={button}
-          labelStyle={[letterSpacing, buttonText]}
-          textColor={white}
-          onPress={handleRegistration}
-        >
-          Submit
-        </Button>
-        <View style={footerWrapper}>
-          <Text style={footerText}>Already have an account?</Text>
-          <Button
-            mode='text'
-            textColor={accent}
-            style={signUpButton}
-            labelStyle={footerText}
-            onPress={() => navigation.navigate('Login')}
-          >
-            Sign In
-          </Button>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps='always'
+    >
+      <SafeAreaView style={container}>
+        <View style={bannerWrapper}>
+          <Text style={bannerHeader}>Create Your Account</Text>
+          <Text style={bannerDescription}>
+            Please enter info to create account
+          </Text>
         </View>
-      </View>
-    </SafeAreaView>
+
+        <View style={registerWrapper}>
+          <TextInput
+            placeholder='Full Name'
+            onFocus={() => setFocusName(2)}
+            onBlur={() => {
+              setFocusName(1);
+              validateFullNameOnBlur();
+            }}
+            style={[input, { borderWidth: focusName }]}
+            onChangeText={(text) => {
+              setFullName(text);
+              validateFullName(text);
+            }}
+          />
+          {fullNameError ? <Text style={error}>{fullNameError}</Text> : null}
+
+          <TextInput
+            placeholder='Email'
+            onFocus={() => setFocusEmail(2)}
+            onBlur={() => {
+              setFocusEmail(1);
+              validateEmailOnBlur();
+            }}
+            style={[input, { borderWidth: focusEmail }]}
+            onChangeText={(text) => {
+              setEmail(text);
+              validateEmail(text);
+            }}
+          />
+          {emailError ? <Text style={error}>{emailError}</Text> : null}
+
+          <TextInput
+            secureTextEntry
+            placeholder='Password'
+            onFocus={() => setFocusPassword(2)}
+            onBlur={() => {
+              setFocusPassword(1);
+              validatePasswordOnBlur();
+            }}
+            style={[input, { borderWidth: focusPassword }]}
+            onChangeText={(text) => {
+              setPassword(text);
+              validatePassword(text);
+            }}
+          />
+          {passwordError.length > 0
+            ? passwordError.map((errorMessage) => (
+                <Text key={errorMessage} style={error}>
+                  * {errorMessage}
+                </Text>
+              ))
+            : null}
+
+          <TextInput
+            secureTextEntry
+            placeholder='Confirm Password'
+            onFocus={() => setFocusConfirmPassword(2)}
+            onBlur={() => {
+              setFocusConfirmPassword(1);
+              validateConfirmPasswordOnBlur();
+            }}
+            style={[input, { borderWidth: focusConfirmPassword }]}
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+              validateConfirmPassword(text);
+            }}
+          />
+          {confirmPasswordError ? (
+            <Text style={error}>{confirmPasswordError}</Text>
+          ) : null}
+
+          <Button
+            uppercase
+            style={button}
+            labelStyle={[letterSpacing, buttonText]}
+            textColor={white}
+            onPress={() => handleRegistration()}
+          >
+            Submit
+          </Button>
+          <View style={footerWrapper}>
+            <Text style={footerText}>Already have an account?</Text>
+            <Button
+              mode='text'
+              textColor={accent}
+              style={signUpButton}
+              labelStyle={footerText}
+              onPress={() => navigation.navigate('Login')}
+            >
+              Sign In
+            </Button>
+          </View>
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
