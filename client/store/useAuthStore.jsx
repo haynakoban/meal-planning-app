@@ -34,7 +34,10 @@ const useAuthStore = create((set) => ({
       .catch((e) => console.error(e));
   },
   login: () => set({ isLoggedIn: true }),
-  logout: () => set({ isLoggedIn: false }),
+  logout: () => {
+    set({ isLoggedIn: false });
+    AsyncStorage.removeItem('@user');
+  },
 }));
 
 export default useAuthStore;

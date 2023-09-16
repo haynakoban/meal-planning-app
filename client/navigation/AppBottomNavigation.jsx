@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,14 +12,25 @@ import {
 } from '../screens';
 import { COLORS, FONT, SIZES } from '../constants';
 import { FilterModal } from '../components/general/FilterDropdown';
+import useAuthStore from '../store/useAuthStore';
+import { ProfileModal } from '../components/general/ProfileDropdown';
 
 const Tab = createBottomTabNavigator();
 
 const AppBottomNavigation = () => {
   const [visible, setVisible] = useState(false);
+  const [pVisible, setPVisible] = useState(false);
+  const { userInfo, getUserInfo } = useAuthStore();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const pShowModal = () => setPVisible(true);
+  const pHideModal = () => setPVisible(false);
 
   return (
     <Tab.Navigator
@@ -165,7 +176,7 @@ const AppBottomNavigation = () => {
         name='Profile'
         component={ProfileScreen}
         options={{
-          headerTitle: '@x_vincent',
+          headerTitle: userInfo?.username,
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontFamily: FONT.bold,
@@ -187,7 +198,9 @@ const AppBottomNavigation = () => {
                 name='settings-outline'
                 size={SIZES.xl + 2}
                 color={COLORS.white}
+                onPress={pShowModal}
               />
+              <ProfileModal visible={pVisible} hideModal={pHideModal} />
             </View>
           ),
         }}
