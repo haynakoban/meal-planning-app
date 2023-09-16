@@ -24,6 +24,7 @@ const image = {
   type: mongoose.Schema.Types.Mixed,
   ref: 'Uploads',
   required: false,
+  default: null,
 };
 
 const recipesSchema = new mongoose.Schema({
