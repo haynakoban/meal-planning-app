@@ -96,26 +96,12 @@ const paginatedList = async (req, res, next) => {
       });
     } else {
       // Query the database for recipes, skipping the appropriate number of documents based on the page
-      const recipesData = await Recipes.find({ _id: { $in: ids } })
+      const recipes = await Recipes.find({ _id: { $in: ids } })
         .skip((page - 1) * perPage)
         .limit(perPage)
+        .populate({ path: 'user_id', select: 'fullname username' })
+        .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
         .select('-createAt -__v');
-
-      const recipes = recipesData.map((recipe) => {
-        const r = recipe.toObject();
-
-        Users.findOne({ _id: r.user_id })
-          .select('_id fullname username')
-          .then((res) => (r.userinfo = res));
-
-        return r;
-      });
-
-      const recipesIds = recipesData.map((_) => _._id);
-
-      const feedbacks = await Feedbacks.find({
-        foodItem: { $in: recipesIds },
-      }).select('-foodItemType -createdAt -updatedAt -__v');
 
       // Return the paginated data along with pagination information
       res.json({
@@ -124,7 +110,6 @@ const paginatedList = async (req, res, next) => {
         currentPage: page,
         totalPages,
         data: recipes,
-        feedbacks,
       });
     }
   } catch (e) {

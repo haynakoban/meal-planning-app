@@ -23,28 +23,24 @@ const useAuthStore = create((set) => ({
       })
       .then((res) => {
         if (res.data?.status === 'success') {
-          if (res.data?.feedbacks) {
-            const recipes = res.data?.data;
-            const feedbacks = res.data?.feedbacks;
+          const recipes = res.data?.data;
 
-            for (let i = 0; i < recipes.length; i++) {
-              const totalReview = [];
-              let ratings = 0;
-              for (let j = 0; j < feedbacks.length; j++) {
-                if (recipes[i]._id === feedbacks[j].foodItem) {
-                  totalReview.push(feedbacks[j]);
-                  ratings += feedbacks[j].rating;
-                }
-              }
+          const results = recipes.map((recipe) => {
+            const r = recipe;
+            const feedbacks = recipe.feedbacks || [];
+            const totalFeedbacks = feedbacks.length;
+            const ratingsSum = feedbacks.reduce(
+              (sum, feedback) => sum + (feedback.rating || 0),
+              0
+            );
+            return {
+              recipes: r,
+              reviews: totalFeedbacks,
+              ratings: ratingsSum / totalFeedbacks,
+            };
+          });
 
-              recipes[i].ratings = ratings / totalReview?.length;
-              recipes[i].totalReview = totalReview?.length;
-
-              set({ favorites: recipes });
-            }
-          } else {
-            set({ favorites: res.data.data });
-          }
+          set({ favorites: results });
         }
       })
       .catch((error) => {

@@ -38,6 +38,7 @@ const recipesSchema = new mongoose.Schema({
   cooking_time: { type: Number, required: true },
   ingredients,
   image,
+  feedbacks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feedbacks' }],
   privacy: { type: String, required: true },
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },

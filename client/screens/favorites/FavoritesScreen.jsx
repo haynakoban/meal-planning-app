@@ -1,11 +1,10 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { View, FlatList, RefreshControl, Text } from 'react-native';
+import { View, FlatList, RefreshControl, Text, ScrollView } from 'react-native';
 
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 import styles from '../../styles/favorites';
-import { COLORS, DATA, FONT, SIZES } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
 import useAuthStore from '../../store/useAuthStore';
-import axios from '../../lib/axiosConfig';
 import { Button } from 'react-native-paper';
 
 function CustomHeader() {
@@ -46,36 +45,48 @@ const FavoritesScreen = ({ navigation }) => {
     }, 1000);
   };
 
+  console.log(favorites);
   if (favorites?.length === 0) {
     return (
-      <View
-        style={{
-          paddingVertical: 4,
-          paddingHorizontal: 20,
-          alignItems: 'center',
-        }}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
       >
-        <Text
+        <View
           style={{
-            fontFamily: FONT.medium,
-            fontSize: SIZES.lg,
-            textAlign: 'center',
-            width: 250,
+            paddingVertical: 4,
+            paddingHorizontal: 20,
+            alignItems: 'center',
           }}
         >
-          No favorites yet. Add some items to your favorites!
-        </Text>
+          <Text
+            style={{
+              fontFamily: FONT.medium,
+              fontSize: SIZES.lg,
+              textAlign: 'center',
+              width: 250,
+            }}
+          >
+            No favorites yet. Add some items to your favorites!
+          </Text>
 
-        <Button
-          mode='contained'
-          style={{ marginTop: 20, backgroundColor: COLORS.accent, padding: 4 }}
-          textColor={COLORS.white}
-          labelStyle={{ fontFamily: FONT.medium, fontSize: SIZES.md }}
-          onPress={() => navigation.navigate('Recipes')}
-        >
-          Check Recipes
-        </Button>
-      </View>
+          <Button
+            mode='contained'
+            style={{
+              marginTop: 20,
+              backgroundColor: COLORS.accent,
+              padding: 4,
+            }}
+            textColor={COLORS.white}
+            labelStyle={{ fontFamily: FONT.medium, fontSize: SIZES.md }}
+            onPress={() => navigation.navigate('Recipes')}
+          >
+            Check Recipes
+          </Button>
+        </View>
+      </ScrollView>
     );
   }
   return (
@@ -89,11 +100,11 @@ const FavoritesScreen = ({ navigation }) => {
       renderItem={({ item }) => {
         return (
           <FavoriteCard
-            name={item?.name}
-            username={item?.userinfo?.username || 'anon'}
-            reviews={item?.totalReview || 0}
+            name={item?.recipes?.name}
+            username={item?.recipes?.user_id?.username || 'anon'}
+            reviews={item?.reviews || 0}
             ratings={item?.ratings || 0}
-            image={item?.image}
+            image={item?.recipes?.image}
             key={item?._id}
           />
         );
