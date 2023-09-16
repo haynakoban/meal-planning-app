@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { View, TextInput } from 'react-native';
+import { View, TextInput, ScrollView } from 'react-native';
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -104,108 +104,112 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={container}>
-      <Avatar.Image
-        size={150}
-        style={{ backgroundColor: 'transparent' }}
-        source={require('../../assets/images/logo.png')}
-      />
-
-      <View style={loginWrapper}>
-        <TextInput
-          placeholder='Username or Email'
-          onFocus={() => setFocusEmail(2)}
-          onBlur={() => setFocusEmail(1)}
-          style={[input, { borderWidth: focusEmail }]}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-        />
-        {err ? <Text style={error}>{err}</Text> : null}
-
-        <TextInput
-          secureTextEntry
-          placeholder='Password'
-          onFocus={() => setFocusPassword(2)}
-          onBlur={() => setFocusPassword(1)}
-          style={[input, { borderWidth: focusPassword }]}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={container}>
+        <Avatar.Image
+          size={150}
+          style={{ backgroundColor: 'transparent' }}
+          source={require('../../assets/images/logo.png')}
         />
 
-        <Button
-          mode='text'
-          textColor={black}
-          style={forgotPassword}
-          labelStyle={footerText}
-        >
-          Forgot your password?
-        </Button>
+        <View style={loginWrapper}>
+          <TextInput
+            placeholder='Username or Email'
+            onFocus={() => setFocusEmail(2)}
+            onBlur={() => setFocusEmail(1)}
+            style={[input, { borderWidth: focusEmail }]}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+          {err ? <Text style={error}>{err}</Text> : null}
 
-        <Button
-          mode='contained'
-          uppercase
-          style={button}
-          labelStyle={[letterSpacing, buttonText]}
-          textColor={white}
-          onPress={() => handleLogin()}
-        >
-          Sign In
-        </Button>
+          <TextInput
+            secureTextEntry
+            placeholder='Password'
+            onFocus={() => setFocusPassword(2)}
+            onBlur={() => setFocusPassword(1)}
+            style={[input, { borderWidth: focusPassword }]}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+          />
 
-        <View style={dividerWrapper}>
-          <Divider style={divider} bold />
-          <Text style={[connectText, footerText]}>or connect with</Text>
-          <Divider style={divider} bold />
-        </View>
-        <View style={socialWrapper}>
-          <Button
-            onPress={handlePressAsync}
-            icon={() => (
-              <FontAwesome5 name='facebook' size={24} color={black} />
-            )}
-            mode='outlined'
-            style={[noBorderRadius, mb, socialButton]}
-            contentStyle={buttonContent}
-            labelStyle={buttonLabel}
-            textColor={black}
-          >
-            Continue with Facebook
-          </Button>
-          <Button
-            icon={() => <FontAwesome5 name='google' size={24} color={black} />}
-            mode='outlined'
-            style={[noBorderRadius, mb, socialButton]}
-            contentStyle={buttonContent}
-            labelStyle={buttonLabel}
-            textColor={black}
-          >
-            Continue with Google
-          </Button>
-          <Button
-            icon={() => <FontAwesome5 name='apple' size={24} color={black} />}
-            mode='outlined'
-            style={[noBorderRadius, mb, socialButton]}
-            contentStyle={buttonContent}
-            labelStyle={buttonLabel}
-            textColor={black}
-          >
-            Continue with Apple
-          </Button>
-        </View>
-        <View style={footerWrapper}>
-          <Text style={footerText}>Don't have an account?</Text>
           <Button
             mode='text'
-            textColor={accent}
-            style={signUpButton}
+            textColor={black}
+            style={forgotPassword}
             labelStyle={footerText}
-            onPress={() => navigation.navigate('Sign Up')}
           >
-            Sign Up
+            Forgot your password?
           </Button>
+
+          <Button
+            mode='contained'
+            uppercase
+            style={button}
+            labelStyle={[letterSpacing, buttonText]}
+            textColor={white}
+            onPress={() => handleLogin()}
+          >
+            Sign In
+          </Button>
+
+          <View style={dividerWrapper}>
+            <Divider style={divider} bold />
+            <Text style={[connectText, footerText]}>or connect with</Text>
+            <Divider style={divider} bold />
+          </View>
+          <View style={socialWrapper}>
+            <Button
+              onPress={handlePressAsync}
+              icon={() => (
+                <FontAwesome5 name='facebook' size={24} color={black} />
+              )}
+              mode='outlined'
+              style={[noBorderRadius, mb, socialButton]}
+              contentStyle={buttonContent}
+              labelStyle={buttonLabel}
+              textColor={black}
+            >
+              Continue with Facebook
+            </Button>
+            <Button
+              icon={() => (
+                <FontAwesome5 name='google' size={24} color={black} />
+              )}
+              mode='outlined'
+              style={[noBorderRadius, mb, socialButton]}
+              contentStyle={buttonContent}
+              labelStyle={buttonLabel}
+              textColor={black}
+            >
+              Continue with Google
+            </Button>
+            <Button
+              icon={() => <FontAwesome5 name='apple' size={24} color={black} />}
+              mode='outlined'
+              style={[noBorderRadius, mb, socialButton]}
+              contentStyle={buttonContent}
+              labelStyle={buttonLabel}
+              textColor={black}
+            >
+              Continue with Apple
+            </Button>
+          </View>
+          <View style={footerWrapper}>
+            <Text style={footerText}>Don't have an account?</Text>
+            <Button
+              mode='text'
+              textColor={accent}
+              style={signUpButton}
+              labelStyle={footerText}
+              onPress={() => navigation.navigate('Sign Up')}
+            >
+              Sign Up
+            </Button>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 

@@ -1,4 +1,4 @@
-const { Recipes } = require('../../models');
+const { Recipes, Feedbacks, Users } = require('../../models');
 
 // bulk meal types
 const bulkRecipes = async (req, res, next) => {
@@ -71,11 +71,7 @@ const paginatedList = async (req, res, next) => {
   const perPage = 20;
 
   try {
-    // Query the database for recipes, skipping the appropriate number of documents based on the page
-    const recipes = await Recipes.find()
-      .skip((page - 1) * perPage)
-      .limit(perPage)
-      .select('-createAt -__v');
+    const ids = req.query.ids || [];
 
     // Get the total count of recipes in the collection (for calculating total pages)
     const totalItems = await Recipes.countDocuments();
@@ -83,14 +79,54 @@ const paginatedList = async (req, res, next) => {
     // Calculate the total number of pages based on the total count and items per page
     const totalPages = Math.ceil(totalItems / perPage);
 
-    // Return the paginated data along with pagination information
-    res.json({
-      message: `${recipes.length} items retrieved successfully`,
-      status: 'success',
-      currentPage: page,
-      totalPages,
-      data: recipes,
-    });
+    if (ids.length === 0) {
+      // Query the database for recipes, skipping the appropriate number of documents based on the page
+      const recipes = await Recipes.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .select('-createAt -__v');
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `${recipes.length} items retrieved successfully`,
+        status: 'success',
+        currentPage: page,
+        totalPages,
+        data: recipes,
+      });
+    } else {
+      // Query the database for recipes, skipping the appropriate number of documents based on the page
+      const recipesData = await Recipes.find({ _id: { $in: ids } })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .select('-createAt -__v');
+
+      const recipes = recipesData.map((recipe) => {
+        const r = recipe.toObject();
+
+        Users.findOne({ _id: r.user_id })
+          .select('_id fullname username')
+          .then((res) => (r.userinfo = res));
+
+        return r;
+      });
+
+      const recipesIds = recipesData.map((_) => _._id);
+
+      const feedbacks = await Feedbacks.find({
+        foodItem: { $in: recipesIds },
+      }).select('-foodItemType -createdAt -updatedAt -__v');
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `${recipes.length} items retrieved successfully`,
+        status: 'success',
+        currentPage: page,
+        totalPages,
+        data: recipes,
+        feedbacks,
+      });
+    }
   } catch (e) {
     return res.status(500).json({
       message: 'Internal Server Error',

@@ -4,8 +4,9 @@ import { COLORS, FONT, SIZES } from '../constants';
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    paddingHorizontal: 4,
     elevation: 5,
+    paddingTop: SIZES.md,
   },
   card: {
     backgroundColor: COLORS.white,

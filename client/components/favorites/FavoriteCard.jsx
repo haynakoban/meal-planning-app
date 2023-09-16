@@ -5,15 +5,15 @@ import { AntDesign } from '@expo/vector-icons';
 import styles from '../../styles/favorites';
 
 import { useNavigation } from '@react-navigation/native';
+import { SIZES } from '../../constants';
 
-const FavoriteCard = ({ name, username, ratings, image }) => {
+const FavoriteCard = ({ name, username, reviews = 0, ratings = 0, image }) => {
   const navigation = useNavigation();
 
   const {
     card,
     cardAction,
     cardCover,
-    ratingsStyle,
     icon,
     title,
     usernameStyle,
@@ -31,22 +31,28 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
       <Card>
         <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
         <Card.Content>
-          <Text variant='titleLarge' style={title}>
+          <Text
+            variant='titleLarge'
+            style={title}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
             {name}
           </Text>
-          <Text variant='bodyMedium' style={usernameStyle}>
+          <Text
+            variant='bodyMedium'
+            style={usernameStyle}
+            numberOfLines={1}
+            ellipsizeMode='tail'
+          >
             {username}
           </Text>
         </Card.Content>
         <View style={cardBottom}>
-          <Text>
-            <AntDesign name='star' style={ratingsStyle} color='orange' />
-            <AntDesign name='star' style={ratingsStyle} color='orange' />
-            <AntDesign name='star' style={ratingsStyle} color='orange' />
-            <AntDesign name='star' style={ratingsStyle} color='orange' />
-            <AntDesign name='star' style={ratingsStyle} color='orange' />
-            <Text> ({ratings})</Text>
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <RatingStars rating={ratings} />
+            <Text> ({reviews})</Text>
+          </View>
         </View>
         <Card.Actions style={cardAction}>
           <Pressable onPress={() => setIsFavorite(!isFavorite)}>
@@ -70,6 +76,26 @@ const FavoriteCard = ({ name, username, ratings, image }) => {
       </Card>
     </Pressable>
   );
+};
+
+const RatingStars = ({ rating }) => {
+  const totalStars = 5; // Total number of stars
+  const filledStars = Math.round(rating); // Number of filled stars
+
+  // Create an array of star components
+  const stars = Array(totalStars)
+    .fill()
+    .map((_, index) => (
+      <AntDesign
+        key={index}
+        name={index < filledStars ? 'star' : 'staro'}
+        style={[styles.ratingsStyle, { marginLeft: 2 }]}
+        color='orange'
+        size={SIZES.md}
+      />
+    ));
+
+  return <View style={{ flexDirection: 'row' }}>{stars}</View>;
 };
 
 export default FavoriteCard;

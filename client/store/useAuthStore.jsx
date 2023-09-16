@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const useAuthStore = create((set) => ({
   userInfo: {},
   isLoggedIn: false,
+  favorites: [],
 
   getUserInfo: async () => {
     const user = await AsyncStorage.getItem('@user');
@@ -13,6 +14,42 @@ const useAuthStore = create((set) => ({
       set({ userInfo: JSON.parse(user) });
       set({ isLoggedIn: true });
     }
+  },
+
+  getFavorites: (favorites) => {
+    axios
+      .get('recipes/list', {
+        params: { ids: favorites },
+      })
+      .then((res) => {
+        if (res.data?.status === 'success') {
+          if (res.data?.feedbacks) {
+            const recipes = res.data?.data;
+            const feedbacks = res.data?.feedbacks;
+
+            for (let i = 0; i < recipes.length; i++) {
+              const totalReview = [];
+              let ratings = 0;
+              for (let j = 0; j < feedbacks.length; j++) {
+                if (recipes[i]._id === feedbacks[j].foodItem) {
+                  totalReview.push(feedbacks[j]);
+                  ratings += feedbacks[j].rating;
+                }
+              }
+
+              recipes[i].ratings = ratings / totalReview?.length;
+              recipes[i].totalReview = totalReview?.length;
+
+              set({ favorites: recipes });
+            }
+          } else {
+            set({ favorites: res.data.data });
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   },
 
   setUserInfo: (id) => {
