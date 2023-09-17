@@ -13,7 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { RadioButton } from 'react-native-paper';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
@@ -22,9 +22,11 @@ import useCuisinesStore from '../../store/useCuisinesStore';
 import useMealTypeStore from '../../store/useMealTypeStore';
 import ModifyIngredientModal from '../../components/modals/ModifyIngredientModal';
 import usePreferencesStore from '../../store/usePreferencesStore';
+import useAuthStore from '../../store/useAuthStore';
 import axios from 'axios';
 
 const RecipesFormScreen = ({ navigation }) => {
+  const userInfo = useAuthStore((state) => state.userInfo);
   const [err, setErr] = useState({
     name: false,
     description: false,
@@ -91,8 +93,6 @@ const RecipesFormScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState('');
 
-  const removeSelected = useIngredientsStore((state) => state.removeSelected);
-
   // ask for storage permission
   useEffect(() => {
     (async () => {
@@ -118,17 +118,21 @@ const RecipesFormScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    setErr({
-      ...err,
-      ingredients: false,
-    });
+    if (err.ingredients === true) {
+      setErr({
+        ...err,
+        ingredients: false,
+      });
+    }
   }, [value]);
 
   useEffect(() => {
-    setErr({
-      ...err,
-      meal_types: false,
-    });
+    if (err.meal_types === true) {
+      setErr({
+        ...err,
+        meal_types: false,
+      });
+    }
   }, [mealTypeValue]);
 
   const pickImage = async () => {
@@ -192,7 +196,7 @@ const RecipesFormScreen = ({ navigation }) => {
       }
 
       const data = {
-        user_id: '64fed498bd3961e7d1c3c0df',
+        user_id: userInfo._id,
         name: form.name,
         description: form.description,
         procedure: form.procedure?.filter((item) => item != '') || [],
@@ -245,6 +249,31 @@ const RecipesFormScreen = ({ navigation }) => {
               <Text style={styles.addLabel}>Add Cover Photo</Text>
             </View>
           </TouchableHighlight>
+        )}
+
+        {form.image && (
+          <Pressable
+            onPress={() =>
+              setForm({
+                ...form,
+                image: null,
+              })
+            }
+          >
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: SIZES.sm,
+              }}
+            >
+              <MaterialCommunityIcons
+                name='delete-circle'
+                size={SIZES.xxl}
+                color={COLORS.danger}
+              />
+            </View>
+          </Pressable>
         )}
 
         <Text style={[styles.labels, { marginTop: SIZES.sm }]}>Name</Text>

@@ -12,6 +12,7 @@ import {
   Recipe,
   Meal,
   SearchRecipe,
+  LoadingScreen,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
@@ -41,7 +42,28 @@ const AppNavigator = () => {
         headerTintColor: COLORS.primary,
       }}
     >
-      {isLoggedIn ? (
+      {!isLoggedIn ? (
+        <Fragment>
+          <Stack.Screen
+            name='Login'
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='Sign Up'
+            component={SignUpScreen}
+            options={{
+              headerTitleAlign: 'center',
+              headerTitleStyle: styles.signUpHeaderTitleStyle,
+            }}
+          />
+          <Stack.Screen
+            name='Loading'
+            component={LoadingScreen}
+            options={{ headerShown: false }}
+          />
+        </Fragment>
+      ) : (
         <Fragment>
           <Stack.Screen
             name='BottomNavigation'
@@ -133,22 +155,6 @@ const AppNavigator = () => {
             options={{
               headerTitle: 'About',
               headerTitleAlign: 'left',
-              headerTitleStyle: styles.signUpHeaderTitleStyle,
-            }}
-          />
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Stack.Screen
-            name='Login'
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name='Sign Up'
-            component={SignUpScreen}
-            options={{
-              headerTitleAlign: 'center',
               headerTitleStyle: styles.signUpHeaderTitleStyle,
             }}
           />

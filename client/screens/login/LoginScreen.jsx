@@ -104,7 +104,10 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps='always'
+    >
       <SafeAreaView style={container}>
         <Avatar.Image
           size={150}

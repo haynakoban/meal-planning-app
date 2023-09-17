@@ -12,6 +12,7 @@ import Recipe from './recipes/Recipe';
 import SearchScreen from './search/SearchScreen';
 import SearchRecipe from './search/SearchRecipe';
 import SignUpScreen from './signup/SignUpScreen';
+import LoadingScreen from './loading/LoadingScreen';
 
 export {
   FavoritesScreen,
@@ -28,4 +29,5 @@ export {
   Recipe,
   Meal,
   SearchRecipe,
+  LoadingScreen,
 };
