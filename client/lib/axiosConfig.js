@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const SERVER_URL =
-  'https://d148-136-158-118-146.ngrok-free.app' || process.env.SERVER_URL;
+  'https://4834-119-111-231-142.ngrok.io' || process.env.SERVER_URL;
 
 export default axios.create({
   baseURL: `${SERVER_URL}/api/`,

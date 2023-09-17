@@ -45,7 +45,6 @@ const FavoritesScreen = ({ navigation }) => {
     }, 1000);
   };
 
-  console.log(favorites);
   if (favorites?.length === 0) {
     return (
       <ScrollView
