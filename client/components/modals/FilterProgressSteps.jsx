@@ -1,10 +1,14 @@
 import { View, Text } from 'react-native';
 
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
-import { COLORS, FONT, SIZES, calculateCalorie } from '../../constants';
+import { COLORS, FONT } from '../../constants';
 import styles from '../../styles/filterDropDown';
+import useFilterStore from '../../store/useFilterStore';
+import { Button } from 'react-native-paper';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const FilterProgressSteps = ({ setFiltered }) => {
+const FilterProgressSteps = ({ filters }) => {
+  // const { filters, filteredData, setFilteredData } = useFilterStore();
   // const fats = [10, 15, 20];
   // const carbs = [30, 35, 40];
   // const fibers = [5, 7, 9];
@@ -27,6 +31,9 @@ const FilterProgressSteps = ({ setFiltered }) => {
     buttonNextTextStyle,
     buttonPreviousStyle,
     buttonPreviousTextStyle,
+    buttonContent,
+    buttonLabel,
+    pd,
   } = styles;
 
   const defaultScrollViewProps = {
@@ -44,7 +51,7 @@ const FilterProgressSteps = ({ setFiltered }) => {
   const onPrevStep = () => {};
 
   const onSubmitSteps = () => {
-    setFiltered(true);
+    // setFiltered(true);
   };
 
   return (
@@ -70,8 +77,49 @@ const FilterProgressSteps = ({ setFiltered }) => {
           nextBtnTextStyle={buttonNextTextStyle}
           nextBtnStyle={buttonNextStyle}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Text>Meal Types Check Box</Text>
+          <View
+            style={{
+              flex: 1,
+              borderBottomWidth: 1,
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
+          >
+            {filters[0]?.data.length > 0 ? (
+              filters[0]?.data.map((item) => {
+                return (
+                  <Button
+                    key={item._id}
+                    icon={() => {
+                      return (
+                        <Ionicons name='checkbox' size={24} color='black' />
+                      );
+                    }}
+                    contentStyle={[buttonContent, pd]}
+                    labelStyle={[
+                      buttonLabel,
+                      {
+                        fontFamily: FONT.medium,
+                      },
+                    ]}
+                    textColor={COLORS.black}
+                    onPress={() => console.log('yo')}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })
+            ) : (
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginVertical: 8,
+                  fontFamily: FONT.medium,
+                }}
+              >
+                If no content available, please reload
+              </Text>
+            )}
           </View>
         </ProgressStep>
         <ProgressStep
@@ -84,8 +132,49 @@ const FilterProgressSteps = ({ setFiltered }) => {
           previousBtnTextStyle={buttonPreviousTextStyle}
           previousBtnStyle={buttonPreviousStyle}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Text>Cuisine Check Box</Text>
+          <View
+            style={{
+              flex: 1,
+              borderBottomWidth: 1,
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
+          >
+            {filters[1]?.data.length > 0 ? (
+              filters[1]?.data.map((item) => {
+                return (
+                  <Button
+                    key={item._id}
+                    icon={() => {
+                      return (
+                        <Ionicons name='checkbox' size={24} color='black' />
+                      );
+                    }}
+                    contentStyle={[buttonContent, pd]}
+                    labelStyle={[
+                      buttonLabel,
+                      {
+                        fontFamily: FONT.medium,
+                      },
+                    ]}
+                    textColor={COLORS.black}
+                    onPress={() => console.log('yo')}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })
+            ) : (
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginVertical: 8,
+                  fontFamily: FONT.medium,
+                }}
+              >
+                If no content available, please reload
+              </Text>
+            )}
           </View>
         </ProgressStep>
         <ProgressStep
@@ -98,8 +187,49 @@ const FilterProgressSteps = ({ setFiltered }) => {
           previousBtnTextStyle={buttonPreviousTextStyle}
           previousBtnStyle={{ margin: 0, padding: 0, textAlign: 'left' }}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Text>Preferences Check Box</Text>
+          <View
+            style={{
+              flex: 1,
+              borderBottomWidth: 1,
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
+          >
+            {filters[2]?.data.length > 0 ? (
+              filters[2]?.data.map((item) => {
+                return (
+                  <Button
+                    key={item._id}
+                    icon={() => {
+                      return (
+                        <Ionicons name='checkbox' size={24} color='black' />
+                      );
+                    }}
+                    contentStyle={[buttonContent, pd]}
+                    labelStyle={[
+                      buttonLabel,
+                      {
+                        fontFamily: FONT.medium,
+                      },
+                    ]}
+                    textColor={COLORS.black}
+                    onPress={() => console.log('yo')}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })
+            ) : (
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginVertical: 8,
+                  fontFamily: FONT.medium,
+                }}
+              >
+                If no content available, please reload
+              </Text>
+            )}
           </View>
         </ProgressStep>
         <ProgressStep
@@ -112,8 +242,49 @@ const FilterProgressSteps = ({ setFiltered }) => {
           previousBtnTextStyle={buttonPreviousTextStyle}
           previousBtnStyle={{ margin: 0, padding: 0, textAlign: 'left' }}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Text>Allergies Check Box</Text>
+          <View
+            style={{
+              flex: 1,
+              borderBottomWidth: 1,
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
+          >
+            {filters[4]?.data.length > 0 ? (
+              filters[4]?.data.map((item) => {
+                return (
+                  <Button
+                    key={item._id}
+                    icon={() => {
+                      return (
+                        <Ionicons name='checkbox' size={24} color='black' />
+                      );
+                    }}
+                    contentStyle={[buttonContent, pd]}
+                    labelStyle={[
+                      buttonLabel,
+                      {
+                        fontFamily: FONT.medium,
+                      },
+                    ]}
+                    textColor={COLORS.black}
+                    onPress={() => console.log('yo')}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })
+            ) : (
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginVertical: 8,
+                  fontFamily: FONT.medium,
+                }}
+              >
+                If no content available, please reload
+              </Text>
+            )}
           </View>
         </ProgressStep>
       </ProgressSteps>

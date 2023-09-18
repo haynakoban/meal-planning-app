@@ -30,6 +30,9 @@ router.route('/list').get(usersController.paginatedList);
 // post method - log the user
 router.route('/auth/login').post(usersController.login);
 
+// get method - get filters data
+router.route('/auth/filters').get(usersController.filters);
+
 // get method - get single user
 router.route('/:id').get(usersController.show);
 

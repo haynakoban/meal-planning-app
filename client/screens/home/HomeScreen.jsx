@@ -1,20 +1,36 @@
-import { ScrollView, Text, Pressable } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import HomeRecipeCard from '../../components/home/HomeRecipeCard';
 import { HOMEDATA } from '../../constants';
 import FilterProgressSteps from '../../components/modals/FilterProgressSteps';
-import { useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import useFilterStore from '../../store/useFilterStore';
 
 const HomeScreen = ({ navigation }) => {
   const [filtered, setFiltered] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { filters, loadCachedFilters } = useFilterStore();
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+
+    loadCachedFilters();
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 3000);
+  };
 
   return (
-    <>
-      <Pressable onPress={() => navigation.navigate('Login')}>
-        <Text>Login</Text>
-      </Pressable>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
       {filtered ? (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <Fragment>
           {HOMEDATA.map(({ id, headerTitle, subTitle }) => {
             return (
               <HomeRecipeCard
@@ -24,11 +40,11 @@ const HomeScreen = ({ navigation }) => {
               />
             );
           })}
-        </ScrollView>
+        </Fragment>
       ) : (
-        <FilterProgressSteps setFiltered={setFiltered} />
+        <FilterProgressSteps filters={filters} />
       )}
-    </>
+    </ScrollView>
   );
 };
 

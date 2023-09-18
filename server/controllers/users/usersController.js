@@ -1,4 +1,11 @@
-const { Users } = require('../../models');
+const {
+  Allergies,
+  CookingTimes,
+  Cuisines,
+  MealTypes,
+  Preferences,
+  Users,
+} = require('../../models');
 const bcryptjs = require('bcryptjs');
 const { generateUniqueUsername } = require('../../lib');
 
@@ -204,4 +211,67 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { bulkUsers, create, list, login, paginatedList, show };
+// get filters data
+const filters = async (req, res, next) => {
+  let resourceLastModified = new Date();
+  try {
+    const clientLastModified = new Date(req.headers['if-modified-since']);
+    if (clientLastModified >= resourceLastModified) {
+      res.status(304).end();
+    } else {
+      const cuisines = await Cuisines.find().select('_id name');
+      const cookingTimes = await CookingTimes.find().select('_id name time');
+      const mealtypes = await MealTypes.find().select('_id name');
+      const preferences = await Preferences.find().select('_id name');
+      const allergies = await Allergies.find().select('_id name');
+
+      resourceLastModified = new Date();
+
+      let filtersData = [
+        {
+          title: 'Meal Types',
+          data: mealtypes,
+        },
+        {
+          title: 'Cuisines',
+          data: cuisines,
+        },
+        {
+          title: 'Preferences',
+          data: preferences,
+        },
+        {
+          title: 'Cooking Times',
+          data: cookingTimes,
+        },
+        {
+          title: 'Allergies',
+          data: allergies,
+        },
+      ];
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `data filters retrieved successfully`,
+        status: 'success',
+        data: filtersData,
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+module.exports = {
+  bulkUsers,
+  create,
+  filters,
+  list,
+  login,
+  paginatedList,
+  show,
+};

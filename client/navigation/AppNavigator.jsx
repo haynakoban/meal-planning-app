@@ -24,13 +24,15 @@ import styles from '../styles/appNavigation';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  const { fetchApiData } = useFilterStore();
+  const { fetchApiData, loadCachedFilters } = useFilterStore();
   const { isLoggedIn, getUserInfo, userInfo } = useAuthStore();
 
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
 
   useEffect(() => {
+    loadCachedFilters();
+
     fetchApiData();
     getUserInfo();
   }, []);

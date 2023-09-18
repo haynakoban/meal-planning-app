@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useFilterStore = create((set) => ({
+  lastModified: null,
   filters: [
     {
       title: 'Meal Types',
@@ -34,63 +36,55 @@ const useFilterStore = create((set) => ({
 
   fetchApiData: async () => {
     try {
-      const mealTypesResponse = await axios.get('meals/types');
-      const cuisinesResponse = await axios.get('cuisines');
-      const preferencesResponse = await axios.get('preferences');
-      const cookingTimesResponse = await axios.get('cooking/times');
-      const allergiesResponse = await axios.get('allergies');
+      const { lastModified, filters } = useFilterStore.getState();
 
-      // if one is empty or missing the result return false, otherwise true.
-      const canSave = [
-        mealTypesResponse,
-        cuisinesResponse,
-        preferencesResponse,
-        cookingTimesResponse,
-        allergiesResponse,
-        mealTypesResponse.data,
-        cuisinesResponse.data,
-        preferencesResponse.data,
-        cookingTimesResponse.data,
-        allergiesResponse.data,
-      ].every(Boolean);
+      const response = await axios.get('users/auth/filters', {
+        headers: {
+          'If-Modified-Since': lastModified
+            ? lastModified.toUTCString()
+            : undefined,
+        },
+      });
 
-      if (canSave) {
-        set((state) => ({
-          filters: state.filters.map((filter) => {
-            switch (filter.title) {
-              case 'Meal Types':
-                return {
-                  ...filter,
-                  data: mealTypesResponse.data.data || [],
-                };
-              case 'Cuisines':
-                return {
-                  ...filter,
-                  data: cuisinesResponse.data.data || [],
-                };
-              case 'Preferences':
-                return {
-                  ...filter,
-                  data: preferencesResponse.data.data || [],
-                };
-              case 'Cooking Times':
-                return {
-                  ...filter,
-                  data: cookingTimesResponse.data.data || [],
-                };
-              case 'Allergies':
-                return {
-                  ...filter,
-                  data: allergiesResponse.data.data || [],
-                };
-              default:
-                return filter;
-            }
-          }),
-        }));
+      if (
+        response.status === 200 &&
+        filters[0].data.length === 0 &&
+        filters[1].data.length === 0 &&
+        filters[2].data.length === 0 &&
+        filters[3].data.length === 0 &&
+        filters[4].data.length === 0
+      ) {
+        const mergedFilters = response.data.data;
+
+        if (mergedFilters) {
+          set({ filters: mergedFilters, lastModified: new Date() });
+
+          // Store the updated data in AsyncStorage
+          await AsyncStorage.setItem('filters', JSON.stringify(mergedFilters));
+          await AsyncStorage.setItem(
+            'lastModified',
+            JSON.stringify(new Date())
+          );
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    }
+  },
+  loadCachedFilters: async () => {
+    try {
+      const cachedFilters = await AsyncStorage.getItem('filters');
+      const cachedLastModified = await AsyncStorage.getItem('lastModified');
+
+      if (cachedFilters && cachedLastModified) {
+        set({
+          filters: JSON.parse(cachedFilters),
+          lastModified: new Date(JSON.parse(cachedLastModified)),
+        });
+      }
+    } catch (error) {
+      // Handle errors when loading cached data
+      console.error('Error loading cached filters:', error);
     }
   },
   setFilteredData: (title, id) => {
