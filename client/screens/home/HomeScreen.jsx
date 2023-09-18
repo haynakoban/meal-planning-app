@@ -3,13 +3,14 @@ import { RefreshControl, ScrollView } from 'react-native';
 import HomeRecipeCard from '../../components/home/HomeRecipeCard';
 import { HOMEDATA } from '../../constants';
 import FilterProgressSteps from '../../components/modals/FilterProgressSteps';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import useFilterStore from '../../store/useFilterStore';
+import useAuthStore from '../../store/useAuthStore';
 
 const HomeScreen = ({ navigation }) => {
-  const [filtered, setFiltered] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  const { userInfo } = useAuthStore();
   const { filters, loadCachedFilters } = useFilterStore();
 
   const handleRefresh = () => {
@@ -29,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      {filtered ? (
+      {userInfo?.filtered ? (
         <Fragment>
           {HOMEDATA.map(({ id, headerTitle, subTitle }) => {
             return (

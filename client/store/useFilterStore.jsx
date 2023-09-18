@@ -108,6 +108,20 @@ const useFilterStore = create((set) => ({
       }
     });
   },
+  loadCachedFilteredData: async () => {
+    try {
+      const cachedFilteredData = await AsyncStorage.getItem('filtersData');
+
+      if (cachedFilteredData) {
+        set({
+          filteredData: JSON.parse(cachedFilteredData),
+        });
+      }
+    } catch (error) {
+      // Handle errors when loading cached data
+      console.error('Error loading cached filters:', error);
+    }
+  },
 }));
 
 export default useFilterStore;

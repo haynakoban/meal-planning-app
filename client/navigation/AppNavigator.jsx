@@ -24,16 +24,18 @@ import styles from '../styles/appNavigation';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  const { fetchApiData, loadCachedFilters } = useFilterStore();
-  const { isLoggedIn, getUserInfo, userInfo } = useAuthStore();
+  const { fetchApiData, loadCachedFilters, loadCachedFilteredData } =
+    useFilterStore();
+  const { isLoggedIn, getUserInfo } = useAuthStore();
 
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
 
   useEffect(() => {
     loadCachedFilters();
-
     fetchApiData();
+
+    loadCachedFilteredData();
     getUserInfo();
   }, []);
 
@@ -44,28 +46,7 @@ const AppNavigator = () => {
         headerTintColor: COLORS.primary,
       }}
     >
-      {!isLoggedIn ? (
-        <Fragment>
-          <Stack.Screen
-            name='Login'
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name='Sign Up'
-            component={SignUpScreen}
-            options={{
-              headerTitleAlign: 'center',
-              headerTitleStyle: styles.signUpHeaderTitleStyle,
-            }}
-          />
-          <Stack.Screen
-            name='Loading'
-            component={LoadingScreen}
-            options={{ headerShown: false }}
-          />
-        </Fragment>
-      ) : (
+      {isLoggedIn ? (
         <Fragment>
           <Stack.Screen
             name='BottomNavigation'
@@ -159,6 +140,27 @@ const AppNavigator = () => {
               headerTitleAlign: 'left',
               headerTitleStyle: styles.signUpHeaderTitleStyle,
             }}
+          />
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Stack.Screen
+            name='Login'
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='Sign Up'
+            component={SignUpScreen}
+            options={{
+              headerTitleAlign: 'center',
+              headerTitleStyle: styles.signUpHeaderTitleStyle,
+            }}
+          />
+          <Stack.Screen
+            name='Loading'
+            component={LoadingScreen}
+            options={{ headerShown: false }}
           />
         </Fragment>
       )}

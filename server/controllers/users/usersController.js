@@ -266,12 +266,50 @@ const filters = async (req, res, next) => {
   }
 };
 
+// patch filter field
+const modify = async (req, res, next) => {
+  try {
+    const { id, filtered } = req.body;
+
+    if (id && filtered) {
+      // Query the database to find the user by its unique ID
+      const user = await Users.findByIdAndUpdate(
+        id,
+        { filtered: true },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({
+          message: 'Item not found',
+          status: 'error occurred',
+          data: {},
+        });
+      }
+
+      // Return the user data
+      res.json({
+        message: 'User updated successfully',
+        status: 'success',
+        data: user,
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkUsers,
   create,
   filters,
   list,
   login,
+  modify,
   paginatedList,
   show,
 };

@@ -7,6 +7,7 @@ const {
   checkSingleUniquenessMiddleware,
 } = require('../middlewares');
 
+// get method - get all users
 // post method - create new user
 router
   .route('/')
@@ -31,7 +32,11 @@ router.route('/list').get(usersController.paginatedList);
 router.route('/auth/login').post(usersController.login);
 
 // get method - get filters data
-router.route('/auth/filters').get(usersController.filters);
+// patch method - update filtered field
+router
+  .route('/auth/filters')
+  .get(usersController.filters)
+  .patch(usersController.modify);
 
 // get method - get single user
 router.route('/:id').get(usersController.show);

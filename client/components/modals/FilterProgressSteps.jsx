@@ -1,14 +1,17 @@
 import { View, Text } from 'react-native';
-
+import { Button } from 'react-native-paper';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useFilterStore from '../../store/useFilterStore';
+import useAuthStore from '../../store/useAuthStore';
 import { COLORS, FONT } from '../../constants';
 import styles from '../../styles/filterDropDown';
-import useFilterStore from '../../store/useFilterStore';
-import { Button } from 'react-native-paper';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from '../../lib/axiosConfig';
 
 const FilterProgressSteps = ({ filters }) => {
-  // const { filters, filteredData, setFilteredData } = useFilterStore();
+  const { userInfo, setUserInfo } = useAuthStore();
+  const { filteredData, setFilteredData } = useFilterStore();
   // const fats = [10, 15, 20];
   // const carbs = [30, 35, 40];
   // const fibers = [5, 7, 9];
@@ -50,8 +53,17 @@ const FilterProgressSteps = ({ filters }) => {
   // callback props of progress step
   const onPrevStep = () => {};
 
-  const onSubmitSteps = () => {
-    // setFiltered(true);
+  const onSubmitSteps = async () => {
+    await AsyncStorage.setItem('filtersData', JSON.stringify(filteredData));
+
+    const response = await axios.patch('users/auth/filters', {
+      id: userInfo._id,
+      filtered: true,
+    });
+
+    if (response.data.status === 'success') {
+      setUserInfo(userInfo._id);
+    }
   };
 
   return (
@@ -91,21 +103,35 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      return (
-                        <Ionicons name='checkbox' size={24} color='black' />
-                      );
+                      if (filteredData['Meal Types']?.includes(item._id)) {
+                        return (
+                          <Ionicons name='checkbox' size={24} color='black' />
+                        );
+                      } else {
+                        return (
+                          <MaterialCommunityIcons
+                            name='checkbox-blank-outline'
+                            size={24}
+                            color='black'
+                          />
+                        );
+                      }
                     }}
                     contentStyle={[buttonContent, pd]}
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: FONT.medium,
+                        fontFamily: filteredData['Meal Types']?.includes(
+                          item._id
+                        )
+                          ? FONT.semiBold
+                          : FONT.medium,
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => console.log('yo')}
+                    onPress={() => setFilteredData('Meal Types', item._id)}
                   >
-                    {item.name}
+                    {item?.time || item.name}
                   </Button>
                 );
               })
@@ -146,21 +172,33 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      return (
-                        <Ionicons name='checkbox' size={24} color='black' />
-                      );
+                      if (filteredData['Cuisines']?.includes(item._id)) {
+                        return (
+                          <Ionicons name='checkbox' size={24} color='black' />
+                        );
+                      } else {
+                        return (
+                          <MaterialCommunityIcons
+                            name='checkbox-blank-outline'
+                            size={24}
+                            color='black'
+                          />
+                        );
+                      }
                     }}
                     contentStyle={[buttonContent, pd]}
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: FONT.medium,
+                        fontFamily: filteredData['Cuisines']?.includes(item._id)
+                          ? FONT.semiBold
+                          : FONT.medium,
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => console.log('yo')}
+                    onPress={() => setFilteredData('Cuisines', item._id)}
                   >
-                    {item.name}
+                    {item?.time || item.name}
                   </Button>
                 );
               })
@@ -201,21 +239,35 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      return (
-                        <Ionicons name='checkbox' size={24} color='black' />
-                      );
+                      if (filteredData['Preferences']?.includes(item._id)) {
+                        return (
+                          <Ionicons name='checkbox' size={24} color='black' />
+                        );
+                      } else {
+                        return (
+                          <MaterialCommunityIcons
+                            name='checkbox-blank-outline'
+                            size={24}
+                            color='black'
+                          />
+                        );
+                      }
                     }}
                     contentStyle={[buttonContent, pd]}
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: FONT.medium,
+                        fontFamily: filteredData['Preferences']?.includes(
+                          item._id
+                        )
+                          ? FONT.semiBold
+                          : FONT.medium,
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => console.log('yo')}
+                    onPress={() => setFilteredData('Preferences', item._id)}
                   >
-                    {item.name}
+                    {item?.time || item.name}
                   </Button>
                 );
               })
@@ -256,21 +308,35 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      return (
-                        <Ionicons name='checkbox' size={24} color='black' />
-                      );
+                      if (filteredData['Allergies']?.includes(item._id)) {
+                        return (
+                          <Ionicons name='checkbox' size={24} color='black' />
+                        );
+                      } else {
+                        return (
+                          <MaterialCommunityIcons
+                            name='checkbox-blank-outline'
+                            size={24}
+                            color='black'
+                          />
+                        );
+                      }
                     }}
                     contentStyle={[buttonContent, pd]}
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: FONT.medium,
+                        fontFamily: filteredData['Allergies']?.includes(
+                          item._id
+                        )
+                          ? FONT.semiBold
+                          : FONT.medium,
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => console.log('yo')}
+                    onPress={() => setFilteredData('Allergies', item._id)}
                   >
-                    {item.name}
+                    {item?.time || item.name}
                   </Button>
                 );
               })
