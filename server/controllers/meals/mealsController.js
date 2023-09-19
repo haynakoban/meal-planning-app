@@ -1,4 +1,4 @@
-const { Meals, MealTypes } = require('../../models');
+const { Meals, MealTypes, Recipes } = require('../../models');
 
 // bulk meal types
 const bulkMealTypes = async (req, res, next) => {
@@ -132,6 +132,67 @@ const paginatedList = async (req, res, next) => {
   }
 };
 
+// get the paginated list of meals
+const paginatedMealTypes = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 10;
+
+  // Get the total count of recipes in the collection (for calculating total pages)
+  const totalItems = await Recipes.countDocuments();
+
+  // Calculate the total number of pages based on the total count and items per page
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  try {
+    if (req.query.title === 'new recipes' || !req.query.title) {
+      const recipes = await Recipes.find()
+        .sort({ updatedAt: -1 })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .populate({ path: 'user_id', select: 'fullname username' })
+        .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+        .select('-createAt -__v');
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `${recipes.length} items retrieved successfully`,
+        status: 'success',
+        currentPage: page,
+        totalPages,
+        data: recipes,
+      });
+    } else {
+      const mealTypes = await MealTypes.findOne({
+        name: req.query.title,
+      }).select('_id');
+      const recipes = await Recipes.find({
+        meal_types: { $in: [mealTypes?._id] },
+      })
+        .sort({ updatedAt: -1 })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .populate({ path: 'user_id', select: 'fullname username' })
+        .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+        .select('-createAt -__v');
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `${recipes.length} items retrieved successfully`,
+        status: 'success',
+        currentPage: page,
+        totalPages,
+        data: recipes,
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 // get single meal
 const show = async (req, res, next) => {
   const { id } = req.params;
@@ -170,5 +231,6 @@ module.exports = {
   list,
   listMealTypes,
   paginatedList,
+  paginatedMealTypes,
   show,
 };

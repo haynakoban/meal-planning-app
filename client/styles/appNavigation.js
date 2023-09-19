@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     letterSpacing: 0.1,
     marginLeft: -16,
+    textTransform: 'capitalize',
   },
   arHeaderTitleContainerStyle: {
     alignItems: 'flex-start',

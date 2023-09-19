@@ -79,7 +79,7 @@ const HomeScreen = ({ navigation }) => {
               <View
                 style={[
                   headerContainer,
-                  { marginTop: title === 'recommended' ? 0 : 30 },
+                  { marginTop: title === 'new recipes' ? 0 : 30 },
                 ]}
               >
                 <Text style={[headerTitleStyle]}>{title}</Text>

@@ -58,8 +58,8 @@ export const data = [
 export const homeData = [
   {
     id: 1,
-    headerTitle: 'Recommended Recipes',
-    subTitle: 'Recommended',
+    headerTitle: 'New Recipes',
+    subTitle: 'New Recipes',
   },
   {
     id: 2,

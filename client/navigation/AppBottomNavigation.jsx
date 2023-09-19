@@ -144,7 +144,13 @@ const AppBottomNavigation = () => {
                 style={{ marginRight: SIZES.sm }}
                 onPress={() => navigation.navigate('Search')}
               />
-              <Ionicons name='filter' size={26} color={COLORS.white} />
+              <Ionicons
+                name='filter'
+                size={26}
+                color={COLORS.white}
+                onPress={showModal}
+              />
+              <FilterModal visible={visible} hideModal={hideModal} />
             </View>
           ),
         })}

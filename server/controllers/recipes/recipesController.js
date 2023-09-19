@@ -164,7 +164,7 @@ const paginatedListMealTypes = async (req, res, next) => {
         };
       });
 
-      const singleData = { title: 'recommended', data: singleResult };
+      const singleData = { title: 'new recipes', data: singleResult };
 
       // get all the meal types
       const mealTypes = await MealTypes.find().select('_id name');

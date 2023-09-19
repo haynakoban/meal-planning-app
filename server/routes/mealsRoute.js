@@ -23,6 +23,9 @@ router.route('/list').get(mealsController.paginatedList);
 // get method - get the list of meal types
 router.route('/types').get(mealsController.listMealTypes);
 
+// get method - get the list of meal types
+router.route('/types/list').get(mealsController.paginatedMealTypes);
+
 // post method - create multiple meal types
 router
   .route('/types/bulk')

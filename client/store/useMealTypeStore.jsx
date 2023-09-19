@@ -6,6 +6,53 @@ const useMealTypeStore = create((set) => ({
   value: [],
   items: [],
 
+  mealTypesData: [],
+  mealTypesTitle: '',
+
+  fetchMealTypes: async (title, page) => {
+    try {
+      const res = await axios.get('meals/types/list', {
+        params: { title: title, page: page },
+      });
+
+      if (res.data?.status === 'success') {
+        const recipes = res.data?.data;
+
+        const results = recipes.map((recipe) => {
+          const r = recipe;
+          const feedbacks = recipe.feedbacks || [];
+          const totalFeedbacks = feedbacks.length;
+          const ratingsSum = feedbacks.reduce(
+            (sum, feedback) => sum + (feedback.rating || 0),
+            0
+          );
+          return {
+            recipes: r,
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        });
+
+        set((state) => {
+          if (state.mealTypesTitle === title) {
+            return {
+              mealTypesTitle: state.mealTypesTitle,
+              mealTypesData: [...state.mealTypesData, ...results],
+            };
+          } else {
+            return {
+              mealTypesTitle: title,
+              mealTypesData: results,
+            };
+          }
+        });
+      }
+    } catch (error) {
+      // Handle errors when loading cached data
+      console.error('Error loading cached filters:', error);
+    }
+  },
+
   setOpen: (open) => set({ open }),
   setValue: (callback) =>
     set((state) => ({

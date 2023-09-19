@@ -21,6 +21,7 @@ import useRecipeStore from '../store/useRecipeStore';
 
 import { COLORS, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
+import { FilterModal } from '../components/general/FilterDropdown';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,10 @@ const AppNavigator = () => {
 
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   useEffect(() => {
     loadCachedFilters();
@@ -73,7 +78,13 @@ const AppNavigator = () => {
                     style={styles.mr}
                     onPress={() => navigation.navigate('Search')}
                   />
-                  <Ionicons name='filter' size={26} color={COLORS.white} />
+                  <Ionicons
+                    name='filter'
+                    size={26}
+                    color={COLORS.white}
+                    onPress={showModal}
+                  />
+                  <FilterModal visible={visible} hideModal={hideModal} />
                 </View>
               ),
             })}
