@@ -8,17 +8,8 @@ import useIngredientsStore from '../../store/useIngredientsStore';
 const ModifyIngredientModal = ({ visible, data, onClose }) => {
   function convertMixedNumberToDecimal(input) {
     const cleanInput = input.replace(/[^\d\s/]/g, ''); // Remove all non-digit, non-space, non-slash characters
-    const parts = cleanInput.split(/[\s/]+/);
-
-    const wholeNumber = parseFloat(parts[0]);
-    const numerator = parseFloat(parts[1]);
-    const denominator = parseFloat(parts[2]);
-    const decimal = wholeNumber + numerator / denominator;
-
-    return decimal;
+    return cleanInput;
   }
-
-  const selected = useIngredientsStore((state) => state.selected);
 
   const useIngredientsStoreSelected = useIngredientsStore((state) =>
     state.filteredData(data.id)

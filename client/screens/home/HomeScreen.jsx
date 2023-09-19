@@ -72,6 +72,7 @@ const HomeScreen = ({ navigation }) => {
                   reviews={item?.reviews || 0}
                   ratings={item?.ratings || 0}
                   image={item?.recipes?.image}
+                  id={item?.recipes?._id}
                 />
               );
             }}

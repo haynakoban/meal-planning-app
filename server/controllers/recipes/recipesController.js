@@ -52,6 +52,8 @@ const list = async (req, res, next) => {
     const recipes = await Recipes.find()
       .populate({ path: 'user_id', select: 'fullname username' })
       .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .populate('cooking_time')
+      .populate('ingredients.ingredients_id')
       .select('-createAt -__v');
 
     // Return the paginated data along with pagination information
@@ -105,6 +107,8 @@ const paginatedList = async (req, res, next) => {
         .limit(perPage)
         .populate({ path: 'user_id', select: 'fullname username' })
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+        .populate({ path: 'cooking_time', select: 'time' })
+        .populate('cooking_time')
         .select('-createAt -__v');
 
       // Return the paginated data along with pagination information
@@ -147,6 +151,7 @@ const paginatedListMealTypes = async (req, res, next) => {
         .limit(perPage)
         .populate({ path: 'user_id', select: 'fullname username' })
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+        .populate('cooking_time')
         .select('-createAt -__v');
 
       const singleResult = recipe.map((recipe) => {
@@ -180,6 +185,7 @@ const paginatedListMealTypes = async (req, res, next) => {
               path: 'feedbacks',
               select: 'comment rating foodItemType',
             })
+            .populate('cooking_time')
             .select('-createAt -__v');
 
           const results = data.map((recipe) => {
@@ -230,6 +236,8 @@ const show = async (req, res, next) => {
     const recipe = await Recipes.findOne({ _id: id })
       .populate({ path: 'user_id', select: 'fullname username' })
       .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .populate('cooking_time')
+      .populate('ingredients.ingredients_id')
       .select('-createAt -__v');
 
     if (!recipe) {

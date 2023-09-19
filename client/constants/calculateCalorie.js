@@ -1,15 +1,29 @@
-const calculate = (fat, carbs, fiber, protein, sugars, sodium) => {
-  let calories =
-    9 * fat + 4 * carbs + 4 * protein + 4 * fiber + 4 * sugars + 0.01 * sodium;
+const calculate = (ingredient) => {
+  const {
+    fat_total_g,
+    carbohydrates_total_g,
+    fiber_g,
+    protein_g,
+    sugar_g,
+    sodium_mg,
+  } = ingredient;
+
+  const calories =
+    9 * fat_total_g +
+    4 * carbohydrates_total_g +
+    4 * protein_g +
+    4 * fiber_g +
+    4 * sugar_g +
+    0.01 * sodium_mg;
 
   return {
-    calories,
-    fat,
-    carbs,
-    fiber,
-    protein,
-    sugars,
-    sodium,
+    calories: Math.round(calories * 100) / 100,
+    fat: fat_total_g,
+    carbs: carbohydrates_total_g,
+    fiber: fiber_g,
+    protein: protein_g,
+    sugars: sugar_g,
+    sodium: sodium_mg,
   };
 };
 
@@ -49,25 +63,11 @@ const calculateDailyValue = (nutritionObject) => {
   return dv;
 };
 
-export const calculateCalorie = (
-  fats,
-  carbs,
-  fibers,
-  proteins,
-  sugars,
-  sodiums
-) => {
+export const calculateCalorie = (ingredients) => {
   let nutritionObjects = [];
 
-  for (let i = 0; i < fats.length; i++) {
-    let nutritionObject = calculate(
-      fats[i],
-      carbs[i],
-      fibers[i],
-      proteins[i],
-      sugars[i],
-      sodiums[i]
-    );
+  for (const ingredient of ingredients) {
+    let nutritionObject = calculate(ingredient);
     nutritionObjects.push(nutritionObject);
   }
 
