@@ -4,15 +4,24 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 
 import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
-// import useIngredientsStore from '../../store/useIngredientsStore';
+import useReviewsStore from '../../store/useReviewStore';
 
 const ReviewModal = ({ visible, data, onClose, type }) => {
+  const personal = useReviewsStore((state) => state.personal);
+  const fetchPersonalReview = useReviewsStore(
+    (state) => state.fetchPersonalReview
+  );
+
+  useEffect(() => {
+    fetchPersonalReview(data.foodItem, data.user_id);
+  }, []);
+
   const [form, setForm] = useState({
     type: type,
     user_id: data.user_id,
-    id: data.id,
-    ratings: 5,
-    comment: '',
+    foodItem: data.foodItem,
+    ratings: personal[0]?.rating || 5,
+    comment: personal[0]?.comment || '',
   });
 
   function ratingCompleted(rating) {
@@ -20,7 +29,12 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
   }
 
   function submitReview() {
-    console.log(form);
+    if (personal?.length > 0) {
+      console.log('Update Review: ', form);
+    } else {
+      console.log('Post Form: ', form);
+    }
+    onClose(false);
   }
 
   return (
@@ -74,7 +88,7 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
             defaultRating={5}
             imageSize={30}
             ratingColor='orange'
-            startingValue={5}
+            startingValue={personal[0]?.rating || 5}
             onStartRating={ratingCompleted}
             onSwipeRating={ratingCompleted}
             onFinishRating={ratingCompleted}

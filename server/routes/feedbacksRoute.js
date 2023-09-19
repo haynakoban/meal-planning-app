@@ -21,7 +21,10 @@ router
 // get method - get the paginated list of feedbacks
 router.route('/list').get(feedbacksController.paginatedList);
 
+// get method - all feedback with the fotItem id
+router.route('/reviews/:id').get(feedbacksController.showReviews);
+
 // get method - get single feedback
-router.route('/:id').get(feedbacksController.show);
+router.route('/:id/:user_id').get(feedbacksController.show);
 
 module.exports = router;

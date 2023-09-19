@@ -97,11 +97,46 @@ const paginatedList = async (req, res, next) => {
 
 // get single feedback
 const show = async (req, res, next) => {
+  const { id, user_id } = req.params;
+
+  try {
+    // Query the database to find the feedback by its unique ID
+    const feedback = await Feedbacks.find({ foodItem: id, user_id });
+    if (!feedback) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the feedback data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: feedback,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// get single feedback
+const showReviews = async (req, res, next) => {
   const { id } = req.params;
 
   try {
     // Query the database to find the feedback by its unique ID
-    const feedback = await Feedbacks.findOne({ _id: id });
+    const feedback = await Feedbacks.find({ foodItem: id })
+      .populate({
+        path: 'user_id',
+        select: 'username',
+      })
+      .select('-createAt -__v');
 
     if (!feedback) {
       return res.status(404).json({
@@ -132,4 +167,5 @@ module.exports = {
   list,
   paginatedList,
   show,
+  showReviews,
 };

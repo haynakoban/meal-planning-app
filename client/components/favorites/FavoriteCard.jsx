@@ -14,6 +14,7 @@ const FavoriteCard = ({
   reviews = 0,
   ratings = 0,
   image = '',
+  id,
 }) => {
   const navigation = useNavigation();
 
@@ -32,7 +33,7 @@ const FavoriteCard = ({
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('Recipe', { id: 1 })}
+      onPress={() => navigation.navigate('Recipe', { id })}
       style={card}
     >
       <Card>

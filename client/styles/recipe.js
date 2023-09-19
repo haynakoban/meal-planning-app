@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 16 / 9,
     objectFit: 'cover',
+    height: 'auto',
   },
   label: {
     fontFamily: FONT.regular,

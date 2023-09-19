@@ -135,7 +135,7 @@ const paginatedList = async (req, res, next) => {
 // get the paginated list of meals
 const paginatedMealTypes = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
-  const perPage = 10;
+  const perPage = 24;
 
   // Get the total count of recipes in the collection (for calculating total pages)
   const totalItems = await Recipes.countDocuments();

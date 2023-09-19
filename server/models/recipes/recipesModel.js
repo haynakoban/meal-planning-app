@@ -10,7 +10,7 @@ const ingredients = {
     required: true,
   },
   measurement: { type: String, required: true },
-  amount: { type: Number, required: true },
+  amount: { type: String, required: true },
   description: { type: String, required: false },
 };
 
@@ -51,11 +51,11 @@ const cuisines = [
   },
 ];
 
-const cooking_time = {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'Cooking_Times',
-  required: true,
-};
+// const cooking_time = {
+//   type: mongoose.Schema.Types.ObjectId,
+//   ref: 'Cooking_Times',
+//   required: true,
+// };
 
 const feedbacks = [
   {
@@ -74,7 +74,10 @@ const recipesSchema = new mongoose.Schema({
   meal_types,
   preferences,
   cuisines,
-  cooking_time,
+  cooking_time: {
+    type: Number,
+    required: true,
+  },
   feedbacks,
   ingredients,
   privacy: { type: String, required: true },

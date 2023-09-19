@@ -92,7 +92,11 @@ const FavoritesScreen = ({ navigation }) => {
     <FlatList
       showsVerticalScrollIndicator={false}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          style={{ zIndex: 999 }}
+        />
       }
       style={container}
       data={favorites}
@@ -104,6 +108,7 @@ const FavoritesScreen = ({ navigation }) => {
             reviews={item?.reviews || 0}
             ratings={item?.ratings || 0}
             image={item?.recipes?.image}
+            id={item?.recipes?._id}
             key={item?._id}
           />
         );

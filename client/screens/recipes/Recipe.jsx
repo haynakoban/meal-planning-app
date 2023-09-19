@@ -1,57 +1,91 @@
-import { Fragment } from 'react';
 import { Image, ScrollView, View, Text, Pressable } from 'react-native';
-import { AntDesign, Ionicons, Feather } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 import { COLORS, SIZES } from '../../constants';
 import styles from '../../styles/recipe';
-import styles2 from '../../styles/homeRecipes';
-import { recipe as data, reviews, DATA } from '../../constants';
 
-import FavoriteCard from '../../components/favorites/FavoriteCard';
 import ReviewCard from '../../components/reviews/ReviewCard';
 
 import { useState, useEffect } from 'react';
 import ReviewModal from '../../components/modals/ReviewModal';
 import useRecipeStore from '../../store/useRecipeStore';
+import useReviewsStore from '../../store/useReviewStore';
 import NotFound from '../../assets/images/image-not-found.jpg';
 import RatingCard from '../../components/ratings/RatingCard';
 import useAuthStore from '../../store/useAuthStore';
+import { calculateCalorie } from '../../constants';
+import { API } from '../../constants/API';
+import axios from '../../lib/axiosConfig';
 
 const Recipe = ({ route }) => {
   const userInfo = useAuthStore((state) => state.userInfo);
   const recipe_id = route.params.id;
   const recipe = useRecipeStore((state) => state.recipe);
   const singleRecipe = useRecipeStore((state) => state.singleRecipes);
+  const [nutritionFacts, setNutritionFacts] = useState({});
+  const reviews = useReviewsStore((state) => state.reviews);
+  const fetchReviewsData = useReviewsStore((state) => state.fetchReviewsData);
 
   useEffect(() => {
     singleRecipe(recipe_id);
+    fetchReviewsData(recipe_id);
   }, []);
-
-  const [reviewsToShow, setReviewsToShow] = useState([]);
-  const reviewsPerPage = 2;
-  const [count, setCount] = useState(1);
-  const loopThroughReviews = (count) => {
-    for (
-      let i = count * reviewsPerPage - reviewsPerPage;
-      i < reviewsPerPage * count;
-      i++
-    ) {
-      if (reviews[i] !== undefined) {
-        setReviewsToShow((prev) => [...prev, reviews[i]]);
-      }
-    }
-  };
 
   useEffect(() => {
-    setCount((prevCount) => prevCount + 1);
-    loopThroughReviews(count);
-  }, []);
-  const handleShowMoreReviews = () => {
-    setCount((prevCount) => prevCount + 1);
-    loopThroughReviews(count);
+    setTimeout(() => {
+      let query = '';
+      for (let i = 0; i < recipe?.ingredients?.length; i++) {
+        query +=
+          recipe?.ingredients[i].amount +
+          recipe?.ingredients[i].measurement +
+          ' ' +
+          recipe?.ingredients[i].ingredients_id[i]?.name +
+          ' ' +
+          recipe?.ingredients[i].description +
+          ' ';
+      }
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://api.api-ninjas.com/v1/nutrition?query=${query}`,
+            {
+              headers: {
+                'X-Api-Key': API,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          setNutritionFacts(calculateCalorie(response.data));
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+      fetchData();
+    }, 500);
+  }, [recipe]);
+
+  const [reviewsToShow, setReviewsToShow] = useState([]);
+  const [reviewsPerPage, setReviewsPerPage] = useState(0);
+  const loopThroughReviews = (count) => {
+    let arr = [];
+    for (let i = 0; i < count; i++) {
+      if (reviews[i] !== undefined) {
+        arr.push(reviews[i]);
+      }
+    }
+    setReviewsToShow(arr);
   };
 
-  const { cardWrapper, cardContentWrapper } = styles2;
+  const handleShowMoreReviews = () => {
+    setReviewsPerPage((prev) => prev + 4);
+    loopThroughReviews(reviewsPerPage + 4);
+  };
+
+  const handleShowLessReviews = () => {
+    setReviewsPerPage(0);
+    loopThroughReviews(0);
+  };
 
   const {
     bigDivider,
@@ -66,7 +100,6 @@ const Recipe = ({ route }) => {
     label,
     mb,
     nutritionWrapper,
-    ratingsStyle,
     reviewTab,
     text,
     textSm,
@@ -89,7 +122,10 @@ const Recipe = ({ route }) => {
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps='always'
+    >
       <View style={container}>
         {/* {recipe?.image ? (
           <Image src={recipe?.image} style={imageStyle} />
@@ -103,21 +139,18 @@ const Recipe = ({ route }) => {
         <View style={divider}></View>
         <View style={wrapper}>
           <View style={reviewTab}>
-            <View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <RatingCard rating={calculated / recipe?.feedbacks?.length} />
-                <Text style={text}>
-                  {(calculated / recipe?.feedbacks?.length).toFixed(1)}
-                </Text>
-              </View>
-              <Text style={text}>{recipe?.feedbacks?.length} Reviews</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <RatingCard rating={calculated / recipe?.feedbacks?.length} />
+              <Text style={text}>
+                {(calculated / recipe?.feedbacks?.length).toFixed(1)}
+              </Text>
             </View>
             <View style={flexRow}>
               <Ionicons
@@ -125,7 +158,7 @@ const Recipe = ({ route }) => {
                 size={SIZES.xl}
                 color={COLORS.black}
               />
-              <Text>{recipe.cooking_time} minutes</Text>
+              <Text>{recipe?.cooking_time} minutes</Text>
             </View>
           </View>
         </View>
@@ -146,7 +179,8 @@ const Recipe = ({ route }) => {
           {recipe?.ingredients?.map((item, index) => {
             return (
               <Text key={index} style={text}>
-                - {item.amount} {item.measurement} {item.ingredient}
+                - {item.amount} {item.measurement}{' '}
+                {item.ingredients_id[index]?.name}
                 {item?.description == '' ? '' : ' (' + item.description + ')'}
               </Text>
             );
@@ -176,26 +210,80 @@ const Recipe = ({ route }) => {
             <Text style={textSm}>% DAILY VALUE</Text>
           </View>
           <View style={dividerBlue}></View>
-          <View>
-            {data?.facts?.map((item, i) => {
-              return (
-                <Fragment key={i}>
-                  <View style={flexRowBetweenInside}>
-                    <Text style={text}>
-                      <Text style={fwb}>{item.name}</Text>: {item.value}
-                      {item.measurement}
-                    </Text>
-                    <Text style={text}>{item.daily}%</Text>
-                  </View>
-                  <View style={dividerBlue}></View>
-                </Fragment>
-              );
-            })}
-          </View>
+          {nutritionFacts && (
+            <View>
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Calories</Text>:{' '}
+                  {nutritionFacts?.calories?.value}
+                </Text>
+                <Text style={text}>
+                  {nutritionFacts?.calories?.dailyValue}%
+                </Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Fat</Text>: {nutritionFacts?.fat?.value}g
+                </Text>
+                <Text style={text}>{nutritionFacts?.fat?.dailyValue}%</Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Carbs</Text>: {nutritionFacts?.carbs?.value}
+                  g
+                </Text>
+                <Text style={text}>{nutritionFacts?.carbs?.dailyValue}%</Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Fiber</Text>: {nutritionFacts?.fiber?.value}
+                  g
+                </Text>
+                <Text style={text}>{nutritionFacts?.fiber?.dailyValue}%</Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Protein</Text>:{' '}
+                  {nutritionFacts?.protein?.value}g
+                </Text>
+                <Text style={text}>{nutritionFacts?.protein?.dailyValue}%</Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Sugars</Text>:{' '}
+                  {nutritionFacts?.sugars?.value}g
+                </Text>
+                <Text style={text}></Text>
+              </View>
+              <View style={dividerBlue}></View>
+
+              <View style={flexRowBetweenInside}>
+                <Text style={text}>
+                  <Text style={fwb}>Sodium</Text>:{' '}
+                  {nutritionFacts?.sodium?.value}
+                  mg
+                </Text>
+                <Text style={text}>{nutritionFacts?.sodium?.dailyValue}%</Text>
+              </View>
+              <View style={dividerBlue}></View>
+            </View>
+          )}
         </View>
         <View style={bigDivider}></View>
         <View style={wrapper}>
-          <Text style={textMedium}>Reviews</Text>
+          <Text style={textMedium}>
+            Reviews ({recipe?.feedbacks?.length || 0})
+          </Text>
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
@@ -210,19 +298,32 @@ const Recipe = ({ route }) => {
         </View>
         <View style={divider}></View>
         <ReviewCard reviewsToRender={reviewsToShow} />
-        <Pressable
-          onPress={handleShowMoreReviews}
-          style={{ paddingVertical: 20 }}
-        >
-          <Text style={[text, { textAlign: 'center' }]}>Show more</Text>
-        </Pressable>
+        {reviewsPerPage < reviews?.length ? (
+          <Pressable
+            onPress={handleShowMoreReviews}
+            style={{ paddingVertical: 20 }}
+          >
+            <Text style={[text, { textAlign: 'center' }]}>
+              {reviewsPerPage == 0 ? 'Show Reviews' : 'Show  More'}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={handleShowLessReviews}
+            style={{ paddingVertical: 20 }}
+          >
+            <Text style={[text, { textAlign: 'center' }]}>Show Less</Text>
+          </Pressable>
+        )}
       </View>
-      <ReviewModal
-        visible={modalVisible}
-        data={{ user_id: userInfo?._id, recipe_id }}
-        type='recipe'
-        onClose={closeModal}
-      />
+      {modalVisible && (
+        <ReviewModal
+          visible={modalVisible}
+          data={{ user_id: userInfo?._id, foodItem: recipe_id }}
+          type='recipe'
+          onClose={closeModal}
+        />
+      )}
     </ScrollView>
   );
 };

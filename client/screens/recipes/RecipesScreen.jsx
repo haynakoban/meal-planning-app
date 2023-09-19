@@ -63,13 +63,14 @@ const RecipesScreen = () => {
             reviews={item?.reviews || 0}
             ratings={item?.ratings || 0}
             image={item?.recipes?.image}
+            id={item?.recipes?._id}
             key={item?._id}
           />
         );
       }}
       numColumns={2}
       onEndReached={fetchData}
-      onEndReachedThreshold={0.1}
+      onEndReachedThreshold={0.2}
       ListFooterComponent={renderFooter}
     />
   );
