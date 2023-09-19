@@ -5,9 +5,16 @@ import { AntDesign } from '@expo/vector-icons';
 import styles from '../../styles/favorites';
 
 import { useNavigation } from '@react-navigation/native';
+
 import { SIZES } from '../../constants';
 
-const FavoriteCard = ({ name, username, reviews = 0, ratings = 0, image }) => {
+const FavoriteCard = ({
+  name,
+  username,
+  reviews = 0,
+  ratings = 0,
+  image = '',
+}) => {
   const navigation = useNavigation();
 
   const {
@@ -29,7 +36,16 @@ const FavoriteCard = ({ name, username, reviews = 0, ratings = 0, image }) => {
       style={card}
     >
       <Card>
-        <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
+        <Card.Cover
+          source={
+            !image
+              ? require('../../assets/images/image-not-found.jpg')
+              : {
+                  uri: image,
+                }
+          }
+          style={[mb, cardCover]}
+        />
         <Card.Content>
           <Text
             variant='titleLarge'

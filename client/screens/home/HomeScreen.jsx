@@ -51,55 +51,63 @@ const HomeScreen = ({ navigation }) => {
       }
     >
       {userInfo?.filtered ? (
-        <SectionList
-          scrollEnabled={false}
-          sections={homeRecipes}
-          keyExtractor={(item, index) =>
-            `${item?.recipes?._id.toString()}-${index}`
-          }
-          renderItem={({ item }) => {
-            return (
-              <FavoriteCard
-                name={item?.recipes?.name}
-                username={item?.recipes?.user_id?.username || 'anon'}
-                reviews={item?.reviews || 0}
-                ratings={item?.ratings || 0}
-                image={item?.recipes?.image}
-              />
-            );
-          }}
-          renderSectionHeader={({ section: { title } }) => (
-            <View
-              style={[
-                headerContainer,
-                { marginTop: title === 'recommended' ? 0 : 30 },
-              ]}
-            >
-              <Text style={[headerTitleStyle]}>{title}</Text>
-              <Button
-                mode='text'
-                icon={() => (
-                  <FontAwesome
-                    name='angle-right'
-                    size={SIZES.lg}
-                    color={COLORS.black}
-                  />
-                )}
-                contentStyle={headerButtonContent}
-                style={headerButtonStyle}
-                textColor={COLORS.black}
-                labelStyle={headerButtonLabel}
-                onPress={() => {
-                  navigation.navigate('Show All Recipes', {
-                    title: title,
-                  });
-                }}
+        homeRecipes[0]?.data?.length === 0 ? (
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={[headerTitleStyle]}>
+              No content available, please reload
+            </Text>
+          </View>
+        ) : (
+          <SectionList
+            scrollEnabled={false}
+            sections={homeRecipes}
+            keyExtractor={(item, index) =>
+              `${item?.recipes?._id.toString()}-${index}`
+            }
+            renderItem={({ item }) => {
+              return (
+                <FavoriteCard
+                  name={item?.recipes?.name}
+                  username={item?.recipes?.user_id?.username || 'anon'}
+                  reviews={item?.reviews || 0}
+                  ratings={item?.ratings || 0}
+                  image={item?.recipes?.image}
+                />
+              );
+            }}
+            renderSectionHeader={({ section: { title } }) => (
+              <View
+                style={[
+                  headerContainer,
+                  { marginTop: title === 'recommended' ? 0 : 30 },
+                ]}
               >
-                See all
-              </Button>
-            </View>
-          )}
-        />
+                <Text style={[headerTitleStyle]}>{title}</Text>
+                <Button
+                  mode='text'
+                  icon={() => (
+                    <FontAwesome
+                      name='angle-right'
+                      size={SIZES.lg}
+                      color={COLORS.black}
+                    />
+                  )}
+                  contentStyle={headerButtonContent}
+                  style={headerButtonStyle}
+                  textColor={COLORS.black}
+                  labelStyle={headerButtonLabel}
+                  onPress={() => {
+                    navigation.navigate('Show All Recipes', {
+                      title: title,
+                    });
+                  }}
+                >
+                  See all
+                </Button>
+              </View>
+            )}
+          />
+        )
       ) : (
         <FilterProgressSteps filters={filters} />
       )}
