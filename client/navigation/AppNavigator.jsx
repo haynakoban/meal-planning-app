@@ -17,6 +17,7 @@ import {
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
 import useAuthStore from '../store/useAuthStore';
+import useRecipeStore from '../store/useRecipeStore';
 
 import { COLORS, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
@@ -27,6 +28,7 @@ const AppNavigator = () => {
   const { fetchApiData, loadCachedFilters, loadCachedFilteredData } =
     useFilterStore();
   const { isLoggedIn, getUserInfo } = useAuthStore();
+  const { fetchRecipesData } = useRecipeStore();
 
   const [searchText, setSearchText] = useState('');
   const [searchRecipe, setSearchRecipe] = useState('');
@@ -34,7 +36,7 @@ const AppNavigator = () => {
   useEffect(() => {
     loadCachedFilters();
     fetchApiData();
-
+    fetchRecipesData();
     loadCachedFilteredData();
     getUserInfo();
   }, []);

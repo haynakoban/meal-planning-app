@@ -1,4 +1,4 @@
-const { Recipes, Feedbacks, Users } = require('../../models');
+const { Recipes, Feedbacks, Users, MealTypes } = require('../../models');
 
 // bulk meal types
 const bulkRecipes = async (req, res, next) => {
@@ -125,6 +125,102 @@ const paginatedList = async (req, res, next) => {
   }
 };
 
+// get the paginated list of recipes based on meal types
+const paginatedListMealTypes = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 5;
+  let resourceLastModified = new Date();
+  try {
+    const clientLastModified = new Date(req.headers['if-modified-since']);
+    if (clientLastModified >= resourceLastModified) {
+      res.status(304).end();
+    } else {
+      // Get the total count of recipes in the collection (for calculating total pages)
+      const totalItems = await Recipes.countDocuments();
+
+      // Calculate the total number of pages based on the total count and items per page
+      const totalPages = Math.ceil(totalItems / perPage);
+
+      const recipe = await Recipes.find()
+        .sort({ updatedAt: -1 })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .populate({ path: 'user_id', select: 'fullname username' })
+        .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+        .select('-createAt -__v');
+
+      const singleResult = recipe.map((recipe) => {
+        const r = recipe;
+        const feedbacks = recipe.feedbacks || [];
+        const totalFeedbacks = feedbacks.length;
+        const ratingsSum = feedbacks.reduce(
+          (sum, feedback) => sum + (feedback.rating || 0),
+          0
+        );
+        return {
+          recipes: r,
+          reviews: totalFeedbacks,
+          ratings: ratingsSum / totalFeedbacks,
+        };
+      });
+
+      const singleData = { title: 'recommended', data: singleResult };
+
+      // get all the meal types
+      const mealTypes = await MealTypes.find().select('_id name');
+
+      const recipes = await Promise.all(
+        mealTypes.map(async (mt) => {
+          const data = await Recipes.find({ meal_types: { $in: [mt._id] } })
+            .sort({ updatedAt: -1 })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .populate({ path: 'user_id', select: 'fullname username' })
+            .populate({
+              path: 'feedbacks',
+              select: 'comment rating foodItemType',
+            })
+            .select('-createAt -__v');
+
+          const results = data.map((recipe) => {
+            const r = recipe;
+            const feedbacks = recipe.feedbacks || [];
+            const totalFeedbacks = feedbacks.length;
+            const ratingsSum = feedbacks.reduce(
+              (sum, feedback) => sum + (feedback.rating || 0),
+              0
+            );
+            return {
+              recipes: r,
+              reviews: totalFeedbacks,
+              ratings: ratingsSum / totalFeedbacks,
+            };
+          });
+
+          return { title: mt.name, data: results };
+        })
+      );
+
+      recipes.unshift(singleData);
+
+      // Return the paginated data along with pagination information
+      res.json({
+        message: `${recipes.length} items retrieved successfully`,
+        status: 'success',
+        currentPage: page,
+        totalPages,
+        data: recipes,
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 // get single recipe
 const show = async (req, res, next) => {
   const { id } = req.params;
@@ -164,5 +260,6 @@ module.exports = {
   create,
   list,
   paginatedList,
+  paginatedListMealTypes,
   show,
 };

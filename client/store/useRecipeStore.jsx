@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useRecipeStore = create((set) => ({
   open: false,
@@ -9,6 +10,8 @@ const useRecipeStore = create((set) => ({
   // snacks: [],
   // lunch: [],
   // dinner: [],
+  lastModified: null,
+  homeRecipes: [],
 
   listRecipes: async () => {
     try {
@@ -41,6 +44,54 @@ const useRecipeStore = create((set) => ({
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    }
+  },
+
+  fetchRecipesData: async () => {
+    try {
+      const { lastModified } = useRecipeStore.getState();
+
+      const response = await axios.get('recipes/list/types', {
+        headers: {
+          'If-Modified-Since': lastModified
+            ? lastModified.toUTCString()
+            : undefined,
+        },
+      });
+
+      const results = response.data.data;
+
+      if (results) {
+        set({ homeRecipes: results, lastModified: new Date() });
+
+        // Store the updated data in AsyncStorage
+        await AsyncStorage.setItem('homeRecipes', JSON.stringify(results));
+        await AsyncStorage.setItem(
+          'homeRecipesLastModified',
+          JSON.stringify(new Date())
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+
+  loadCachedRecipes: async () => {
+    try {
+      const cachedRecipes = await AsyncStorage.getItem('homeRecipes');
+      const cachedLastModified = await AsyncStorage.getItem(
+        'homeRecipesLastModified'
+      );
+
+      if (cachedRecipes && cachedLastModified) {
+        set({
+          homeRecipes: JSON.parse(cachedRecipes),
+          lastModified: new Date(JSON.parse(cachedLastModified)),
+        });
+      }
+    } catch (error) {
+      // Handle errors when loading cached data
+      console.error('Error loading cached filters:', error);
     }
   },
 

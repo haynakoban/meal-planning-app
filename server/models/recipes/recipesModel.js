@@ -27,18 +27,56 @@ const image = {
   default: null,
 };
 
+const meal_types = [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Meal_Types',
+    required: false,
+  },
+];
+
+const preferences = [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Preferences',
+    required: false,
+  },
+];
+
+const cuisines = [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cuisines',
+    required: false,
+  },
+];
+
+const cooking_time = {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Cooking_Times',
+  required: true,
+};
+
+const feedbacks = [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Feedbacks',
+    required: false,
+  },
+];
+
 const recipesSchema = new mongoose.Schema({
   user_id,
   name: { type: String, required: true },
   description: { type: String, required: true },
   procedure: { type: Array, required: true },
-  meal_types: { type: Array, ref: 'Meal_Types', required: true },
-  preferences: { type: Array, ref: 'Preferences', required: false },
-  cuisines: { type: Array, ref: 'Cuisines', required: false },
-  cooking_time: { type: Number, required: true },
-  ingredients,
   image,
-  feedbacks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feedbacks' }],
+  meal_types,
+  preferences,
+  cuisines,
+  cooking_time,
+  feedbacks,
+  ingredients,
   privacy: { type: String, required: true },
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },

@@ -76,6 +76,36 @@ export const homeData = [
     headerTitle: 'Dinner',
     subTitle: 'Dinner',
   },
+  {
+    id: 5,
+    headerTitle: 'Snacks',
+    subTitle: 'Snacks',
+  },
+  {
+    id: 6,
+    headerTitle: 'Desserts',
+    subTitle: 'desserts',
+  },
+  {
+    id: 7,
+    headerTitle: 'Appetizers',
+    subTitle: 'Appetizers',
+  },
+  {
+    id: 8,
+    headerTitle: 'Sides',
+    subTitle: 'Sides',
+  },
+  {
+    id: 9,
+    headerTitle: 'Salads',
+    subTitle: 'Salads',
+  },
+  {
+    id: 10,
+    headerTitle: 'Soups',
+    subTitle: 'Soups',
+  },
 ];
 
 let desc =

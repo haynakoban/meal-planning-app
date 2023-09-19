@@ -19,6 +19,9 @@ router
 // get method - get the paginated list of recipes
 router.route('/list').get(recipesController.paginatedList);
 
+// get method - get the paginated list of recipes based on meal types
+router.route('/list/types').get(recipesController.paginatedListMealTypes);
+
 // get method - get single recipe
 router.route('/:id').get(recipesController.show);
 
