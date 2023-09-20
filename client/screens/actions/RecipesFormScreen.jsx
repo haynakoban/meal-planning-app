@@ -23,7 +23,8 @@ import useMealTypeStore from '../../store/useMealTypeStore';
 import ModifyIngredientModal from '../../components/modals/ModifyIngredientModal';
 import usePreferencesStore from '../../store/usePreferencesStore';
 import useAuthStore from '../../store/useAuthStore';
-import axios from 'axios';
+import axios from '../../lib/axiosConfig';
+// import RNFS from 'react-native-fs';
 
 const RecipesFormScreen = ({ navigation }) => {
   const userInfo = useAuthStore((state) => state.userInfo);
@@ -135,6 +136,8 @@ const RecipesFormScreen = ({ navigation }) => {
     }
   }, [mealTypeValue]);
 
+  console.log(form.image);
+
   const pickImage = async () => {
     if (permission) {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -147,7 +150,7 @@ const RecipesFormScreen = ({ navigation }) => {
       if (!result.canceled) {
         setForm({
           ...form,
-          image: result.assets[0].uri,
+          image: result.assets[0],
         });
       }
     } else {
@@ -195,22 +198,36 @@ const RecipesFormScreen = ({ navigation }) => {
         return;
       }
 
+      // const formData = new FormData();
+      // formData.append({
+      //   user_id: userInfo._id,
+      //   name: form.name,
+      //   description: form.description,
+      //   image: form.image,
+      //   privacy: form.procedure?.filter((item) => item != '') || [],
+      //   cooking_time: form.cookingTime,
+      //   meal_types: mealTypeValue,
+      //   cuisines: cuisineValue,
+      //   preferences: preferencesValue,
+      // });
+      // console.log(formData._parts[0]);
+
       const data = {
         user_id: userInfo._id,
         name: form.name,
         description: form.description,
-        procedure: form.procedure?.filter((item) => item != '') || [],
-        image: form.image,
-        privacy: form.privacy,
+        image: base64Data,
+        privacy: form.procedure?.filter((item) => item != '') || [],
         cooking_time: form.cookingTime,
-        ingredients: getSelectedData,
         meal_types: mealTypeValue,
         cuisines: cuisineValue,
         preferences: preferencesValue,
       };
-
-      console.log(data); // getting data
-      const response = await axios.post(`recipes`, data); // error here
+      const response = await axios.post(`recipes`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }); // error here
       console.log(response.data); // or error here
       if (response.status === 'success') {
         navigation.navigate('Recipes');

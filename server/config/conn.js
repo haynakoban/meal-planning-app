@@ -5,7 +5,8 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 
 const DB_URL =
-  process.env.MONGO_URL || 'mongodb://localhost:27017/meal-planning-app';
+  process.env.MONGO_URL ||
+  'mongodb+srv://mialupin52:QdS5w4K1Qoy55Pg0@mealapp.nnr1srs.mongodb.net/?retryWrites=true&w=majority';
 
 const conn = mongoose.createConnection(DB_URL);
 

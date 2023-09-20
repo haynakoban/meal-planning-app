@@ -25,6 +25,10 @@ router.route('/list').get(feedbacksController.paginatedList);
 router.route('/reviews/:id').get(feedbacksController.showReviews);
 
 // get method - get single feedback
-router.route('/:id/:user_id').get(feedbacksController.show);
+router
+  .route('/:id/:user_id')
+  .get(feedbacksController.show)
+  .post(feedbacksController.update)
+  .delete(feedbacksController.deleteReview);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Feedbacks } = require('../../models');
+const { Feedbacks, Recipes, Meals } = require('../../models');
 
 // bulk feedbacks
 const bulkFeedbacks = async (req, res, next) => {
@@ -24,10 +24,90 @@ const create = async (req, res, next) => {
   try {
     const result = await Feedbacks.create(req.uniqueData);
 
+    if (result?.foodItemType === 'Recipes') {
+      await Recipes.updateOne(
+        { _id: result?.foodItem },
+        { $push: { feedbacks: result?._id } }
+      );
+    } else {
+      await Meals.updateOne(
+        { _id: result?.foodItem },
+        { $push: { feedbacks: result?._id } }
+      );
+    }
+
     return res.status(201).json({
       message: `An item inserted successfully`,
       status: 'record created',
       data: result,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Error occurred while creating the item',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+// update feedback
+const update = async (req, res, next) => {
+  const { id, user_id } = req.params;
+  const { rating, comment } = req.body;
+
+  try {
+    // Query the database to find the feedback by its unique ID
+    const feedback = await Feedbacks.findOne({ foodItem: id, user_id });
+
+    if (!feedback) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    feedback.comment = comment;
+    feedback.rating = rating;
+    feedback.updatedAt = new Date();
+    await feedback.save();
+
+    // Return the feedback data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: feedback,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Error occurred while creating the item',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+// delete feedback
+const deleteReview = async (req, res, next) => {
+  const { id, user_id } = req.params;
+
+  try {
+    // Query the database to find the feedback by its unique ID
+    const feedback = await Feedbacks.deleteOne({ foodItem: id, user_id });
+
+    if (!feedback) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the feedback data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: feedback,
     });
   } catch (e) {
     return res.status(500).json({
@@ -134,9 +214,10 @@ const showReviews = async (req, res, next) => {
     const feedback = await Feedbacks.find({ foodItem: id })
       .populate({
         path: 'user_id',
-        select: 'username',
+        select: 'username fullname',
       })
-      .select('-createAt -__v');
+      .select('-createAt -__v')
+      .sort({ createdAt: -1 });
 
     if (!feedback) {
       return res.status(404).json({
@@ -168,4 +249,6 @@ module.exports = {
   paginatedList,
   show,
   showReviews,
+  update,
+  deleteReview,
 };
