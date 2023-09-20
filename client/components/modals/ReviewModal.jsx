@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Text, TextInput, View, Pressable, Modal } from 'react-native';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import { Rating } from 'react-native-ratings';
 
 import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useReviewsStore from '../../store/useReviewStore';
+import axios from '../../lib/axiosConfig';
 
 const ReviewModal = ({ visible, data, onClose, type }) => {
   const personal = useReviewsStore((state) => state.personal);
@@ -12,34 +13,59 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
     (state) => state.fetchPersonalReview
   );
 
-  useEffect(() => {
-    fetchPersonalReview(data.foodItem, data.user_id);
-  }, []);
-
+  const [ratings, setRatings] = useState(5);
   const [form, setForm] = useState({
     type: type,
     user_id: data.user_id,
     foodItem: data.foodItem,
-    ratings: personal[0]?.rating || 5,
-    comment: personal[0]?.comment || '',
+    comment: '',
   });
 
+  useEffect(() => {
+    fetchPersonalReview(data?.foodItem, data?.user_id);
+  }, []);
+
+  useEffect(() => {
+    setForm({
+      ...form,
+      comment: personal[0]?.comment || '',
+    });
+    setRatings(personal[0]?.rating || 5);
+  }, [personal]);
+
   function ratingCompleted(rating) {
-    setForm({ ...form, ratings: rating });
+    setRatings(rating);
   }
 
-  function submitReview() {
-    if (personal?.length > 0) {
-      console.log('Update Review: ', form);
-    } else {
-      console.log('Post Form: ', form);
+  const submitReview = async () => {
+    try {
+      if (personal?.length > 0) {
+        let data = {
+          comment: form.comment,
+          rating: ratings,
+        };
+
+        await axios.post(`feedbacks/${form.foodItem}/${form.user_id}`, data);
+      } else {
+        let data = {
+          user_id: form.user_id,
+          foodItem: form.foodItem,
+          foodItemType: type === 'recipe' ? 'Recipes' : 'Meals',
+          comment: form.comment,
+          rating: ratings,
+        };
+
+        await axios.post(`feedbacks`, data);
+      }
+      onClose(true);
+    } catch (error) {
+      console.error('Error posting data: ', error);
     }
-    onClose(false);
-  }
+  };
 
   return (
     <Modal
-      animationType='slide' // You can change this to 'fade', 'slide', or 'none'
+      animationType='slide'
       transparent={true}
       visible={visible}
       onRequestClose={() => onClose(false)}
@@ -80,7 +106,7 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
               color: 'orange',
             }}
           >
-            Ratings: {form.ratings}/5
+            Ratings: {ratings}/5
           </Text>
           <Rating
             type='custom'

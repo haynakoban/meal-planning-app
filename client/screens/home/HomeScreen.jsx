@@ -40,12 +40,13 @@ const HomeScreen = ({ navigation }) => {
 
     setTimeout(() => {
       setRefreshing(false);
-    }, 3000);
+    }, 1500);
   };
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps='always'
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }

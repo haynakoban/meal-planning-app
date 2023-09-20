@@ -22,14 +22,9 @@ const bulkRecipes = async (req, res, next) => {
 // create new recipe
 const create = async (req, res, next) => {
   try {
-    let file_id = null;
-    if (req.files) {
-      file_id = req.files.id;
-    }
-
     const result = await Recipes.create(req.body);
-    result.image = file_id;
-    await result.save();
+    // result.image = file_id;
+    // await result.save();
 
     return res.status(201).json({
       message: `An item inserted successfully`,

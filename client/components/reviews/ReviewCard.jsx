@@ -1,13 +1,56 @@
-import { Image, View, Text, Pressable, Fragment } from 'react-native';
+import { PanResponder, Animated, View, Text, Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import styles from '../../styles/recipe';
-import { COLORS } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
 import RatingCard from '../../components/ratings/RatingCard';
 import useAuthStore from '../../store/useAuthStore';
+import React, { useRef } from 'react';
 
-const ReviewCard = ({ reviewsToRender }) => {
+const ReviewCard = ({ reviewsToRender, onRemoveItem }) => {
   const userInfo = useAuthStore((state) => state.userInfo);
   const { mb, text, wrapper, divider } = styles;
+
+  const pan = useRef(new Animated.ValueXY()).current;
+  const gestureProgress = useRef(new Animated.Value(0)).current;
+
+  function removeItem() {
+    onRemoveItem();
+  }
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gesture) => {
+        gestureProgress.setValue(gesture.dx);
+
+        Animated.event(
+          [
+            null,
+            {
+              dx: pan.x,
+              dy: pan.y,
+            },
+          ],
+          { useNativeDriver: false }
+        )(e, gesture);
+      },
+      onPanResponderRelease: (e, gesture) => {
+        if (gesture.dx > 120) {
+          removeItem(userInfo?._id);
+        }
+
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start(() => gestureProgress.setValue(0));
+      },
+    })
+  ).current;
+
+  const backgroundColor = gestureProgress.interpolate({
+    inputRange: [0, 120],
+    outputRange: ['rgba(255, 255, 255, 0)', 'rgba(255, 96, 92, 1)'],
+  });
 
   function formatDate(dateString) {
     const dateObject = new Date(dateString);
@@ -30,63 +73,117 @@ const ReviewCard = ({ reviewsToRender }) => {
     const month = months[dateObject.getMonth()];
     const day = dateObject.getDate();
     const year = dateObject.getFullYear();
-    let hours = dateObject.getHours();
-    const minutes = dateObject.getMinutes();
-
-    const period = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
 
     const formattedDate = `${month} ${day}, ${year}`;
-    const formattedTime = `${hours}:${minutes} ${period}`;
 
-    return formattedDate + ' ' + formattedTime;
+    return formattedDate;
   }
 
   return (
     <>
       {reviewsToRender.map((item, index) => (
         <View key={index}>
-          <View style={wrapper}>
-            <View
-              style={[
-                mb,
-                {
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                },
-              ]}
+          {item?.user_id?._id == userInfo._id ? (
+            <Animated.View
+              style={{
+                transform: [{ translateX: pan.x }],
+                backgroundColor,
+              }}
+              {...panResponder.panHandlers}
             >
-              <Pressable
-                style={{ flexDirection: 'row', gap: 10 }}
-                onPress={() => console.log('visit profile')}
-              >
-                <FontAwesome
-                  name='user-circle'
-                  size={50}
-                  color={COLORS.gray2}
-                />
-                <View>
-                  <Text style={text}>@{item?.user_id?.username}</Text>
-                  <View
-                    style={{
+              <View style={wrapper}>
+                <View
+                  style={[
+                    mb,
+                    {
                       flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      gap: 5,
+                      justifyContent: 'space-between',
+                    },
+                  ]}
+                >
+                  <Pressable
+                    style={{ flexDirection: 'row', gap: 10 }}
+                    onPress={() => console.log('visit profile')}
+                  >
+                    <FontAwesome
+                      name='user-circle'
+                      size={50}
+                      color={COLORS.gray2}
+                    />
+                    <View>
+                      <Text style={text}>{item?.user_id?.fullname}</Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          gap: 5,
+                        }}
+                      >
+                        <RatingCard rating={item?.rating} />
+                        <Text style={text}>({item?.rating})</Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                  <Text style={text}>{formatDate(item?.updatedAt)}</Text>
+                </View>
+                <View>
+                  <Text style={text}>{item?.comment}</Text>
+                  <Text
+                    style={{
+                      fontFamily: FONT.light,
+                      fontSize: SIZES.sm,
+                      marginTop: 5,
+                      textAlign: 'right',
                     }}
                   >
-                    <RatingCard rating={item?.rating} />
-                    <Text style={text}>({item?.rating})</Text>
-                  </View>
+                    Slide to right to delete...
+                  </Text>
                 </View>
-              </Pressable>
-              <Text style={text}>{formatDate(item?.updatedAt)}</Text>
+              </View>
+            </Animated.View>
+          ) : (
+            <View style={wrapper}>
+              <View
+                style={[
+                  mb,
+                  {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  },
+                ]}
+              >
+                <Pressable
+                  style={{ flexDirection: 'row', gap: 10 }}
+                  onPress={() => console.log('visit profile')}
+                >
+                  <FontAwesome
+                    name='user-circle'
+                    size={50}
+                    color={COLORS.gray2}
+                  />
+                  <View>
+                    <Text style={text}>{item?.user_id?.fullname}</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        gap: 5,
+                      }}
+                    >
+                      <RatingCard rating={item?.rating} />
+                      <Text style={text}>({item?.rating})</Text>
+                    </View>
+                  </View>
+                </Pressable>
+                <Text style={text}>{formatDate(item?.updatedAt)}</Text>
+              </View>
+              <View>
+                <Text style={text}>{item?.comment}</Text>
+              </View>
             </View>
-            <View>
-              <Text style={text}>{item?.comment}</Text>
-              <Text>{item?.user_id?._id == userInfo._id ? 'Delete' : ''}</Text>
-            </View>
-          </View>
+          )}
 
           <View style={divider}></View>
         </View>
