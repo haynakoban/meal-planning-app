@@ -1,4 +1,11 @@
-import { Image, ScrollView, View, Text, Pressable } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 import { COLORS, SIZES } from '../../constants';
@@ -121,17 +128,24 @@ const Recipe = ({ route }) => {
     calculated += parseInt(recipe?.feedbacks[i].rating);
   }
 
+  if (!recipe) {
+    return (
+      <View style={{ paddingTop: 8 }}>
+        <ActivityIndicator size='large' />
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps='always'
     >
       <View style={container}>
-        {/* {recipe?.image ? (
-          <Image src={recipe?.image} style={imageStyle} />
-        ) : (
-        )} */}
-        <Image source={NotFound} style={imageStyle} />
+        <Image
+          source={recipe?.image ? { uri: recipe?.image } : NotFound}
+          style={imageStyle}
+        />
         <View style={wrapper}>
           <Text style={textBold}>{recipe?.name}</Text>
           <Text style={label}>@{recipe?.user_id?.username}</Text>
@@ -168,7 +182,7 @@ const Recipe = ({ route }) => {
         </View>
         <View style={divider}></View>
         <View style={wrapper}>
-          <Text style={text}>{recipe.description}</Text>
+          <Text style={text}>{recipe?.description}</Text>
         </View>
         <View style={bigDivider}></View>
         <View style={wrapper}>
