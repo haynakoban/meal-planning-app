@@ -41,4 +41,7 @@ router
 // get method - get single user
 router.route('/:id').get(usersController.show);
 
+// post method - remove and add favorites
+router.route('/manage').post(usersController.managaFavorite);
+
 module.exports = router;

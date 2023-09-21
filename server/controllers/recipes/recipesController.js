@@ -99,19 +99,13 @@ const paginatedList = async (req, res, next) => {
     const totalPages = Math.ceil(totalItems / perPage);
 
     if (ids.length === 0) {
-      // Query the database for recipes, skipping the appropriate number of documents based on the page
-      const recipes = await Recipes.find()
-        .skip((page - 1) * perPage)
-        .limit(perPage)
-        .select('-createAt -__v');
-
       // Return the paginated data along with pagination information
       res.json({
-        message: `${recipes.length} items retrieved successfully`,
+        message: `0 items retrieved successfully`,
         status: 'success',
         currentPage: page,
         totalPages,
-        data: recipes,
+        data: [],
       });
     } else {
       // Query the database for recipes, skipping the appropriate number of documents based on the page
@@ -162,7 +156,7 @@ const paginatedListMealTypes = async (req, res, next) => {
         .sort({ updatedAt: -1 })
         .skip((page - 1) * perPage)
         .limit(perPage)
-        .populate({ path: 'user_id', select: 'fullname username' })
+        .populate({ path: 'user_id', select: 'fullname username favorites' })
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
         .populate('cooking_time')
         .select('-createAt -__v');

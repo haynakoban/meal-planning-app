@@ -39,11 +39,11 @@ const FavoriteCard = ({
       <Card>
         <Card.Cover
           source={
-            !image
-              ? require('../../assets/images/image-not-found.jpg')
-              : {
+            image
+              ? {
                   uri: image,
                 }
+              : require('../../assets/images/image-not-found.jpg')
           }
           style={[mb, cardCover]}
         />

@@ -6,6 +6,8 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
+
+import { Fragment } from 'react';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../constants';
@@ -33,6 +35,10 @@ const Recipe = ({ route }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const userInfo = useAuthStore((state) => state.userInfo);
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
+  const reFetch = useAuthStore((state) => state.reFetch);
+  const getFavorites = useAuthStore((state) => state.getFavorites);
+
   const recipe_id = route.params.id;
   const recipe = useRecipeStore((state) => state.recipe);
   const singleRecipe = useRecipeStore((state) => state.singleRecipes);
@@ -40,6 +46,7 @@ const Recipe = ({ route }) => {
   const reviews = useReviewsStore((state) => state.reviews);
   const fetchReviewsData = useReviewsStore((state) => state.fetchReviewsData);
   const clearReviews = useReviewsStore((state) => state.clearReviews);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -77,14 +84,24 @@ const Recipe = ({ route }) => {
   };
 
   useEffect(() => {
+    setUserInfo(userInfo?._id);
+  }, []);
+
+  useEffect(() => {
+    fetchNutrition();
+  }, [nutritionFacts]);
+
+  useEffect(() => {
     setNutritionFacts({});
     const fetchData = async () => {
       singleRecipe(recipe_id);
       fetchReviewsData(recipe_id);
 
       setTimeout(() => {
+        const itHas = userInfo?.favorites.some((item) => item === recipe_id);
+        itHas ? setIsFavorite(true) : setIsFavorite(false);
         fetchNutrition();
-      }, Math.floor(Math.random() * (100 - 10 + 1)) + 1000);
+      }, Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000);
     };
 
     fetchData();
@@ -169,6 +186,20 @@ const Recipe = ({ route }) => {
     );
   }
 
+  const handleSetFavorite = async () => {
+    const type = isFavorite ? 'delete' : 'add';
+    const data = {
+      id: userInfo._id,
+      itemId: recipe_id,
+      type,
+    };
+
+    await axios.post(`users/manage`, data);
+    reFetch(recipe_id);
+    setUserInfo(userInfo?._id);
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -213,8 +244,29 @@ const Recipe = ({ route }) => {
                   size={SIZES.xl}
                   color={COLORS.black}
                 />
-                <Text>{recipe?.cooking_time} minutes</Text>
+                <Text style={text}>{recipe?.cooking_time} minutes</Text>
               </View>
+              <Pressable style={flexRow} onPress={handleSetFavorite}>
+                {isFavorite ? (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-sharp'
+                      size={SIZES.xl}
+                      color={COLORS.danger}
+                    />
+                    <Text style={text}>Saved</Text>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-outline'
+                      size={SIZES.xl}
+                      color={COLORS.black}
+                    />
+                    <Text style={text}>Save</Text>
+                  </Fragment>
+                )}
+              </Pressable>
             </View>
           </View>
           <View style={bigDivider}></View>

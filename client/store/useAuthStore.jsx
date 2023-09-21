@@ -16,10 +16,10 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  getFavorites: (favorites) => {
+  getFavorites: (ids) => {
     axios
       .get('recipes/list', {
-        params: { ids: favorites },
+        params: { ids },
       })
       .then((res) => {
         if (res.data?.status === 'success') {
@@ -66,6 +66,13 @@ const useAuthStore = create((set) => ({
       })
       .catch((e) => console.error(e));
   },
+
+  reFetch: (id) => {
+    const { favorites } = useAuthStore.getState();
+    const newFavorites = favorites.filter((item) => item?.recipes?._id !== id);
+    set({ favorites: newFavorites || [] });
+  },
+
   login: () => set({ isLoggedIn: true }),
   logout: () => {
     set({ isLoggedIn: false });
