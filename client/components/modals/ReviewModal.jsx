@@ -6,8 +6,10 @@ import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useReviewsStore from '../../store/useReviewStore';
 import axios from '../../lib/axiosConfig';
+import useRecipeStore from '../../store/useRecipeStore';
 
 const ReviewModal = ({ visible, data, onClose, type }) => {
+  const { fetchRecipesData } = useRecipeStore();
   const personal = useReviewsStore((state) => state.personal);
   const fetchPersonalReview = useReviewsStore(
     (state) => state.fetchPersonalReview
@@ -57,6 +59,7 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
 
         await axios.post(`feedbacks`, data);
       }
+      fetchRecipesData();
       onClose(true);
     } catch (error) {
       console.error('Error posting data: ', error);

@@ -23,13 +23,11 @@ const bulkRecipes = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const fileId = req?.file?.id;
-    const procedureValues = req.body?.procedure?.split(',');
-    const mealTypesValues = req.body?.meal_types?.split(',');
-    const preferencesValues = req.body?.preferences?.split(',');
-    const cuisineValues = req.body?.cuisines?.split(',');
-    const ingredientsValues = req.body?.ingredients
-      ? req.body?.ingredients.split(',')
-      : [];
+    const procedureValues = JSON.parse(req.body?.procedure);
+    const mealTypesValues = JSON.parse(req.body?.meal_types);
+    const preferencesValues = JSON.parse(req.body?.preferences);
+    const cuisineValues = JSON.parse(req.body?.cuisines);
+    const ingredientsValues = JSON.parse(req.body?.ingredients);
 
     const result = await Recipes.create({
       user_id: req.body?.user_id,

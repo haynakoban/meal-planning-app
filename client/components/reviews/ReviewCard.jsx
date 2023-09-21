@@ -5,6 +5,7 @@ import { COLORS, FONT, SIZES } from '../../constants';
 import RatingCard from '../../components/ratings/RatingCard';
 import useAuthStore from '../../store/useAuthStore';
 import React, { useRef } from 'react';
+import useRecipeStore from '../../store/useRecipeStore';
 
 const ReviewCard = ({ reviewsToRender, onRemoveItem }) => {
   const userInfo = useAuthStore((state) => state.userInfo);
@@ -12,8 +13,10 @@ const ReviewCard = ({ reviewsToRender, onRemoveItem }) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
   const gestureProgress = useRef(new Animated.Value(0)).current;
+  const { fetchRecipesData } = useRecipeStore();
 
   function removeItem() {
+    fetchRecipesData();
     onRemoveItem();
   }
 
