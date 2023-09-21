@@ -136,8 +136,6 @@ const RecipesFormScreen = ({ navigation }) => {
     }
   }, [mealTypeValue]);
 
-  console.log(form.image);
-
   const pickImage = async () => {
     if (permission) {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -150,7 +148,7 @@ const RecipesFormScreen = ({ navigation }) => {
       if (!result.canceled) {
         setForm({
           ...form,
-          image: result.assets[0],
+          image: result.assets[0].uri,
         });
       }
     } else {
@@ -172,64 +170,65 @@ const RecipesFormScreen = ({ navigation }) => {
   // submit form
   const handleSubmit = async () => {
     try {
-      const getSelectedData = selected.filter((selectedItem) =>
-        value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
-      );
-      const isImageValid = form.image !== null && form.image !== '';
-      const isNameValid = form.name !== null && form.name !== '';
-      const isDescriptionValid =
-        form.description !== null && form.description !== '';
-      const isProcedureValid = form.procedure.length > 0;
-      const isIngredientsValid =
-        getSelectedData.length > 0 && getSelectedData.length === value.length;
-      const isMealTypeValid = mealTypeValue.length > 0;
+      // const getSelectedData = selected.filter((selectedItem) =>
+      //   value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
+      // );
+      // const isImageValid = form.image !== null && form.image !== '';
+      // const isNameValid = form.name !== null && form.name !== '';
+      // const isDescriptionValid =
+      //   form.description !== null && form.description !== '';
+      // const isProcedureValid = form.procedure.length > 0;
+      // const isIngredientsValid =
+      //   getSelectedData.length > 0 && getSelectedData.length === value.length;
+      // const isMealTypeValid = mealTypeValue.length > 0;
 
-      const err = {
-        name: !isNameValid,
-        description: !isDescriptionValid,
-        procedure: !isProcedureValid,
-        image: !isImageValid,
-        ingredients: !isIngredientsValid,
-        meal_types: !isMealTypeValid,
-      };
+      // const err = {
+      //   name: !isNameValid,
+      //   description: !isDescriptionValid,
+      //   procedure: !isProcedureValid,
+      //   image: !isImageValid,
+      //   ingredients: !isIngredientsValid,
+      //   meal_types: !isMealTypeValid,
+      // };
 
-      if (Object.values(err).some((value) => value)) {
-        setErr(err);
-        return;
-      }
+      // if (Object.values(err).some((value) => value)) {
+      //   setErr(err);
+      //   return;
+      // }
 
-      // const formData = new FormData();
-      // formData.append({
-      //   user_id: userInfo._id,
-      //   name: form.name,
-      //   description: form.description,
-      //   image: form.image,
-      //   privacy: form.procedure?.filter((item) => item != '') || [],
-      //   cooking_time: form.cookingTime,
-      //   meal_types: mealTypeValue,
-      //   cuisines: cuisineValue,
-      //   preferences: preferencesValue,
-      // });
-      // console.log(formData._parts[0]);
+      const fd = new FormData();
 
-      const data = {
-        user_id: userInfo._id,
-        name: form.name,
-        description: form.description,
-        image: base64Data,
-        privacy: form.procedure?.filter((item) => item != '') || [],
-        cooking_time: form.cookingTime,
-        meal_types: mealTypeValue,
-        cuisines: cuisineValue,
-        preferences: preferencesValue,
-      };
-      const response = await axios.post(`recipes`, data, {
+      const meal_typeseString = mealTypeValue.join(',');
+      const preferencesString = preferencesValue.join(',');
+      const cuisineString = cuisineValue.join(',');
+      const procedureString = form.procedure
+        ?.filter((item) => item != '')
+        .join(',');
+
+      fd.append('user_id', userInfo._id);
+      fd.append('name', form.name);
+      fd.append('description', form.description);
+      fd.append('procedure', procedureString);
+      fd.append('meal_types', meal_typeseString);
+      fd.append('preferences', preferencesString);
+      fd.append('cuisines', cuisineString);
+      fd.append('cooking_time', form.cookingTime);
+      fd.append('privacy', form.privacy);
+
+      fd.append('image', {
+        name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
+        uri: form.image,
+        type: 'image/jpg',
+      });
+
+      const response = await axios.post(`recipes`, fd, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }); // error here
-      console.log(response.data); // or error here
-      if (response.status === 'success') {
+      });
+
+      console.log(response.data);
+      if (response.data?.status === 'record created') {
         navigation.navigate('Recipes');
       }
     } catch (error) {

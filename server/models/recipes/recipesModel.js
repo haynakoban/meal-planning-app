@@ -3,14 +3,14 @@ const mongoose = require('mongoose');
 const ingredients = {
   type: Array,
   ref: 'Ingredients',
-  required: true,
+  required: false,
   ingredients_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ingredients',
-    required: true,
+    required: false,
   },
-  measurement: { type: String, required: true },
-  amount: { type: String, required: true },
+  measurement: { type: String, required: false },
+  amount: { type: String, required: false },
   description: { type: String, required: false },
 };
 
