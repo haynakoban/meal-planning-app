@@ -170,48 +170,44 @@ const RecipesFormScreen = ({ navigation }) => {
   // submit form
   const handleSubmit = async () => {
     try {
-      // const getSelectedData = selected.filter((selectedItem) =>
-      //   value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
-      // );
-      // const isImageValid = form.image !== null && form.image !== '';
-      // const isNameValid = form.name !== null && form.name !== '';
-      // const isDescriptionValid =
-      //   form.description !== null && form.description !== '';
-      // const isProcedureValid = form.procedure.length > 0;
-      // const isIngredientsValid =
-      //   getSelectedData.length > 0 && getSelectedData.length === value.length;
-      // const isMealTypeValid = mealTypeValue.length > 0;
+      const getSelectedData = selected.filter((selectedItem) =>
+        value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
+      );
+      const isImageValid = form.image !== null && form.image !== '';
+      const isNameValid = form.name !== null && form.name !== '';
+      const isDescriptionValid =
+        form.description !== null && form.description !== '';
+      const isProcedureValid = form.procedure.length > 0;
+      const isIngredientsValid =
+        getSelectedData.length > 0 && getSelectedData.length === value.length;
+      const isMealTypeValid = mealTypeValue.length > 0;
 
-      // const err = {
-      //   name: !isNameValid,
-      //   description: !isDescriptionValid,
-      //   procedure: !isProcedureValid,
-      //   image: !isImageValid,
-      //   ingredients: !isIngredientsValid,
-      //   meal_types: !isMealTypeValid,
-      // };
+      const err = {
+        name: !isNameValid,
+        description: !isDescriptionValid,
+        procedure: !isProcedureValid,
+        image: !isImageValid,
+        ingredients: !isIngredientsValid,
+        meal_types: !isMealTypeValid,
+      };
 
-      // if (Object.values(err).some((value) => value)) {
-      //   setErr(err);
-      //   return;
-      // }
+      if (Object.values(err).some((value) => value)) {
+        setErr(err);
+        return;
+      }
 
       const fd = new FormData();
-
-      const meal_typeseString = mealTypeValue.join(',');
-      const preferencesString = preferencesValue.join(',');
-      const cuisineString = cuisineValue.join(',');
-      const procedureString = form.procedure
-        ?.filter((item) => item != '')
-        .join(',');
+      const procedureString =
+        form.procedure?.filter((item) => item != '') || [];
 
       fd.append('user_id', userInfo._id);
       fd.append('name', form.name);
       fd.append('description', form.description);
-      fd.append('procedure', procedureString);
-      fd.append('meal_types', meal_typeseString);
-      fd.append('preferences', preferencesString);
-      fd.append('cuisines', cuisineString);
+      fd.append('procedure', JSON.stringify(procedureString));
+      fd.append('ingredients', JSON.stringify(getSelectedData));
+      fd.append('meal_types', JSON.stringify(mealTypeValue));
+      fd.append('preferences', JSON.stringify(preferencesValue));
+      fd.append('cuisines', JSON.stringify(cuisineValue));
       fd.append('cooking_time', form.cookingTime);
       fd.append('privacy', form.privacy);
 

@@ -9,6 +9,9 @@ const {
 const bcryptjs = require('bcryptjs');
 const { generateUniqueUsername } = require('../../lib');
 
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
+
 // bulk users
 const bulkUsers = async (req, res, next) => {
   const updatedUsers = req.uniqueData.map((user) => {
@@ -303,6 +306,46 @@ const modify = async (req, res, next) => {
   }
 };
 
+// delete favorite
+const managaFavorite = async (req, res, next) => {
+  try {
+    const { id, itemId, type } = req.body;
+
+    if (type === 'add') {
+      await Users.updateOne(
+        { _id: id },
+        { $push: { favorites: new ObjectId(itemId) } }
+      );
+    } else {
+      await Users.updateOne(
+        { _id: id },
+        { $pull: { favorites: new ObjectId(itemId) } }
+      );
+    }
+
+    if (!itemId) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the user data
+    res.json({
+      message: 'User updated successfully',
+      status: 'success',
+      data: itemId,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkUsers,
   create,
@@ -312,4 +355,5 @@ module.exports = {
   modify,
   paginatedList,
   show,
+  managaFavorite,
 };

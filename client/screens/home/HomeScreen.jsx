@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -29,14 +29,18 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { userInfo } = useAuthStore();
-  const { homeRecipes, loadCachedRecipes } = useRecipeStore();
+  const { homeRecipes, fetchRecipesData } = useRecipeStore();
   const { filters, loadCachedFilters } = useFilterStore();
+
+  useEffect(() => {
+    fetchRecipesData();
+  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
 
     loadCachedFilters();
-    loadCachedRecipes();
+    fetchRecipesData();
 
     setTimeout(() => {
       setRefreshing(false);

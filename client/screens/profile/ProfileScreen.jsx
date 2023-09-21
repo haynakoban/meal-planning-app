@@ -300,7 +300,11 @@ const ProfileScreen = () => {
 
         {/* content here */}
         <View style={mv}>
-          {currentScreen === 'meals' ? <PlannerScreen /> : <HomeScreen />}
+          {currentScreen === 'meals' ? (
+            <Text>This is meals</Text>
+          ) : (
+            <Text>This is recipes</Text>
+          )}
         </View>
       </View>
     </ScrollView>

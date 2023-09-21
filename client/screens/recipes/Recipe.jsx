@@ -6,6 +6,8 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
+
+import { Fragment } from 'react';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../constants';
@@ -26,8 +28,17 @@ import axios from '../../lib/axiosConfig';
 import LoadingScreen from '../loading/LoadingScreen';
 
 const Recipe = ({ route }) => {
+  function customToFixed(number) {
+    const decimalPlaces = (number?.toString().split('.')[1] || []).length;
+    return decimalPlaces > 3 ? number?.toFixed(2) : number;
+  }
+
   const [isLoading, setIsLoading] = useState(false);
   const userInfo = useAuthStore((state) => state.userInfo);
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
+  const reFetch = useAuthStore((state) => state.reFetch);
+  const getFavorites = useAuthStore((state) => state.getFavorites);
+
   const recipe_id = route.params.id;
   const recipe = useRecipeStore((state) => state.recipe);
   const singleRecipe = useRecipeStore((state) => state.singleRecipes);
@@ -35,6 +46,7 @@ const Recipe = ({ route }) => {
   const reviews = useReviewsStore((state) => state.reviews);
   const fetchReviewsData = useReviewsStore((state) => state.fetchReviewsData);
   const clearReviews = useReviewsStore((state) => state.clearReviews);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -42,37 +54,54 @@ const Recipe = ({ route }) => {
     }, Math.floor(Math.random() * (100 - 10 + 1)) + 1000);
   }, []);
 
+  const fetchNutrition = async () => {
+    try {
+      let query = '';
+      for (let i = 0; i < recipe?.ingredients?.length; i++) {
+        query +=
+          recipe?.ingredients[i].amount +
+          recipe?.ingredients[i].measurement +
+          ' ' +
+          recipe?.ingredients[i].ingredients_id[0]?.name +
+          ' ' +
+          recipe?.ingredients[i].description +
+          ' ';
+      }
+
+      const response = await axios.get(
+        `https://api.api-ninjas.com/v1/nutrition?query=${query}`,
+        {
+          headers: {
+            'X-Api-Key': API,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      setNutritionFacts(calculateCalorie(response.data));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   useEffect(() => {
+    setUserInfo(userInfo?._id);
+  }, []);
+
+  useEffect(() => {
+    fetchNutrition();
+  }, [nutritionFacts]);
+
+  useEffect(() => {
+    setNutritionFacts({});
     const fetchData = async () => {
       singleRecipe(recipe_id);
       fetchReviewsData(recipe_id);
 
-      try {
-        let query = '';
-        for (let i = 0; i < recipe?.ingredients?.length; i++) {
-          query +=
-            recipe?.ingredients[i].amount +
-            recipe?.ingredients[i].measurement +
-            ' ' +
-            recipe?.ingredients[i].ingredients_id[i]?.name +
-            ' ' +
-            recipe?.ingredients[i].description +
-            ' ';
-        }
-
-        const response = await axios.get(
-          `https://api.api-ninjas.com/v1/nutrition?query=${query}`,
-          {
-            headers: {
-              'X-Api-Key': API,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        setNutritionFacts(calculateCalorie(response.data));
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      setTimeout(() => {
+        const itHas = userInfo?.favorites.some((item) => item === recipe_id);
+        itHas ? setIsFavorite(true) : setIsFavorite(false);
+        fetchNutrition();
+      }, Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000);
     };
 
     fetchData();
@@ -157,6 +186,20 @@ const Recipe = ({ route }) => {
     );
   }
 
+  const handleSetFavorite = async () => {
+    const type = isFavorite ? 'delete' : 'add';
+    const data = {
+      id: userInfo._id,
+      itemId: recipe_id,
+      type,
+    };
+
+    await axios.post(`users/manage`, data);
+    reFetch(recipe_id);
+    setUserInfo(userInfo?._id);
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -201,8 +244,29 @@ const Recipe = ({ route }) => {
                   size={SIZES.xl}
                   color={COLORS.black}
                 />
-                <Text>{recipe?.cooking_time} minutes</Text>
+                <Text style={text}>{recipe?.cooking_time} minutes</Text>
               </View>
+              <Pressable style={flexRow} onPress={handleSetFavorite}>
+                {isFavorite ? (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-sharp'
+                      size={SIZES.xl}
+                      color={COLORS.danger}
+                    />
+                    <Text style={text}>Saved</Text>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-outline'
+                      size={SIZES.xl}
+                      color={COLORS.black}
+                    />
+                    <Text style={text}>Save</Text>
+                  </Fragment>
+                )}
+              </Pressable>
             </View>
           </View>
           <View style={bigDivider}></View>
@@ -223,7 +287,7 @@ const Recipe = ({ route }) => {
               return (
                 <Text key={index} style={text}>
                   - {item.amount} {item.measurement}{' '}
-                  {item.ingredients_id[index]?.name}
+                  {item.ingredients_id[0]?.name}
                   {item?.description == '' ? '' : ' (' + item.description + ')'}
                 </Text>
               );
@@ -258,7 +322,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Calories</Text>:{' '}
-                    {nutritionFacts?.calories?.value}
+                    {customToFixed(nutritionFacts?.calories?.value)}
                   </Text>
                   <Text style={text}>
                     {nutritionFacts?.calories?.dailyValue}%
@@ -268,7 +332,8 @@ const Recipe = ({ route }) => {
 
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
-                    <Text style={fwb}>Fat</Text>: {nutritionFacts?.fat?.value}g
+                    <Text style={fwb}>Fat</Text>:{' '}
+                    {customToFixed(nutritionFacts?.fat?.value)} g
                   </Text>
                   <Text style={text}>{nutritionFacts?.fat?.dailyValue}%</Text>
                 </View>
@@ -277,7 +342,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Carbs</Text>:{' '}
-                    {nutritionFacts?.carbs?.value}g
+                    {customToFixed(nutritionFacts?.carbs?.value)} g
                   </Text>
                   <Text style={text}>{nutritionFacts?.carbs?.dailyValue}%</Text>
                 </View>
@@ -286,7 +351,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Fiber</Text>:{' '}
-                    {nutritionFacts?.fiber?.value}g
+                    {customToFixed(nutritionFacts?.fiber?.value)} g
                   </Text>
                   <Text style={text}>{nutritionFacts?.fiber?.dailyValue}%</Text>
                 </View>
@@ -295,7 +360,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Protein</Text>:{' '}
-                    {nutritionFacts?.protein?.value}g
+                    {customToFixed(nutritionFacts?.protein?.value)} g
                   </Text>
                   <Text style={text}>
                     {nutritionFacts?.protein?.dailyValue}%
@@ -306,7 +371,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Sugars</Text>:{' '}
-                    {nutritionFacts?.sugars?.value}g
+                    {customToFixed(nutritionFacts?.sugars?.value)} g
                   </Text>
                   <Text style={text}></Text>
                 </View>
@@ -315,8 +380,7 @@ const Recipe = ({ route }) => {
                 <View style={flexRowBetweenInside}>
                   <Text style={text}>
                     <Text style={fwb}>Sodium</Text>:{' '}
-                    {nutritionFacts?.sodium?.value}
-                    mg
+                    {customToFixed(nutritionFacts?.sodium?.value)} mg
                   </Text>
                   <Text style={text}>
                     {nutritionFacts?.sodium?.dailyValue}%
