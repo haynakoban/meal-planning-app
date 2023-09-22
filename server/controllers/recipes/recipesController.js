@@ -1,4 +1,5 @@
-const { Recipes, Feedbacks, Users, MealTypes } = require('../../models');
+const { Recipes, MealTypes } = require('../../models');
+const dbUtility = require('../../config/connection');
 
 // bulk meal types
 const bulkRecipes = async (req, res, next) => {
@@ -169,6 +170,18 @@ const paginatedListMealTypes = async (req, res, next) => {
           (sum, feedback) => sum + (feedback.rating || 0),
           0
         );
+
+        if (typeof r.image === 'object') {
+          (async () => {
+            const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+            const base64Image = imageBuffer.toString('base64');
+            const mimeType = 'image/jpg'; // Change this to match the actual image type
+            const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+            r.image = dataURI;
+          })();
+        }
         return {
           recipes: r,
           reviews: totalFeedbacks,
@@ -195,20 +208,33 @@ const paginatedListMealTypes = async (req, res, next) => {
             .populate('cooking_time')
             .select('-createAt -__v');
 
-          const results = data.map((recipe) => {
-            const r = recipe;
-            const feedbacks = recipe.feedbacks || [];
-            const totalFeedbacks = feedbacks.length;
-            const ratingsSum = feedbacks.reduce(
-              (sum, feedback) => sum + (feedback.rating || 0),
-              0
-            );
-            return {
-              recipes: r,
-              reviews: totalFeedbacks,
-              ratings: ratingsSum / totalFeedbacks,
-            };
-          });
+          const results = await Promise.all(
+            data.map(async (recipe) => {
+              const r = recipe;
+              const feedbacks = recipe.feedbacks || [];
+              const totalFeedbacks = feedbacks.length;
+              const ratingsSum = feedbacks.reduce(
+                (sum, feedback) => sum + (feedback.rating || 0),
+                0
+              );
+
+              if (typeof r.image === 'object') {
+                const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+                const base64Image = imageBuffer.toString('base64');
+                const mimeType = 'image/jpg'; // Change this to match the actual image type
+                const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+                r.image = dataURI;
+              }
+
+              return {
+                recipes: r,
+                reviews: totalFeedbacks,
+                ratings: ratingsSum / totalFeedbacks,
+              };
+            })
+          );
 
           return { title: mt.name, data: results };
         })

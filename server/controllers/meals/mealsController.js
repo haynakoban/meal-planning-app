@@ -1,4 +1,5 @@
 const { Meals, MealTypes, Recipes } = require('../../models');
+const dbUtility = require('../../config/connection');
 
 // bulk meal types
 const bulkMealTypes = async (req, res, next) => {
@@ -153,18 +154,50 @@ const paginatedMealTypes = async (req, res, next) => {
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
         .select('-createAt -__v');
 
+      const results = await Promise.all(
+        recipes.map(async (recipe) => {
+          const r = recipe;
+
+          const feedbacks = recipe.feedbacks || [];
+          const totalFeedbacks = feedbacks.length;
+          const ratingsSum = feedbacks.reduce(
+            (sum, feedback) => sum + (feedback.rating || 0),
+            0
+          );
+
+          if (typeof r.image === 'object') {
+            const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+            const base64Image = imageBuffer.toString('base64');
+            const mimeType = 'image/jpg'; // Change this to match the actual image type
+            const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+            r.image = dataURI;
+          }
+
+          return {
+            recipes: r,
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        })
+      );
+
       // Return the paginated data along with pagination information
       res.json({
-        message: `${recipes.length} items retrieved successfully`,
+        message: `${results.length} items retrieved successfully`,
         status: 'success',
         currentPage: page,
         totalPages,
-        data: recipes,
+        data: results,
       });
+
+      // end here
     } else {
       const mealTypes = await MealTypes.findOne({
         name: req.query.title,
       }).select('_id');
+
       const recipes = await Recipes.find({
         meal_types: { $in: [mealTypes?._id] },
       })
@@ -175,13 +208,42 @@ const paginatedMealTypes = async (req, res, next) => {
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
         .select('-createAt -__v');
 
+      const results = await Promise.all(
+        recipes.map(async (recipe) => {
+          const r = recipe;
+
+          const feedbacks = recipe.feedbacks || [];
+          const totalFeedbacks = feedbacks.length;
+          const ratingsSum = feedbacks.reduce(
+            (sum, feedback) => sum + (feedback.rating || 0),
+            0
+          );
+
+          if (typeof r.image === 'object') {
+            const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+            const base64Image = imageBuffer.toString('base64');
+            const mimeType = 'image/jpg'; // Change this to match the actual image type
+            const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+            r.image = dataURI;
+          }
+
+          return {
+            recipes: r,
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        })
+      );
+
       // Return the paginated data along with pagination information
       res.json({
-        message: `${recipes.length} items retrieved successfully`,
+        message: `${results.length} items retrieved successfully`,
         status: 'success',
         currentPage: page,
         totalPages,
-        data: recipes,
+        data: results,
       });
     }
   } catch (e) {
