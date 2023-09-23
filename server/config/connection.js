@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
-const DB_URL = 'mongodb://localhost:27017/meal-planning-app';
-// const DB_URL =
-//   process.env.MONGO_URL || 'mongodb://localhost:27017/meal-planning-app';
+const DB_URL =
+  process.env.MONGO_URL || 'mongodb://localhost:27017/meal-planning-app';
 
 function connectToDatabase() {
   return mongoose.connect(DB_URL, {

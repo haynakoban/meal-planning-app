@@ -1,17 +1,27 @@
 import { FlatList } from 'react-native';
 
 import { DATA } from '../../constants';
-import { useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import SelectRecipe from '../../components/planner/SelectRecipe';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import useRecipeStore from '../../store/useRecipeStore';
+import LoadingScreen from '../loading/LoadingScreen';
 
 const SearchRecipe = () => {
   const recipes = useRecipeStore((state) => state.recipes);
   const listRecipes = useRecipeStore((state) => state.listRecipes);
   const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const searchRecipes = useRecipeStore((state) => state.searchRecipes);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    searchRecipes('');
     clearRecipe();
     listRecipes();
   }, []);
@@ -41,22 +51,29 @@ const SearchRecipe = () => {
   };
 
   return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      style={{ padding: 8 }}
-      data={recipes}
-      renderItem={({ item }) => {
-        return (
-          <SelectRecipe
-            data={item}
-            id={item._id}
-            addRecipe={addRecipe}
-            removeRecipe={removeRecipe}
-          />
-        );
-      }}
-      numColumns={2}
-    />
+    <>
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          style={{ padding: 8 }}
+          data={recipes}
+          keyboardShouldPersistTaps='always'
+          renderItem={({ item }) => {
+            return (
+              <SelectRecipe
+                data={item}
+                id={item._id}
+                addRecipe={addRecipe}
+                removeRecipe={removeRecipe}
+              />
+            );
+          }}
+          numColumns={2}
+        />
+      )}
+    </>
   );
 };
 
