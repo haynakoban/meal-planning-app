@@ -213,12 +213,27 @@ const Recipe = ({ route }) => {
           />
           <View style={wrapper}>
             <Text style={textBold}>{recipe?.name}</Text>
-            <Text
-              style={[label, { fontSize: SIZES.md, fontFamily: FONT.semiBold }]}
+            <Pressable
+              onPress={() =>
+                console.log(`visit profile ${recipe?.user_id?._id}`)
+              }
             >
-              {recipe?.user_id?.fullname}
-            </Text>
-            <Text style={label}>@{recipe?.user_id?.username}</Text>
+              <Text
+                style={[
+                  label,
+                  { fontSize: SIZES.md, fontFamily: FONT.semiBold },
+                ]}
+              >
+                {recipe?.user_id?.fullname}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() =>
+                console.log(`visit profile ${recipe?.user_id?._id}`)
+              }
+            >
+              <Text style={label}>@{recipe?.user_id?.username}</Text>
+            </Pressable>
           </View>
           <View style={divider}></View>
           <View style={wrapper}>
@@ -302,7 +317,7 @@ const Recipe = ({ route }) => {
             {recipe?.procedure?.map((item, index) => {
               return (
                 <Text key={index} style={[text, mb]}>
-                  {index + 1}. {item}
+                  • {item}
                 </Text>
               );
             })}

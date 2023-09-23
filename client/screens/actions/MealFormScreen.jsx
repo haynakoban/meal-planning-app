@@ -20,26 +20,24 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 
-import {
-  COLORS,
-  SIZES,
-  ingredients as INGREDIENTS,
-  CT,
-  privacyData,
-  FONT,
-  DATA,
-} from '../../constants';
+import { COLORS, SIZES, privacyData, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
-import FavoriteCard from '../../components/favorites/FavoriteCard';
 import useAuthStore from '../../store/useAuthStore';
-import useRecipeStore from '../../store/useRecipeStore';
+import useMealPlanRecipe from '../../store/useMealPlanRecipe';
+import MealButton from '../planner/MealButton';
 
 import { useNavigation } from '@react-navigation/native';
 
-import useMealPlanRecipe from '../../store/useMealPlanRecipe';
-
 const MealFormScreen = () => {
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const clearMeal = useMealPlanRecipe((state) => state.clearMeal);
+  const {
+    multipleBreakfastRecipes,
+    multipleSnacksRecipes,
+    multipleLunchRecipes,
+    multipleDinnerRecipes,
+  } = useMealPlanRecipe();
+  const { breakfastObj, snacksObj, lunchObj, dinnerObj } = useMealPlanRecipe();
+
   const userInfo = useAuthStore((state) => state.userInfo);
   const breakfastArray = useMealPlanRecipe((state) => state.breakfast);
   const snacksArray = useMealPlanRecipe((state) => state.snacks);
@@ -89,11 +87,25 @@ const MealFormScreen = () => {
   });
 
   useEffect(() => {
-    console.log('breakfast: ', breakfastArray);
-    console.log('snacks: ', snacksArray);
-    console.log('lunch: ', lunchArray);
-    console.log('dinner: ', dinnerArray);
-  }, [breakfastArray, snacksArray, lunchArray, dinnerArray]);
+    if (breakfastObj.length != breakfastArray.length) {
+      multipleBreakfastRecipes(breakfastArray);
+    }
+  }, [breakfastArray]);
+  useEffect(() => {
+    if (snacksObj.length != snacksArray.length) {
+      multipleSnacksRecipes(snacksArray);
+    }
+  }, [snacksArray]);
+  useEffect(() => {
+    if (lunchObj.length != lunchArray.length) {
+      multipleLunchRecipes(lunchArray);
+    }
+  }, [lunchArray]);
+  useEffect(() => {
+    if (dinnerObj.length != dinnerArray.length) {
+      multipleDinnerRecipes(dinnerArray);
+    }
+  }, [dinnerArray]);
 
   useEffect(() => {
     if (err.day === true) {
@@ -162,17 +174,17 @@ const MealFormScreen = () => {
     const isDescriptionValid =
       form.description !== null && form.description !== '';
     const isDayValid = day !== null && day !== 0;
-    // const isDataValid =
-    //   meals[0].breakfast.length !== 0 &&
-    //   meals[0].snacks.length !== 0 &&
-    //   meals[0].lunch.length !== 0 &&
-    //   meals[0].dinner.length !== 0;
+    const isDataValid =
+      breakfastArray.length !== 0 ||
+      snacksArray.length !== 0 ||
+      lunchArray.length !== 0 ||
+      dinnerArray.length !== 0;
 
     const err = {
       name: !isNameValid,
       description: !isDescriptionValid,
       day: !isDayValid,
-      // data: !isDataValid,
+      data: !isDataValid,
     };
 
     if (Object.values(err).some((value) => value)) {
@@ -192,6 +204,18 @@ const MealFormScreen = () => {
 
     console.log(data);
   }
+
+  const removeBreakfast = useMealPlanRecipe((state) => state.removeBreakfast);
+  const removeSnacks = useMealPlanRecipe((state) => state.removeSnacks);
+  const removeLunch = useMealPlanRecipe((state) => state.removeLunch);
+  const removeDinner = useMealPlanRecipe((state) => state.removeDinner);
+
+  const removeRecipe = ({ id, type }) => {
+    if (type === 'breakfast') return removeBreakfast(id);
+    if (type === 'snacks') return removeSnacks(id);
+    if (type === 'lunch') return removeLunch(id);
+    if (type === 'dinner') return removeDinner(id);
+  };
 
   DropDownPicker.setListMode('MODAL');
 
@@ -322,81 +346,10 @@ const MealFormScreen = () => {
             { flexDirection: 'row', justifyContent: 'space-around' },
           ]}
         >
-          <Pressable
-            onPress={() =>
-              navigation.navigate('Search Recipe', { type: 'breakfast' })
-            }
-            style={{ width: '24%' }}
-          >
-            <View
-              style={{
-                alignItems: 'center',
-                backgroundColor: COLORS.secondary,
-                padding: 10,
-                borderRadius: 8,
-              }}
-            >
-              <Ionicons name='add-circle-outline' size={24} color='black' />
-              <Text>Breakfast</Text>
-            </View>
-          </Pressable>
-
-          <Pressable
-            onPress={() =>
-              navigation.navigate('Search Recipe', { type: 'snacks' })
-            }
-            style={{ width: '24%' }}
-          >
-            <View
-              style={{
-                alignItems: 'center',
-                backgroundColor: COLORS.secondary,
-                padding: 10,
-                borderRadius: 8,
-              }}
-            >
-              <Ionicons name='add-circle-outline' size={24} color='black' />
-              <Text>Snacks</Text>
-            </View>
-          </Pressable>
-
-          <Pressable
-            onPress={() =>
-              navigation.navigate('Search Recipe', { type: 'lunch' })
-            }
-            style={{ width: '24%' }}
-          >
-            <View
-              style={{
-                alignItems: 'center',
-                backgroundColor: COLORS.secondary,
-                padding: 10,
-                borderRadius: 8,
-              }}
-            >
-              <Ionicons name='add-circle-outline' size={24} color='black' />
-              <Text>Lunch</Text>
-            </View>
-          </Pressable>
-
-          <Pressable
-            onPress={() =>
-              navigation.navigate('Search Recipe', { type: 'dinner' })
-            }
-            style={{ width: '24%' }}
-          >
-            <View
-              style={{
-                alignItems: 'center',
-                backgroundColor: COLORS.secondary,
-                padding: 10,
-                borderRadius: 8,
-              }}
-            >
-              <Ionicons name='add-circle-outline' size={24} color='black' />
-              <Text>Dinner</Text>
-            </View>
-          </Pressable>
+          <MealButton type='breakfast' label='Breakfast' />
+          <MealButton type='snacks' label='Snacks' />
+          <MealButton type='lunch' label='Lunch' />
+          <MealButton type='dinner' label='Dinner' />
         </View>
         {err.data && (
           <Text
@@ -417,18 +370,79 @@ const MealFormScreen = () => {
               {breakfastArray.length > 0 ? (
                 <FlatList
                   showsHorizontalScrollIndicator={false}
-                  data={DATA}
+                  data={breakfastObj}
                   renderItem={({ item }) => {
-                    const { name, username, ratings, image, id } = item;
+                    const { name, image } = item;
                     return (
-                      <View style={{ width: 250 }}>
-                        <FavoriteCard
-                          name={name}
-                          username={username}
-                          ratings={ratings}
-                          image={image}
-                          key={id}
+                      <View
+                        style={{
+                          width: 250,
+                          marginRight: 10,
+                          justifyContent: 'space-between',
+                          borderWidth: 1,
+                          borderColor: COLORS.secondary,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Image
+                          source={
+                            image
+                              ? {
+                                  uri: image,
+                                }
+                              : require('../../assets/images/image-not-found.jpg')
+                          }
+                          style={{
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: '100%',
+                            aspectRatio: 4 / 3,
+                            height: 'auto',
+                          }}
                         />
+                        <Text
+                          style={{
+                            fontSize: SIZES.md,
+                            fontFamily: FONT.medium,
+                            paddingHorizontal: 10,
+                            paddingTop: 10,
+                          }}
+                        >
+                          {name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: SIZES.sm,
+                            fontFamily: FONT.regular,
+                            paddingHorizontal: 10,
+                            paddingBottom: 10,
+                          }}
+                        >
+                          @{item?.user_id?.username}
+                        </Text>
+                        <Pressable
+                          onPress={() => {
+                            removeRecipe({ id: item?._id, type: 'breakfast' });
+                          }}
+                          style={{
+                            borderBottomLeftRadius: 10,
+                            borderBottomRightRadius: 10,
+                            padding: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: COLORS.danger,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: SIZES.md,
+                              fontFamily: FONT.semiBold,
+                              color: COLORS.white,
+                            }}
+                          >
+                            Remove Recipe
+                          </Text>
+                        </Pressable>
                       </View>
                     );
                   }}
@@ -446,18 +460,80 @@ const MealFormScreen = () => {
               {snacksArray.length > 0 ? (
                 <FlatList
                   showsHorizontalScrollIndicator={false}
-                  data={DATA}
+                  data={snacksObj}
                   renderItem={({ item }) => {
-                    const { name, username, ratings, image, id } = item;
+                    const { name, image } = item;
                     return (
-                      <View style={{ width: 250 }}>
-                        <FavoriteCard
-                          name={name}
-                          username={username}
-                          ratings={ratings}
-                          image={image}
-                          key={id}
+                      <View
+                        style={{
+                          width: 250,
+                          marginRight: 10,
+                          justifyContent: 'space-between',
+                          borderWidth: 1,
+                          borderColor: COLORS.secondary,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Image
+                          source={
+                            image
+                              ? {
+                                  uri: image,
+                                }
+                              : require('../../assets/images/image-not-found.jpg')
+                          }
+                          style={{
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: '100%',
+                            aspectRatio: 4 / 3,
+                            height: 'auto',
+                          }}
                         />
+                        <Text
+                          style={{
+                            fontSize: SIZES.md,
+                            fontFamily: FONT.medium,
+                            paddingHorizontal: 10,
+                            paddingTop: 10,
+                          }}
+                        >
+                          {name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: SIZES.sm,
+                            fontFamily: FONT.regular,
+                            paddingHorizontal: 10,
+
+                            paddingBottom: 10,
+                          }}
+                        >
+                          @{item?.user_id?.username}
+                        </Text>
+                        <Pressable
+                          onPress={() => {
+                            removeRecipe({ id: item?._id, type: 'snacks' });
+                          }}
+                          style={{
+                            borderBottomLeftRadius: 10,
+                            borderBottomRightRadius: 10,
+                            padding: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: COLORS.danger,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: SIZES.md,
+                              fontFamily: FONT.semiBold,
+                              color: COLORS.white,
+                            }}
+                          >
+                            Remove Recipe
+                          </Text>
+                        </Pressable>
                       </View>
                     );
                   }}
@@ -475,18 +551,80 @@ const MealFormScreen = () => {
               {lunchArray.length > 0 ? (
                 <FlatList
                   showsHorizontalScrollIndicator={false}
-                  data={DATA}
+                  data={lunchObj}
                   renderItem={({ item }) => {
-                    const { name, username, ratings, image, id } = item;
+                    const { name, image } = item;
                     return (
-                      <View style={{ width: 250 }}>
-                        <FavoriteCard
-                          name={name}
-                          username={username}
-                          ratings={ratings}
-                          image={image}
-                          key={id}
+                      <View
+                        style={{
+                          width: 250,
+                          marginRight: 10,
+                          justifyContent: 'space-between',
+                          borderWidth: 1,
+                          borderColor: COLORS.secondary,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Image
+                          source={
+                            image
+                              ? {
+                                  uri: image,
+                                }
+                              : require('../../assets/images/image-not-found.jpg')
+                          }
+                          style={{
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: '100%',
+                            aspectRatio: 4 / 3,
+                            height: 'auto',
+                          }}
                         />
+                        <Text
+                          style={{
+                            fontSize: SIZES.md,
+                            fontFamily: FONT.medium,
+                            paddingHorizontal: 10,
+                            paddingTop: 10,
+                          }}
+                        >
+                          {name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: SIZES.sm,
+                            fontFamily: FONT.regular,
+                            paddingHorizontal: 10,
+
+                            paddingBottom: 10,
+                          }}
+                        >
+                          @{item?.user_id?.username}
+                        </Text>
+                        <Pressable
+                          onPress={() => {
+                            removeRecipe({ id: item?._id, type: 'lunch' });
+                          }}
+                          style={{
+                            borderBottomLeftRadius: 10,
+                            borderBottomRightRadius: 10,
+                            padding: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: COLORS.danger,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: SIZES.md,
+                              fontFamily: FONT.semiBold,
+                              color: COLORS.white,
+                            }}
+                          >
+                            Remove Recipe
+                          </Text>
+                        </Pressable>
                       </View>
                     );
                   }}
@@ -504,18 +642,80 @@ const MealFormScreen = () => {
               {dinnerArray.length > 0 ? (
                 <FlatList
                   showsHorizontalScrollIndicator={false}
-                  data={DATA}
+                  data={dinnerObj}
                   renderItem={({ item }) => {
-                    const { name, username, ratings, image, id } = item;
+                    const { name, image } = item;
                     return (
-                      <View style={{ width: 250 }}>
-                        <FavoriteCard
-                          name={name}
-                          username={username}
-                          ratings={ratings}
-                          image={image}
-                          key={id}
+                      <View
+                        style={{
+                          width: 250,
+                          marginRight: 10,
+                          justifyContent: 'space-between',
+                          borderWidth: 1,
+                          borderColor: COLORS.secondary,
+                          borderRadius: 10,
+                        }}
+                      >
+                        <Image
+                          source={
+                            image
+                              ? {
+                                  uri: image,
+                                }
+                              : require('../../assets/images/image-not-found.jpg')
+                          }
+                          style={{
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: '100%',
+                            aspectRatio: 4 / 3,
+                            height: 'auto',
+                          }}
                         />
+                        <Text
+                          style={{
+                            fontSize: SIZES.md,
+                            fontFamily: FONT.medium,
+                            paddingHorizontal: 10,
+                            paddingTop: 10,
+                          }}
+                        >
+                          {name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: SIZES.sm,
+                            fontFamily: FONT.regular,
+                            paddingHorizontal: 10,
+
+                            paddingBottom: 10,
+                          }}
+                        >
+                          @{item?.user_id?.username}
+                        </Text>
+                        <Pressable
+                          onPress={() => {
+                            removeRecipe({ id: item?._id, type: 'dinner' });
+                          }}
+                          style={{
+                            borderBottomLeftRadius: 10,
+                            borderBottomRightRadius: 10,
+                            padding: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: COLORS.danger,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: SIZES.md,
+                              fontFamily: FONT.semiBold,
+                              color: COLORS.white,
+                            }}
+                          >
+                            Remove Recipe
+                          </Text>
+                        </Pressable>
                       </View>
                     );
                   }}

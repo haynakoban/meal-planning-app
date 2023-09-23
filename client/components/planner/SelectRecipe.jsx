@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { View, Text, Pressable, Button } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,7 +8,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { COLORS, FONT, SIZES } from '../../constants';
 import RatingCard from '../ratings/RatingCard';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
-import NotFound from '../../assets/images/image-not-found.jpg';
 
 const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
   const navigation = useNavigation();
@@ -48,9 +47,23 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
   const [isFavorite, setIsFavorite] = useState(true);
 
   let calculated = 0;
-  for (let i = 0; i < data.feedbacks.length; i++) {
-    calculated += parseInt(data.feedbacks[i].rating);
+  for (let i = 0; i < data?.feedbacks.length; i++) {
+    calculated += parseInt(data?.feedbacks[i]?.rating);
   }
+
+  const pressableRef = useRef(null);
+
+  const handlePressIn = () => {
+    pressableRef.current.setNativeProps({
+      style: { opacity: 0.75 },
+    });
+  };
+
+  const handlePressOut = () => {
+    pressableRef.current.setNativeProps({
+      style: { opacity: 1 },
+    });
+  };
 
   return (
     <Pressable
@@ -63,6 +76,9 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
             addRecipe({ id, type });
             setIsExist(!isExists);
           }}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          ref={pressableRef}
           style={{
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
@@ -84,6 +100,9 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
         </Pressable>
       ) : (
         <Pressable
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          ref={pressableRef}
           onPress={() => {
             removeRecipe({ id, type });
             setIsExist(!isExists);
@@ -109,32 +128,39 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
         </Pressable>
       )}
       <Card>
-        {/* {data.image ? (
-          <Card.Cover
-            source={{ uri: data.image }}
-            style={[mb, { borderTopLeftRadius: 0, borderTopRightRadius: 0 }]}
-          />
-        ) : (
-          )} */}
         <Card.Cover
-          source={NotFound}
+          source={
+            data.image
+              ? {
+                  uri: data?.image,
+                }
+              : require('../../assets/images/image-not-found.jpg')
+          }
           style={[mb, { borderTopLeftRadius: 0, borderTopRightRadius: 0 }]}
         />
         <Card.Content>
           <Text variant='titleLarge' style={title}>
-            {data.name}
+            {data?.name}
           </Text>
           <Text variant='bodyMedium' style={usernameStyle}>
-            {data.user_id.username}
+            {data?.user_id?.username}
           </Text>
         </Card.Content>
         <View style={cardBottom}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <RatingCard rating={calculated / data.feedbacks.length} />
+            <RatingCard
+              rating={
+                calculated > 0
+                  ? (calculated / data?.feedbacks.length).toFixed(1)
+                  : 0
+              }
+            />
             <Text>
               {' '}
-              {(calculated / data.feedbacks.length).toFixed(1)} (
-              {data.feedbacks.length})
+              {calculated > 0
+                ? (calculated / data?.feedbacks.length).toFixed(1)
+                : 0}{' '}
+              ({data?.feedbacks.length})
             </Text>
           </View>
         </View>
