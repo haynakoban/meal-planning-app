@@ -273,6 +273,16 @@ const show = async (req, res, next) => {
       .populate('ingredients.ingredients_id')
       .select('-createAt -__v');
 
+    if (typeof recipe.image === 'object') {
+      const imageBuffer = await dbUtility.fetchImageById(recipe.image);
+
+      const base64Image = imageBuffer.toString('base64');
+      const mimeType = 'image/jpg'; // Change this to match the actual image type
+      const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+      recipe.image = dataURI;
+    }
+
     if (!recipe) {
       return res.status(404).json({
         message: 'Item not found',

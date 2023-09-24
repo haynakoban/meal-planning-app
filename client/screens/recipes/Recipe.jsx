@@ -5,6 +5,8 @@ import {
   Text,
   Pressable,
   ActivityIndicator,
+  Button,
+  TouchableOpacity,
 } from 'react-native';
 
 import { Fragment } from 'react';
@@ -27,7 +29,7 @@ import { API } from '../../constants/API';
 import axios from '../../lib/axiosConfig';
 import LoadingScreen from '../loading/LoadingScreen';
 
-const Recipe = ({ route }) => {
+const Recipe = ({ route, navigation }) => {
   function customToFixed(number) {
     const decimalPlaces = (number?.toString().split('.')[1] || []).length;
     return decimalPlaces > 3 ? number?.toFixed(2) : number;
@@ -212,13 +214,83 @@ const Recipe = ({ route }) => {
             style={imageStyle}
           />
           <View style={wrapper}>
-            <Text style={textBold}>{recipe?.name}</Text>
-            <Text
-              style={[label, { fontSize: SIZES.md, fontFamily: FONT.semiBold }]}
-            >
-              {recipe?.user_id?.fullname}
+            <Text style={textBold} numberOfLines={3} ellipsizeMode='tail'>
+              {recipe?.name}
             </Text>
-            <Text style={label}>@{recipe?.user_id?.username}</Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 12,
+                marginBottom: 2,
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: SIZES.sm + 2,
+                    fontFamily: FONT.regular,
+                    marginRight: 8,
+                  }}
+                >
+                  Recipe by:
+                </Text>
+
+                <TouchableOpacity
+                  style={{
+                    paddingHorizontal: 0,
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('OtherUserProfile', {
+                      id: recipe?.user_id?._id,
+                    });
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: COLORS.black,
+                      fontSize: SIZES.sm + 2,
+                      fontFamily: FONT.medium,
+                    }}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
+                  >
+                    {recipe?.user_id?.fullname}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Pressable style={[flexRow]} onPress={handleSetFavorite}>
+                {isFavorite ? (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-sharp'
+                      size={SIZES.lg}
+                      color={COLORS.danger}
+                    />
+                    <Text style={text}>Saved</Text>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <Ionicons
+                      name='ios-bookmark-outline'
+                      size={SIZES.lg}
+                      color={COLORS.black}
+                    />
+                    <Text style={text}>Save</Text>
+                  </Fragment>
+                )}
+              </Pressable>
+            </View>
           </View>
           <View style={divider}></View>
           <View style={wrapper}>
@@ -246,27 +318,6 @@ const Recipe = ({ route }) => {
                 />
                 <Text style={text}>{recipe?.cooking_time} minutes</Text>
               </View>
-              <Pressable style={flexRow} onPress={handleSetFavorite}>
-                {isFavorite ? (
-                  <Fragment>
-                    <Ionicons
-                      name='ios-bookmark-sharp'
-                      size={SIZES.xl}
-                      color={COLORS.danger}
-                    />
-                    <Text style={text}>Saved</Text>
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <Ionicons
-                      name='ios-bookmark-outline'
-                      size={SIZES.xl}
-                      color={COLORS.black}
-                    />
-                    <Text style={text}>Save</Text>
-                  </Fragment>
-                )}
-              </Pressable>
             </View>
           </View>
           <View style={bigDivider}></View>

@@ -13,15 +13,17 @@ import {
   Meal,
   SearchRecipe,
   LoadingScreen,
+  OtherUserProfileScreen,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
 import useAuthStore from '../store/useAuthStore';
 import useRecipeStore from '../store/useRecipeStore';
 
-import { COLORS, SIZES } from '../constants';
+import { COLORS, FONT, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
 import { FilterModal } from '../components/general/FilterDropdown';
+import { Avatar } from 'react-native-paper';
 
 const Stack = createStackNavigator();
 
@@ -88,6 +90,20 @@ const AppNavigator = () => {
                 </View>
               ),
             })}
+          />
+
+          <Stack.Screen
+            name='OtherUserProfile'
+            component={OtherUserProfileScreen}
+            options={{
+              headerTitle: 'User Profile',
+              headerTitleAlign: 'left',
+              headerTitleStyle: {
+                fontFamily: FONT.bold,
+                fontSize: SIZES.sm + 2,
+                color: COLORS.primary,
+              },
+            }}
           />
 
           <Stack.Screen

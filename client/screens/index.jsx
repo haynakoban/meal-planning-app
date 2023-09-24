@@ -13,6 +13,7 @@ import SearchScreen from './search/SearchScreen';
 import SearchRecipe from './search/SearchRecipe';
 import SignUpScreen from './signup/SignUpScreen';
 import LoadingScreen from './loading/LoadingScreen';
+import OtherUserProfileScreen from './profile/OtherUserProfileScreen';
 
 export {
   FavoritesScreen,
@@ -30,4 +31,5 @@ export {
   Meal,
   SearchRecipe,
   LoadingScreen,
+  OtherUserProfileScreen,
 };
