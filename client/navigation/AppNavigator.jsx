@@ -13,7 +13,7 @@ import {
   Meal,
   SearchRecipe,
   LoadingScreen,
-  OtherUserProfileScreen,
+  UserProfile,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
@@ -105,7 +105,7 @@ const AppNavigator = () => {
 
           <Stack.Screen
             name='OtherUserProfile'
-            component={OtherUserProfileScreen}
+            component={UserProfile}
             options={{
               headerTitle: 'User Profile',
               headerTitleAlign: 'left',

@@ -13,7 +13,7 @@ import styles from '../../styles/profile';
 import { formatNumber } from '../../lib/formatNumber';
 import axios from '../../lib/axiosConfig';
 
-const OtherUserProfileScreen = ({ route, navigation }) => {
+const UserProfile = ({ route, navigation }) => {
   const { id } = route.params;
   const [userData, setUserData] = useState(null);
   const [currentScreen, setCurrentScreen] = useState('meals');
@@ -330,4 +330,4 @@ const OtherUserProfileScreen = ({ route, navigation }) => {
   );
 };
 
-export default OtherUserProfileScreen;
+export default UserProfile;
