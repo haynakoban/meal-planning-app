@@ -1,17 +1,23 @@
 import { Modal, Portal } from 'react-native-paper';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 import { COLORS, SIZES } from '../../constants';
 import styles from '../../styles/profileDropDown';
 import useAuthStore from '../../store/useAuthStore';
 
-const ProfileDropdown = ({ hideModal }) => {
+const ProfileDropdown = ({ hideModal, navigation }) => {
   const { logout } = useAuthStore();
   return (
     <ScrollView>
       <View>
-        <TouchableOpacity onPress={() => console.log('hello')}>
+        <TouchableOpacity
+          onPress={() => {
+            hideModal();
+            navigation.navigate('ProfileSettings');
+          }}
+        >
           <View style={[styles.container, styles.bb]}>
             <Feather name='user' size={SIZES.lg + 1} color={COLORS.black} />
             <Text style={[styles.text, styles.marginLeft]}>Profile</Text>
@@ -60,6 +66,7 @@ const ProfileDropdown = ({ hideModal }) => {
 };
 
 export const ProfileModal = ({ visible, hideModal }) => {
+  const navigation = useNavigation();
   return (
     <Portal>
       <Modal
@@ -74,7 +81,7 @@ export const ProfileModal = ({ visible, hideModal }) => {
           borderRadius: 8,
         }}
       >
-        <ProfileDropdown hideModal={hideModal} />
+        <ProfileDropdown hideModal={hideModal} navigation={navigation} />
       </Modal>
     </Portal>
   );

@@ -13,6 +13,10 @@ import SearchScreen from './search/SearchScreen';
 import SearchRecipe from './search/SearchRecipe';
 import SignUpScreen from './signup/SignUpScreen';
 import UserProfile from './profile/UserProfile';
+import ProfileSettings from './profile/ProfileSettings';
+import AccountInformation from './profile/AccountInformation';
+import ChangePassword from './profile/ChangePassword';
+import PrivacySettings from './profile/PrivacySettings';
 import LoadingScreen from './loading/LoadingScreen';
 
 export {
@@ -32,4 +36,8 @@ export {
   SearchRecipe,
   LoadingScreen,
   UserProfile,
+  ProfileSettings,
+  AccountInformation,
+  ChangePassword,
+  PrivacySettings,
 };

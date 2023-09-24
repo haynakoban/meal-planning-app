@@ -14,6 +14,10 @@ import {
   SearchRecipe,
   LoadingScreen,
   UserProfile,
+  ProfileSettings,
+  AccountInformation,
+  ChangePassword,
+  PrivacySettings,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
@@ -23,7 +27,6 @@ import useRecipeStore from '../store/useRecipeStore';
 import { COLORS, FONT, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
 import { FilterModal } from '../components/general/FilterDropdown';
-import { Avatar } from 'react-native-paper';
 
 import useMealPlanRecipe from '../store/useMealPlanRecipe';
 const Stack = createStackNavigator();
@@ -73,7 +76,6 @@ const AppNavigator = () => {
             component={AppBottomNavigation}
             options={{ headerShown: false }}
           />
-
           <Stack.Screen
             name='Show All Recipes'
             component={RecipesScreen}
@@ -102,7 +104,6 @@ const AppNavigator = () => {
               ),
             })}
           />
-
           <Stack.Screen
             name='OtherUserProfile'
             component={UserProfile}
@@ -113,6 +114,53 @@ const AppNavigator = () => {
                 fontFamily: FONT.bold,
                 fontSize: SIZES.sm + 2,
                 color: COLORS.primary,
+              },
+            }}
+          />
+          <Stack.Screen
+            name='ProfileSettings'
+            component={ProfileSettings}
+            options={{
+              headerTitle: 'Your Account',
+              headerTitleAlign: 'left',
+              headerTitleStyle: {
+                fontFamily: FONT.bold,
+              },
+            }}
+          />
+
+          <Stack.Screen
+            name='AccountInformation'
+            component={AccountInformation}
+            options={{
+              headerTitle: 'Account Information',
+              headerTitleAlign: 'left',
+              headerTitleStyle: {
+                fontFamily: FONT.bold,
+              },
+            }}
+          />
+
+          <Stack.Screen
+            name='ChangePassword'
+            component={ChangePassword}
+            options={{
+              headerTitle: 'Change Password',
+              headerTitleAlign: 'left',
+              headerTitleStyle: {
+                fontFamily: FONT.bold,
+              },
+            }}
+          />
+
+          <Stack.Screen
+            name='PrivacySettings'
+            component={PrivacySettings}
+            options={{
+              headerTitle: 'Privacy Settings',
+              headerTitleAlign: 'left',
+              headerTitleStyle: {
+                fontFamily: FONT.bold,
               },
             }}
           />
@@ -138,7 +186,6 @@ const AppNavigator = () => {
               ),
             }}
           />
-
           <Stack.Screen
             name='Search Recipe'
             component={SearchRecipe}
@@ -171,7 +218,6 @@ const AppNavigator = () => {
               headerTitleStyle: styles.signUpHeaderTitleStyle,
             }}
           />
-
           <Stack.Screen
             name='Meal'
             component={Meal}
