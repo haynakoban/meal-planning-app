@@ -353,7 +353,7 @@ const Recipe = ({ route, navigation }) => {
             {recipe?.procedure?.map((item, index) => {
               return (
                 <Text key={index} style={[text, mb]}>
-                  {index + 1}. {item}
+                  • {item}
                 </Text>
               );
             })}

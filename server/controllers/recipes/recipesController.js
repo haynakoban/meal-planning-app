@@ -62,19 +62,48 @@ const create = async (req, res, next) => {
 // get the list of recipes
 const list = async (req, res, next) => {
   try {
-    // const recipes = await Recipes.find().select();
-    const recipes = await Recipes.find()
+    const search = req.query.search;
+
+    let query = Recipes.find();
+
+    if (search) {
+      query = query.or([
+        { name: new RegExp(search, 'i') },
+        { 'ingredients.name': new RegExp(search, 'i') },
+      ]);
+    }
+
+    const recipes = await query
       .populate({ path: 'user_id', select: 'fullname username' })
       .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
       .populate('cooking_time')
       .populate('ingredients.ingredients_id')
-      .select('-createAt -__v');
+      .select('-createAt -__v')
+      .sort({ createdAt: -1 });
 
+    const results = await Promise.all(
+      recipes.map(async (recipe) => {
+        if (typeof recipe.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(recipe.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg'; // Change this to match the actual image type
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          return {
+            ...recipe.toObject(),
+            image: dataURI,
+          };
+        }
+
+        return recipe;
+      })
+    );
     // Return the paginated data along with pagination information
     res.json({
-      message: `${recipes.length} items retrieved successfully`,
+      message: `${results.length} items retrieved successfully`,
       status: 'success',
-      data: recipes,
+      data: results,
     });
   } catch (e) {
     return res.status(500).json({
@@ -115,9 +144,29 @@ const paginatedList = async (req, res, next) => {
         .limit(perPage)
         .populate({ path: 'user_id', select: 'fullname username' })
         .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
-        .populate({ path: 'cooking_time', select: 'time' })
         .populate('cooking_time')
-        .select('-createAt -__v');
+        .populate('ingredients.ingredients_id')
+        .select('-createAt -__v')
+        .sort({ createdAt: -1 });
+
+      const results = await Promise.all(
+        recipes.map(async (recipe) => {
+          if (typeof recipe.image === 'object') {
+            const imageBuffer = await dbUtility.fetchImageById(recipe.image);
+
+            const base64Image = imageBuffer.toString('base64');
+            const mimeType = 'image/jpg'; // Change this to match the actual image type
+            const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+            return {
+              ...recipe.toObject(),
+              image: dataURI,
+            };
+          }
+
+          return recipe;
+        })
+      );
 
       // Return the paginated data along with pagination information
       res.json({
@@ -125,7 +174,7 @@ const paginatedList = async (req, res, next) => {
         status: 'success',
         currentPage: page,
         totalPages,
-        data: recipes,
+        data: results,
       });
     }
   } catch (e) {
@@ -139,7 +188,7 @@ const paginatedList = async (req, res, next) => {
 
 // get the paginated list of recipes based on meal types
 const paginatedListMealTypes = async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
+  const page = parseInt(req.query.page) || 2;
   const perPage = 5;
   let resourceLastModified = new Date();
   try {
@@ -179,7 +228,14 @@ const paginatedListMealTypes = async (req, res, next) => {
             const mimeType = 'image/jpg'; // Change this to match the actual image type
             const dataURI = `data:${mimeType};base64,${base64Image}`;
 
-            r.image = dataURI;
+            return {
+              recipes: {
+                ...r.toObject(),
+                image: dataURI,
+              },
+              reviews: totalFeedbacks,
+              ratings: ratingsSum / totalFeedbacks,
+            };
           })();
         }
         return {
@@ -225,7 +281,14 @@ const paginatedListMealTypes = async (req, res, next) => {
                 const mimeType = 'image/jpg'; // Change this to match the actual image type
                 const dataURI = `data:${mimeType};base64,${base64Image}`;
 
-                r.image = dataURI;
+                return {
+                  recipes: {
+                    ...r.toObject(),
+                    image: dataURI,
+                  },
+                  reviews: totalFeedbacks,
+                  ratings: ratingsSum / totalFeedbacks,
+                };
               }
 
               return {
@@ -288,6 +351,23 @@ const show = async (req, res, next) => {
         message: 'Item not found',
         status: 'error occurred',
         data: {},
+      });
+    }
+
+    if (typeof recipe.image === 'object') {
+      const imageBuffer = await dbUtility.fetchImageById(recipe.image);
+
+      const base64Image = imageBuffer.toString('base64');
+      const mimeType = 'image/jpg'; // Change this to match the actual image type
+      const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+      return res.json({
+        message: 'Item retrieved successfully',
+        status: 'success',
+        data: {
+          ...recipe.toObject(),
+          image: dataURI,
+        },
       });
     }
 

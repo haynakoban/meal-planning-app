@@ -106,7 +106,9 @@ const ReviewCard = ({ reviewsToRender, onRemoveItem }) => {
                 >
                   <Pressable
                     style={{ flexDirection: 'row', gap: 10 }}
-                    onPress={() => console.log('visit profile')}
+                    onPress={() =>
+                      console.log(`visit profile ${item?.user_id?._id}`)
+                    }
                   >
                     <FontAwesome
                       name='user-circle'
@@ -158,7 +160,9 @@ const ReviewCard = ({ reviewsToRender, onRemoveItem }) => {
               >
                 <Pressable
                   style={{ flexDirection: 'row', gap: 10 }}
-                  onPress={() => console.log('visit profile')}
+                  onPress={() =>
+                    console.log(`visit profile ${item?.user_id?._id}`)
+                  }
                 >
                   <FontAwesome
                     name='user-circle'

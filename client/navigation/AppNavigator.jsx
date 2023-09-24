@@ -25,20 +25,31 @@ import styles from '../styles/appNavigation';
 import { FilterModal } from '../components/general/FilterDropdown';
 import { Avatar } from 'react-native-paper';
 
+import useMealPlanRecipe from '../store/useMealPlanRecipe';
 const Stack = createStackNavigator();
+import { debounce } from '../constants/debounce';
 
 const AppNavigator = () => {
   const { fetchApiData, loadCachedFilters, loadCachedFilteredData } =
     useFilterStore();
   const { isLoggedIn, getUserInfo } = useAuthStore();
-  const { fetchRecipesData } = useRecipeStore();
+  const { fetchRecipesData, searchRecipes } = useRecipeStore();
 
   const [searchText, setSearchText] = useState('');
-  const [searchRecipe, setSearchRecipe] = useState('');
+  const { recipeMeal, setRecipeMeal } = useMealPlanRecipe();
   const [visible, setVisible] = useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const delayedSearch = debounce((text) => {
+    searchRecipes(text);
+  });
+
+  const setSearchRecipe = (text) => {
+    setRecipeMeal(text);
+    delayedSearch(text);
+  };
 
   useEffect(() => {
     loadCachedFilters();
@@ -143,7 +154,7 @@ const AppNavigator = () => {
                     style={styles.searchTextInput}
                     placeholder='Search...'
                     onChangeText={(text) => setSearchRecipe(text)}
-                    value={searchRecipe}
+                    value={recipeMeal}
                   />
                 </View>
               ),
