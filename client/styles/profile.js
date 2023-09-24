@@ -4,17 +4,17 @@ import { COLORS, FONT, SIZES } from '../constants';
 
 const styles = StyleSheet.create({
   profileContainer: {
-    paddingVertical: SIZES.md,
+    flex: 1,
     alignItems: 'center',
   },
   profileText: {
-    width: 220,
-    textAlign: 'left',
+    width: 240,
   },
   name: {
     fontFamily: FONT.bold,
     fontSize: SIZES.md,
     marginBottom: 8,
+    textAlign: 'center',
   },
   bio: {
     fontFamily: FONT.medium,

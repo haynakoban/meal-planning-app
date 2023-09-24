@@ -12,8 +12,6 @@ import { COLORS, FONT, SIZES } from '../../constants';
 import useAuthStore from '../../store/useAuthStore';
 import styles from '../../styles/profile';
 import { formatNumber } from '../../lib/formatNumber';
-import PlannerScreen from '../planner/PlannerScreen';
-import HomeScreen from '../home/HomeScreen';
 
 const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
@@ -57,8 +55,8 @@ const ProfileScreen = () => {
       <View style={profileContainer}>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
+            justifyContentL: 'center',
+            alignItems: 'center',
             paddingHorizontal: SIZES.md,
             width: '100%',
           }}
@@ -67,7 +65,7 @@ const ProfileScreen = () => {
           <View style={{ marginVertical: SIZES.md }}>
             {userInfo?.image ? (
               <Avatar.Image
-                size={100}
+                size={80}
                 style={{
                   backgroundColor: COLORS.accent,
                 }}
@@ -75,14 +73,14 @@ const ProfileScreen = () => {
               />
             ) : (
               <Avatar.Icon
-                size={100}
+                size={80}
                 style={{
                   backgroundColor: COLORS.accent,
                 }}
                 icon={() => (
                   <Ionicons
                     name='ios-person-outline'
-                    size={60}
+                    size={40}
                     color={COLORS.primary}
                   />
                 )}
@@ -90,7 +88,7 @@ const ProfileScreen = () => {
             )}
           </View>
 
-          <View style={[mv, profileText, { marginLeft: SIZES.sm }]}>
+          <View style={[profileText, { alignItems: 'center' }]}>
             <Text
               numberOfLines={1}
               ellipsizeMode='tail'
@@ -99,26 +97,20 @@ const ProfileScreen = () => {
               {userInfo?.fullname}
             </Text>
 
-            <Text
-              multiline={true}
-              style={[bio, profileText, { marginBottom: SIZES.sm + 2 }]}
-            >
-              {userInfo?.bio || 'this is my bio'}
-            </Text>
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'flex-start',
+                justifyContent: 'space-evenly',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
               <TouchableOpacity
                 style={[
                   groupButton,
                   {
-                    width: 100,
+                    width: 'auto',
                     alignItems: 'flex-start',
-                    marginRight: 8,
                   },
                 ]}
                 activeOpacity={1}
@@ -160,7 +152,7 @@ const ProfileScreen = () => {
                 style={[
                   groupButton,
                   {
-                    width: 100,
+                    width: 'auto',
                     alignItems: 'flex-start',
                   },
                 ]}
@@ -200,6 +192,21 @@ const ProfileScreen = () => {
                 </View>
               </TouchableOpacity>
             </View>
+
+            <Text
+              multiline={true}
+              style={[
+                bio,
+                profileText,
+                {
+                  marginTop: 4,
+                  textAlign: 'center',
+                  width: '75%',
+                },
+              ]}
+            >
+              {userInfo?.bio || 'this is my bio'}
+            </Text>
           </View>
         </View>
 

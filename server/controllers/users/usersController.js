@@ -346,6 +346,53 @@ const managaFavorite = async (req, res, next) => {
   }
 };
 
+// follow the user
+const followUser = async (req, res, next) => {
+  try {
+    const { my_id, user_id, type } = req.body;
+
+    if (my_id && user_id && type) {
+      if (type === 'follow') {
+        await Users.findByIdAndUpdate(
+          my_id,
+          { $push: { 'public_metrics.following': user_id } },
+          { new: true }
+        );
+
+        await Users.findByIdAndUpdate(
+          user_id,
+          { $push: { 'public_metrics.followers': my_id } },
+          { new: true }
+        );
+      } else {
+        await Users.findByIdAndUpdate(
+          my_id,
+          { $pull: { 'public_metrics.following': user_id } },
+          { new: true }
+        );
+
+        await Users.findByIdAndUpdate(
+          user_id,
+          { $pull: { 'public_metrics.followers': my_id } },
+          { new: true }
+        );
+      }
+
+      res.json({
+        message: 'User updated successfully',
+        status: 'success',
+        data: { my_id, user_id },
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkUsers,
   create,
@@ -356,4 +403,5 @@ module.exports = {
   paginatedList,
   show,
   managaFavorite,
+  followUser,
 };

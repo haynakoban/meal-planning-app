@@ -25,6 +25,12 @@ router
     usersController.bulkUsers
   );
 
+// post method - remove and add favorites
+router.route('/manage').post(usersController.managaFavorite);
+
+// post method - follow and unfollow user
+router.route('/follow').post(usersController.followUser);
+
 // get method - get the paginated list of users
 router.route('/list').get(usersController.paginatedList);
 
@@ -40,8 +46,5 @@ router
 
 // get method - get single user
 router.route('/:id').get(usersController.show);
-
-// post method - remove and add favorites
-router.route('/manage').post(usersController.managaFavorite);
 
 module.exports = router;

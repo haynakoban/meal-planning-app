@@ -16,6 +16,47 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  followUser: async ({ my_id, user_id, type }) => {
+    try {
+      const response = await axios.post('users/follow', {
+        my_id,
+        user_id,
+        type,
+      });
+
+      if (response.data.data) {
+        if (type === 'follow') {
+          useAuthStore.setState((state) => ({
+            ...state,
+            userInfo: {
+              ...state.userInfo,
+              public_metrics: {
+                ...state.userInfo.public_metrics,
+                following: [
+                  ...state.userInfo.public_metrics.following,
+                  user_id,
+                ],
+              },
+            },
+          }));
+        } else {
+          useAuthStore.setState((state) => ({
+            ...state,
+            userInfo: {
+              ...state.userInfo,
+              public_metrics: {
+                ...state.userInfo.public_metrics,
+                following: state.userInfo.public_metrics.following.filter(
+                  (id) => id !== user_id
+                ),
+              },
+            },
+          }));
+        }
+      }
+    } catch (error) {}
+  },
+
   getFavorites: (ids) => {
     axios
       .get('recipes/list', {
