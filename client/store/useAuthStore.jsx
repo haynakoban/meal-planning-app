@@ -108,6 +108,22 @@ const useAuthStore = create((set) => ({
       .catch((e) => console.error(e));
   },
 
+  update: async (id, property, value) => {
+    set({ userInfo: {} });
+    try {
+      const response = await axios.put(`users/${id}`, {
+        property,
+        [property]: value,
+      });
+
+      if (response.data?.status === 'success') {
+        set({ userInfo: response.data?.data });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  },
+
   reFetch: (id) => {
     const { favorites } = useAuthStore.getState();
     const newFavorites = favorites.filter((item) => item?.recipes?._id !== id);

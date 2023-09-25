@@ -393,6 +393,141 @@ const followUser = async (req, res, next) => {
   }
 };
 
+// update user info
+const update = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    // Validate that the property is one of 'fullname', 'username', 'email', or 'password'
+    if (!['fullname', 'username', 'email', 'password'].includes(property)) {
+      return res.status(400).json({
+        message: 'Invalid property provided',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const updateQuery = {};
+    updateQuery[property] = req.body[property];
+
+    // Check if the property being updated is 'password'
+    if (property === 'password') {
+      const saltRounds = 10;
+      const newPassword = await bcryptjs.hash(req.body.password, saltRounds);
+      updateQuery.password = newPassword;
+    }
+
+    const updatedUser = await Users.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: 'User not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    return res.status(200).json({
+      message: 'User updated successfully',
+      status: 'success',
+      data: updatedUser,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+// validate username or email
+const validate = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    if (property === 'username' || property === 'email') {
+      const existingUser = await Users.findOne({
+        [property]: req.body[property],
+      });
+
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(200).json({
+          message: `${property} already exists in the database`,
+          status: 'invalid',
+          data: {},
+        });
+      }
+    }
+
+    // If the property is unique, you can return a success status here
+    return res.status(200).json({
+      message: `${property} is unique`,
+      status: 'success',
+      data: {},
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
+// validate password
+const password = async (req, res, next) => {
+  try {
+    const { id, password } = req.body;
+
+    if (id && password) {
+      const findUser = await Users.findOne({ _id: id });
+
+      if (!findUser) {
+        return res.status(404).json({
+          message: 'User not found',
+          status: 'invalid',
+          data: {},
+        });
+      }
+
+      const isMatch = await new Promise((resolve, reject) => {
+        bcryptjs.compare(password, findUser.password, (err, isMatch) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(isMatch);
+          }
+        });
+      });
+
+      if (isMatch) {
+        return res.json({
+          message: 'Password is valid',
+          status: 'success',
+          data: {},
+        });
+      } else {
+        return res.status(200).json({
+          message: 'Password is invalid',
+          status: 'invalid',
+          data: {},
+        });
+      }
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkUsers,
   create,
@@ -404,4 +539,7 @@ module.exports = {
   show,
   managaFavorite,
   followUser,
+  update,
+  validate,
+  password,
 };

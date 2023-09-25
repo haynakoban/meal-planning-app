@@ -37,6 +37,9 @@ router.route('/list').get(usersController.paginatedList);
 // post method - log the user
 router.route('/auth/login').post(usersController.login);
 
+// post method - validate password
+router.route('/auth/password').post(usersController.password);
+
 // get method - get filters data
 // patch method - update filtered field
 router
@@ -44,7 +47,10 @@ router
   .get(usersController.filters)
   .patch(usersController.modify);
 
+// post method - validate username and email
+router.route('/validate/:id').post(usersController.validate);
+
 // get method - get single user
-router.route('/:id').get(usersController.show);
+router.route('/:id').get(usersController.show).put(usersController.update);
 
 module.exports = router;
