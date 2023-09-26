@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
+import useRecipeStore from './useRecipeStore';
 
 const useReviewsStore = create((set) => ({
   reviews: [],
@@ -33,18 +34,33 @@ const useReviewsStore = create((set) => ({
     }
   },
 
-  removeReview: (userId, foodItem) => {
+  removeReview: (userId, foodItem, rating) => {
     set((state) => ({
       reviews: state.reviews.filter(
         (review) =>
           review.user_id._id !== userId || review.foodItem !== foodItem
       ),
     }));
+    useRecipeStore.setState((state) => ({
+      recipe: {
+        ...state.recipe,
+        reviews: state.recipe.reviews - 1,
+        ratings: (state.recipe.ratings - rating) / (state.recipe.reviews - 1),
+      },
+    }));
   },
 
   addReview: (review) => {
     set((state) => ({
       reviews: [review, ...state.reviews],
+    }));
+    useRecipeStore.setState((state) => ({
+      recipe: {
+        ...state.recipe,
+        reviews: state.recipe.reviews + 1,
+        ratings:
+          (state.recipe.ratings + review.rating) / (state.recipe.reviews + 1),
+      },
     }));
   },
 

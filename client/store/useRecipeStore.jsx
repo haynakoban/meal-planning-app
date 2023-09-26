@@ -80,6 +80,7 @@ const useRecipeStore = create((set) => ({
 
   fetchRecipesData: async () => {
     try {
+      set({ homeRecipes: [] });
       const { lastModified } = useRecipeStore.getState();
 
       const response = await axios.get('recipes/list/types', {

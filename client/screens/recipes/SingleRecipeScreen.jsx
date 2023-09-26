@@ -54,10 +54,10 @@ const SingleRecipeScreen = ({ route, navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!nutritionFacts && recipe) {
+      if (recipe) {
         fetchNutrition();
       }
-    }, [recipe, nutritionFacts])
+    }, [recipe])
   );
 
   const fetchNutrition = async () => {
@@ -96,7 +96,8 @@ const SingleRecipeScreen = ({ route, navigation }) => {
 
   const onRemoveItem = async () => {
     await axios.delete(`feedbacks/${recipe_id}/${userInfo?._id}`);
-    removeReview(userInfo?._id, recipe_id);
+    const myReview = reviews?.filter((_) => _.user_id._id === userInfo?._id);
+    removeReview(userInfo?._id, recipe_id, myReview[0].rating);
     handleShowLessReviews();
   };
 
