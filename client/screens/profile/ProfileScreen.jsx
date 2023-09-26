@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   RefreshControl,
+  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   View,
@@ -12,11 +13,21 @@ import { COLORS, FONT, SIZES } from '../../constants';
 import useAuthStore from '../../store/useAuthStore';
 import styles from '../../styles/profile';
 import { formatNumber } from '../../lib/formatNumber';
+import ProfileRecipes from './ProfileRecipes';
+import useRecipeStore from '../../store/useRecipeStore';
 
 const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
   const [refreshing, setRefreshing] = useState(false);
   const { userInfo, getUserInfo, setUserInfo } = useAuthStore();
+  const recipes = useRecipeStore((state) => state.recipes);
+  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+
+  useEffect(() => {
+    clearRecipe();
+    presonalRecipes(userInfo?._id);
+  }, []);
 
   const {
     profileContainer,
@@ -266,7 +277,6 @@ const ProfileScreen = () => {
                     : 'transparent',
               },
             ]}
-            colo
             activeOpacity={1}
             onPress={() => setCurrentScreen('recipes')}
           >
@@ -284,7 +294,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                0
+                {recipes?.length || 0}
               </Text>
               <Text
                 style={[
@@ -304,15 +314,15 @@ const ProfileScreen = () => {
             </View>
           </TouchableOpacity>
         </View>
+      </View>
 
-        {/* content here */}
-        <View style={mv}>
-          {currentScreen === 'meals' ? (
-            <Text>This is meals</Text>
-          ) : (
-            <Text>This is recipes</Text>
-          )}
-        </View>
+      {/* content here */}
+      <View style={mv}>
+        {currentScreen === 'meals' ? (
+          <Text>This is meals</Text>
+        ) : (
+          <ProfileRecipes user_id={userInfo?._id} />
+        )}
       </View>
     </ScrollView>
   );

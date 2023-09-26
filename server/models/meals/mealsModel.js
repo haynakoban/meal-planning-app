@@ -1,18 +1,5 @@
 const mongoose = require('mongoose');
 
-const meals_info = [
-  {
-    meal_type: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Meal_Types',
-      required: true,
-    },
-    recipe_id: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Recipes', required: true },
-    ],
-  },
-];
-
 const user_id = {
   type: mongoose.Schema.Types.ObjectId,
   ref: 'Users',
@@ -39,13 +26,34 @@ const daySchema = {
   ],
 };
 
+const timeSchema = {
+  type: String,
+  required: true,
+  enum: ['breakfast', 'snacks', 'lunch', 'dinner'],
+};
+
+const image = {
+  type: mongoose.Schema.Types.Mixed,
+  ref: 'Uploads',
+  required: false,
+  default: null,
+};
+
 const mealsSchema = new mongoose.Schema({
   user_id,
-  meals_info,
+  image,
   privacy: privacySchema,
   name: { type: String, required: true },
   description: { type: String, required: false, default: null },
+  recipes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Recipes',
+      required: true,
+    },
+  ],
   day: daySchema,
+  time: timeSchema,
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },
 });

@@ -50,7 +50,11 @@ const FavoritesScreen = ({ navigation }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            style={{ elevation: 9999 }}
+          />
         }
       >
         <View

@@ -11,40 +11,16 @@ import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 
 const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
   const navigation = useNavigation();
-  const route = useRoute();
 
-  const { breakfast, snacks, lunch, dinner } = useMealPlanRecipe();
-
-  const [type] = useState(route.params.type);
+  const { recipesArray } = useMealPlanRecipe();
   const [isExists, setIsExist] = useState(false);
 
   useEffect(() => {
-    if (type == 'breakfast') {
-      let res = breakfast.some((item) => item === id);
-      setIsExist(res);
-    } else if (type == 'snacks') {
-      let res = snacks.some((item) => item === id);
-      setIsExist(res);
-    } else if (type == 'lunch') {
-      let res = lunch.some((item) => item === id);
-      setIsExist(res);
-    } else {
-      let res = dinner.some((item) => item === id);
-      setIsExist(res);
-    }
+    let res = recipesArray.some((item) => item === id);
+    setIsExist(res);
   }, []);
 
-  const {
-    card,
-    cardAction,
-    icon,
-    title,
-    usernameStyle,
-    cardBottom,
-    mb,
-    AvatarIcon,
-  } = styles;
-  const [isFavorite, setIsFavorite] = useState(true);
+  const { card, title, usernameStyle, cardBottom, mb } = styles;
 
   let calculated = 0;
   for (let i = 0; i < data?.feedbacks.length; i++) {
@@ -73,7 +49,7 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
       {!isExists ? (
         <Pressable
           onPress={() => {
-            addRecipe({ id, type });
+            addRecipe(id);
             setIsExist(!isExists);
           }}
           onPressIn={handlePressIn}
@@ -104,7 +80,7 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
           onPressOut={handlePressOut}
           ref={pressableRef}
           onPress={() => {
-            removeRecipe({ id, type });
+            removeRecipe(id);
             setIsExist(!isExists);
           }}
           style={{
@@ -164,25 +140,6 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
             </Text>
           </View>
         </View>
-        <Card.Actions style={cardAction}>
-          <Pressable onPress={() => setIsFavorite(!isFavorite)}>
-            {isFavorite ? (
-              <Avatar.Icon
-                size={40}
-                style={AvatarIcon}
-                icon={() => <AntDesign name='heart' style={icon} color='red' />}
-              />
-            ) : (
-              <Avatar.Icon
-                size={40}
-                style={AvatarIcon}
-                icon={() => (
-                  <AntDesign name='hearto' style={icon} color='red' />
-                )}
-              />
-            )}
-          </Pressable>
-        </Card.Actions>
       </Card>
     </Pressable>
   );

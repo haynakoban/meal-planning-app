@@ -1,46 +1,20 @@
 import { Image, ScrollView, View, Text, Pressable } from 'react-native';
-
 import styles from '../../styles/recipe';
-import styles2 from '../../styles/homeRecipes';
-import { COLORS, SIZES, recipe as data } from '../../constants';
-import { Feather } from '@expo/vector-icons';
-
 import FavoriteCard from '../../components/favorites/FavoriteCard';
-import PlansCard from '../../components/planner/PlansCard';
-import ReviewCard from '../../components/reviews/ReviewCard';
-
-import { DATA, reviews } from '../../constants';
-import { useEffect, useState } from 'react';
-import ReviewModal from '../../components/modals/ReviewModal';
+import useAuthStore from '../../store/useAuthStore';
+import LoadingScreen from '../loading/LoadingScreen';
+import { useState, useEffect } from 'react';
 
 const Meal = ({ route }) => {
-  // const [id] = useState(route.params.id);
-
-  const [reviewsToShow, setReviewsToShow] = useState([]);
-  const reviewsPerPage = 2;
-  const [count, setCount] = useState(1);
-  const loopThroughReviews = (count) => {
-    for (
-      let i = count * reviewsPerPage - reviewsPerPage;
-      i < reviewsPerPage * count;
-      i++
-    ) {
-      if (reviews[i] !== undefined) {
-        setReviewsToShow((prev) => [...prev, reviews[i]]);
-      }
-    }
-  };
+  // const id = route.params.id;
+  const [isLoading, setIsLoading] = useState(false);
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
-    setCount((prevCount) => prevCount + 1);
-    loopThroughReviews(count);
+    setTimeout(() => {
+      setIsLoading(true);
+    }, Math.floor(Math.random() * (100 - 10 + 1)) + 1000);
   }, []);
-  const handleShowMoreReviews = () => {
-    setCount((prevCount) => prevCount + 1);
-    loopThroughReviews(count);
-  };
-
-  const { cardWrapper, cardContentWrapper } = styles2;
 
   const meal_plan_recipes = [
     {
@@ -72,13 +46,7 @@ const Meal = ({ route }) => {
     },
   ];
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const user_id = 123;
   const id = 'daw231awe9';
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
 
   const {
     bigDivider,
@@ -94,126 +62,66 @@ const Meal = ({ route }) => {
   } = styles;
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={container}>
-        <Image src={data.image} style={imageStyle} />
-        <View style={wrapper}>
-          <Text style={textBold}>{data.name}</Text>
-          <Text style={label}>@{data.username}</Text>
-        </View>
-        <View style={divider}></View>
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>How it works?</Text>
-        </View>
-        <View style={divider}></View>
-        <View style={wrapper}>
-          <Text style={[text, mb]}>
-            This meal plan is delivered to you in the Prepear app. Prepear lets
-            you interact with your meal plan at every stage of the cooking
-            process.
-          </Text>
-          <Text style={[text, mb]}>
-            {'    '}1. Customize your plan to match your life.
-          </Text>
-          <Text style={[text, mb]}>
-            {'    '}2. Store and organize all your recipes in one place.
-          </Text>
-          <Text style={[text, mb]}>
-            {'    '}3. Check off ingredients and directions as you cook.
-          </Text>
-        </View>
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>Monday Plan</Text>
-        </View>
-        <View style={divider}></View>
-        <View style={[wrapper, { flexDirection: 'row', flexWrap: 'wrap' }]}>
-          {meal_plan_recipes.map((item) => {
-            return (
-              <View style={{ width: '50%' }} key={item.id}>
-                <Text
-                  style={[
-                    text,
-                    {
-                      paddingHorizontal: 20,
-                      backgroundColor: COLORS.accent,
-                      paddingVertical: 8,
-                      marginHorizontal: 4,
-                      textAlign: 'center',
-                      borderTopLeftRadius: SIZES.sm,
-                      borderTopRightRadius: SIZES.sm,
-                      color: COLORS.white,
-                    },
-                  ]}
-                >
-                  {item.meal_time}
-                </Text>
-                <FavoriteCard
-                  name={item.name}
-                  username={item.username}
-                  ratings={item.ratings}
-                  image={item.image}
-                />
-              </View>
-            );
-          })}
-        </View>
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>Description</Text>
-        </View>
-        <View style={divider}></View>
-        <View style={wrapper}>
-          <Text style={text}>{data.description}</Text>
-        </View>
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>Recommended Meal Plan</Text>
-        </View>
-        <View style={bigDivider}></View>
-        <View style={wrapper}>
-          <Text style={textMedium}>Reviews</Text>
-        </View>
-        <View style={divider}></View>
-        <View style={wrapper}>
-          <Pressable
-            style={[textMedium, { justifyContent: 'center' }]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={text}>
-              <Feather name='edit' size={24} color='black' /> Write a Review
-            </Text>
-          </Pressable>
-        </View>
-        <View style={divider}></View>
-        <ReviewCard reviewsToRender={reviewsToShow} />
-        <Pressable
-          onPress={handleShowMoreReviews}
-          style={{ paddingVertical: 20 }}
-        >
-          <Text style={[text, { textAlign: 'center' }]}>Show more</Text>
-        </Pressable>
-      </View>
-      <View style={bigDivider}></View>
-      <View style={cardWrapper}>
-        {DATA.map(({ id, name, description, username, image }) => (
-          <View key={id} style={cardContentWrapper}>
-            <PlansCard
-              name={name}
-              username={username}
-              description={description}
-              image={image}
-              key={id}
-            />
+      {isLoading ? (
+        <View style={container}>
+          <Image src={meal_plan_recipes[0].image} style={imageStyle} />
+          <View style={wrapper}>
+            <Text style={textBold}>{meal_plan_recipes[0].name}</Text>
+            <Text style={label}>Daily meal plan</Text>
           </View>
-        ))}
-      </View>
-      <ReviewModal
-        visible={modalVisible}
-        data={{ user_id, id }}
-        type='meal'
-        onClose={closeModal}
-      />
+          <View style={divider}></View>
+          <View style={bigDivider}></View>
+          <View style={wrapper}>
+            <Text style={textMedium}>How it works?</Text>
+          </View>
+          <View style={divider}></View>
+          <View style={wrapper}>
+            <Text style={[text, mb]}>
+              This meal plan is delivered to you in the Prepear app. Prepear
+              lets you interact with your meal plan at every stage of the
+              cooking process.
+            </Text>
+            <Text style={[text, mb]}>
+              {'    '}1. Customize your plan to match your life.
+            </Text>
+            <Text style={[text, mb]}>
+              {'    '}2. Store and organize all your recipes in one place.
+            </Text>
+            <Text style={[text, mb]}>
+              {'    '}3. Check off ingredients and directions as you cook.
+            </Text>
+          </View>
+          <View style={bigDivider}></View>
+          <View style={wrapper}>
+            <Text style={textMedium}>Monday (Breakfast) Meal Plan</Text>
+          </View>
+          <View style={divider}></View>
+          <View style={[wrapper, { flexDirection: 'row', flexWrap: 'wrap' }]}>
+            {meal_plan_recipes.map((item) => {
+              return (
+                <View style={{ width: '50%' }} key={item.id}>
+                  <FavoriteCard
+                    name={item.name}
+                    username={item.username}
+                    ratings={item.ratings}
+                    image={item.image}
+                  />
+                </View>
+              );
+            })}
+          </View>
+          <View style={bigDivider}></View>
+          <View style={wrapper}>
+            <Text style={textMedium}>Description</Text>
+          </View>
+          <View style={divider}></View>
+          <View style={wrapper}>
+            <Text style={text}>{meal_plan_recipes[0].description}</Text>
+          </View>
+        </View>
+      ) : (
+        <LoadingScreen />
+      )}
     </ScrollView>
   );
 };

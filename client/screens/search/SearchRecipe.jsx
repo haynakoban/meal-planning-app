@@ -26,28 +26,15 @@ const SearchRecipe = () => {
     listRecipes();
   }, []);
 
-  const setBreakfast = useMealPlanRecipe((state) => state.addBreakfast);
-  const setSnacks = useMealPlanRecipe((state) => state.addSnacks);
-  const setLunch = useMealPlanRecipe((state) => state.addLunch);
-  const setDinner = useMealPlanRecipe((state) => state.addDinner);
+  const setRecipe = useMealPlanRecipe((state) => state.addRecipes);
+  const removeRecipes = useMealPlanRecipe((state) => state.removeRecipes);
 
-  const removeBreakfast = useMealPlanRecipe((state) => state.removeBreakfast);
-  const removeSnacks = useMealPlanRecipe((state) => state.removeSnacks);
-  const removeLunch = useMealPlanRecipe((state) => state.removeLunch);
-  const removeDinner = useMealPlanRecipe((state) => state.removeDinner);
-
-  const addRecipe = ({ id, type }) => {
-    if (type === 'breakfast') return setBreakfast(id);
-    if (type === 'snacks') return setSnacks(id);
-    if (type === 'lunch') return setLunch(id);
-    if (type === 'dinner') return setDinner(id);
+  const addRecipe = (id) => {
+    return setRecipe(id);
   };
 
-  const removeRecipe = ({ id, type }) => {
-    if (type === 'breakfast') return removeBreakfast(id);
-    if (type === 'snacks') return removeSnacks(id);
-    if (type === 'lunch') return removeLunch(id);
-    if (type === 'dinner') return removeDinner(id);
+  const removeRecipe = (id) => {
+    return removeRecipes(id);
   };
 
   return (
