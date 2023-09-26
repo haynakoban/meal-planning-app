@@ -56,6 +56,9 @@ const useReviewsStore = create((set) => ({
     useRecipeStore.setState((state) => ({
       recipe: {
         ...state.recipe,
+        feedbacks: feedbacks.filter(
+          (fb) => fb.user_id?._id !== userId || fb.foodItem !== foodItem
+        ),
         reviews: newReviews,
         ratings: newRatings,
       },
@@ -71,17 +74,21 @@ const useReviewsStore = create((set) => ({
 
     const feedbacks = recipe?.feedbacks || [];
     const totalFeedbacks = feedbacks.length;
-    const ratingsSum = feedbacks.reduce(
-      (sum, feedback) => sum + (feedback.rating || 0),
-      0
-    );
+    const ratingsSum =
+      feedbacks.length > 0
+        ? feedbacks.reduce((sum, feedback) => sum + (feedback.rating || 0), 0)
+        : 0;
 
     const newReviews = totalFeedbacks + 1;
-    const newRatings = (ratingsSum - parseInt(review.rating)) / newReviews;
+    const newRatings =
+      ratingsSum === 0
+        ? parseInt(review.rating)
+        : (ratingsSum - parseInt(review.rating)) / newReviews;
 
     useRecipeStore.setState((state) => ({
       recipe: {
         ...state.recipe,
+        feedbacks: [...feedbacks, review],
         reviews: newReviews,
         ratings: newRatings,
       },
