@@ -33,6 +33,14 @@ const useReviewsStore = create((set) => ({
     }
   },
 
+  removeReview: (userId, foodItem) => {
+    set((state) => ({
+      reviews: state.reviews.filter(
+        (review) =>
+          review.user_id._id !== userId || review.foodItem !== foodItem
+      ),
+    }));
+  },
   clearReviews: () =>
     set((state) => ({
       reviews: [],

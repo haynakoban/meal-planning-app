@@ -1,9 +1,21 @@
-import axios from 'axios';
+import api from 'axios';
 
 export const SERVER_URL =
-  'https://7d3a-136-158-118-146.ngrok-free.app' || process.env.SERVER_URL;
+  'https://53f8-119-111-230-183.ngrok.io' || process.env.SERVER_URL;
 
-export default axios.create({
+const axios = api.create({
   baseURL: `${SERVER_URL}/api/`,
   withCredentials: true,
 });
+
+const addTimestampToRequest = (config) => {
+  const uniqueQueryParameter = `timestamp=${new Date().getTime()}`;
+  config.url += config.url.includes('?')
+    ? `&${uniqueQueryParameter}`
+    : `?${uniqueQueryParameter}`;
+  return config;
+};
+
+axios.interceptors.request.use(addTimestampToRequest);
+
+export default axios;

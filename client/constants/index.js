@@ -15,6 +15,7 @@ import {
   recipeSearchData,
   reviews,
 } from './data';
+import { API } from './API';
 
 export {
   DATA,
@@ -34,6 +35,6 @@ export {
   SIZES,
   SHADOWS,
   reviews,
+  API,
+  calculateCalorie,
 };
-
-export { calculateCalorie };

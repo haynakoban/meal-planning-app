@@ -18,6 +18,7 @@ import {
   AccountInformation,
   ChangePassword,
   PrivacySettings,
+  SingleRecipeScreen,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
@@ -211,7 +212,7 @@ const AppNavigator = () => {
           <Stack.Screen name='Meal Form' component={MealFormScreen} />
           <Stack.Screen
             name='Recipe'
-            component={Recipe}
+            component={SingleRecipeScreen}
             options={{
               headerTitle: 'About',
               headerTitleAlign: 'left',

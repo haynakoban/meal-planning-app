@@ -336,16 +336,6 @@ const show = async (req, res, next) => {
       .populate('ingredients.ingredients_id')
       .select('-createAt -__v');
 
-    if (typeof recipe.image === 'object') {
-      const imageBuffer = await dbUtility.fetchImageById(recipe.image);
-
-      const base64Image = imageBuffer.toString('base64');
-      const mimeType = 'image/jpg'; // Change this to match the actual image type
-      const dataURI = `data:${mimeType};base64,${base64Image}`;
-
-      recipe.image = dataURI;
-    }
-
     if (!recipe) {
       return res.status(404).json({
         message: 'Item not found',
@@ -354,28 +344,33 @@ const show = async (req, res, next) => {
       });
     }
 
-    if (typeof recipe.image === 'object') {
-      const imageBuffer = await dbUtility.fetchImageById(recipe.image);
+    const newRecipe = recipe.toObject();
+
+    const feedbacks = newRecipe?.feedbacks || [];
+    const totalFeedbacks = feedbacks.length;
+    const ratingsSum = feedbacks.reduce(
+      (sum, feedback) => sum + (feedback.rating || 0),
+      0
+    );
+
+    newRecipe.reviews = totalFeedbacks || 0;
+    newRecipe.ratings = ratingsSum / totalFeedbacks || 0;
+
+    if (typeof newRecipe.image === 'object') {
+      const imageBuffer = await dbUtility.fetchImageById(newRecipe.image);
 
       const base64Image = imageBuffer.toString('base64');
       const mimeType = 'image/jpg'; // Change this to match the actual image type
       const dataURI = `data:${mimeType};base64,${base64Image}`;
 
-      return res.json({
-        message: 'Item retrieved successfully',
-        status: 'success',
-        data: {
-          ...recipe.toObject(),
-          image: dataURI,
-        },
-      });
+      newRecipe.image = dataURI;
     }
 
     // Return the recipe data
     res.json({
       message: 'Item retrieved successfully',
       status: 'success',
-      data: recipe,
+      data: newRecipe,
     });
   } catch (e) {
     return res.status(500).json({

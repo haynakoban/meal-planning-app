@@ -8,6 +8,7 @@ import Meal from './planner/Meal';
 import ProfileScreen from './profile/ProfileScreen';
 import RecipesFormScreen from './actions/RecipesFormScreen';
 import RecipesScreen from './recipes/RecipesScreen';
+import SingleRecipeScreen from './recipes/SingleRecipeScreen';
 import Recipe from './recipes/Recipe';
 import SearchScreen from './search/SearchScreen';
 import SearchRecipe from './search/SearchRecipe';
@@ -40,4 +41,5 @@ export {
   AccountInformation,
   ChangePassword,
   PrivacySettings,
+  SingleRecipeScreen,
 };

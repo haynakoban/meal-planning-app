@@ -64,14 +64,14 @@ const useRecipeStore = create((set) => ({
 
   singleRecipes: async (id) => {
     try {
+      set({ recipe: {} });
+
       const response = await axios.get(`recipes/${id}`);
 
-      if (response && response.data && response.data) {
+      if (response && response.data) {
         const newData = response.data.data;
 
-        set((state) => ({
-          recipe: newData,
-        }));
+        set({ recipe: newData });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
