@@ -44,6 +44,24 @@ const useRecipeStore = create((set) => ({
     }
   },
 
+  presonalRecipes: async (user_id) => {
+    try {
+      const response = await axios.get(`recipes/personal/${user_id}`);
+
+      if (response && response.data && response.data) {
+        const newData = response.data.data;
+
+        if (Array.isArray(newData) && newData.length > 0) {
+          set((state) => ({
+            recipes: [...state.recipes, ...newData],
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+
   singleRecipes: async (id) => {
     try {
       const response = await axios.get(`recipes/${id}`);
@@ -76,9 +94,11 @@ const useRecipeStore = create((set) => ({
 
       if (results) {
         set({ homeRecipes: results, lastModified: new Date() });
+      } else {
+        set({ homeRecipes: [], lastModified: new Date() });
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data2:', error);
     }
   },
 

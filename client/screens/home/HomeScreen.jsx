@@ -28,13 +28,21 @@ const HomeScreen = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const { userInfo } = useAuthStore();
-  const { homeRecipes, fetchRecipesData } = useRecipeStore();
-  const { filters, loadCachedFilters } = useFilterStore();
+  const userInfo = useAuthStore((state) => state.userInfo);
+  const favorites = useAuthStore((state) => state.favorites);
+  const homeRecipes = useRecipeStore((state) => state.homeRecipes);
+  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const fetchRecipesData = useRecipeStore((state) => state.fetchRecipesData);
+  const filters = useFilterStore((state) => state.filters);
+  const loadCachedFilters = useFilterStore((state) => state.loadCachedFilters);
 
   useEffect(() => {
     fetchRecipesData();
   }, []);
+
+  useEffect(() => {
+    fetchRecipesData();
+  }, [favorites]);
 
   const handleRefresh = () => {
     setRefreshing(true);

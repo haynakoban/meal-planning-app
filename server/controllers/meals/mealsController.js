@@ -42,7 +42,18 @@ const bulkMeals = async (req, res, next) => {
 // create new meal
 const create = async (req, res, next) => {
   try {
-    const result = await Meals.create(req.uniqueData);
+    console.log(req.body);
+    // const fileId = req?.file?.id || null;
+    // const result = await Meals.create({
+    //   user_id: req.body?.user_id,
+    //   name: req.body?.name,
+    //   description: req.body?.description,
+    //   image: fileId,
+    //   privacy: req.body?.privacy,
+    //   day: req.body?.day,
+    //   time: req.body?.time,
+    //   recipes: JSON.parse(req.body?.recipes),
+    // });
 
     return res.status(201).json({
       message: `An item inserted successfully`,
@@ -61,7 +72,9 @@ const create = async (req, res, next) => {
 // get the list of meals
 const list = async (req, res, next) => {
   try {
-    const meals = await Meals.find().select('-createdAt -updatedAt -__v');
+    const meals = await Meals.find()
+      .populate({ path: 'recipes' })
+      .select('-createdAt -updatedAt -__v');
 
     // Return the paginated data along with pagination information
     res.json({
@@ -286,6 +299,52 @@ const show = async (req, res, next) => {
   }
 };
 
+// get the personal list of meals
+const personalMeals = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const meals = await Meals.find({ user_id: id })
+      .sort({ updatedAt: -1 })
+      .populate('recipes')
+      .populate({ path: 'user_id', select: 'fullname username' })
+      .select('-createdAt -__v');
+
+    const results = await Promise.all(
+      meals.map(async (meal) => {
+        if (typeof meal.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(meal.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg'; // Change this to match the actual image type
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          return {
+            ...meal.toObject(),
+            image: dataURI,
+          };
+        }
+
+        return meal;
+      })
+    );
+
+    // populate recipes has empty array
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: `${results.length} items retrieved successfully`,
+      status: 'success',
+      data: results,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkMealTypes,
   bulkMeals,
@@ -295,4 +354,5 @@ module.exports = {
   paginatedList,
   paginatedMealTypes,
   show,
+  personalMeals,
 };

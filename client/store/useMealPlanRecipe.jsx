@@ -2,15 +2,9 @@ import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
 
 const useMealPlanRecipe = create((set) => ({
-  breakfast: [],
-  snacks: [],
-  lunch: [],
-  dinner: [],
-
-  breakfastObj: [],
-  snacksObj: [],
-  lunchObj: [],
-  dinnerObj: [],
+  recipesArray: [],
+  recipesObj: [],
+  meals: [],
 
   recipeMeal: '',
 
@@ -19,7 +13,7 @@ const useMealPlanRecipe = create((set) => ({
       recipeMeal: text,
     })),
 
-  multipleBreakfastRecipes: async (id) => {
+  multipleRecipes: async (id) => {
     try {
       let num = id?.length;
       let ids = id[num - 1] || [];
@@ -30,12 +24,12 @@ const useMealPlanRecipe = create((set) => ({
         const newData = response.data.data;
 
         if (Array.isArray(newData) && newData.length > 0) {
-          const { breakfastObj } = useMealPlanRecipe.getState();
-          const itHas = breakfastObj?.some((item) => item._id === newData?._id);
+          const { recipesObj } = useMealPlanRecipe.getState();
+          const itHas = recipesObj?.some((item) => item._id === newData?._id);
           if (itHas) return;
 
           set((state) => ({
-            breakfastObj: [...state.breakfastObj, ...newData],
+            recipesObj: [...state.recipesObj, ...newData],
           }));
         }
       }
@@ -44,23 +38,16 @@ const useMealPlanRecipe = create((set) => ({
     }
   },
 
-  multipleSnacksRecipes: async (id) => {
+  personalMeals: async (user_id) => {
     try {
-      let num = id?.length;
-      let ids = id[num - 1] || [];
-
-      const response = await axios.get(`recipes/list?ids=${ids}`);
+      const response = await axios.get(`meals/personal/${user_id}`);
 
       if (response && response.data && response.data) {
         const newData = response.data.data;
 
         if (Array.isArray(newData) && newData.length > 0) {
-          const { snacksObj } = useMealPlanRecipe.getState();
-          const itHas = snacksObj?.some((item) => item._id === newData?._id);
-          if (itHas) return;
-
           set((state) => ({
-            snacksObj: [...state.snacksObj, ...newData],
+            meals: [...state.meals, ...newData],
           }));
         }
       }
@@ -69,105 +56,20 @@ const useMealPlanRecipe = create((set) => ({
     }
   },
 
-  multipleLunchRecipes: async (id) => {
-    try {
-      let num = id?.length;
-      let ids = id[num - 1] || [];
-
-      const response = await axios.get(`recipes/list?ids=${ids}`);
-
-      if (response && response.data && response.data) {
-        const { lunchObj } = useMealPlanRecipe.getState();
-        const itHas = lunchObj?.some((item) => item._id === newData?._id);
-        if (itHas) return;
-        const newData = response.data.data;
-
-        if (Array.isArray(newData) && newData.length > 0) {
-          set((state) => ({
-            lunchObj: [...state.lunchObj, ...newData],
-          }));
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  },
-
-  multipleDinnerRecipes: async (id) => {
-    try {
-      let num = id?.length;
-      let ids = id[num - 1] || [];
-
-      const response = await axios.get(`recipes/list?ids=${ids}`);
-
-      if (response && response.data && response.data) {
-        const newData = response.data.data;
-
-        if (Array.isArray(newData) && newData.length > 0) {
-          const { dinnerObj } = useMealPlanRecipe.getState();
-          const itHas = dinnerObj?.some((item) => item._id === newData?._id);
-          if (itHas) return;
-
-          set((state) => ({
-            dinnerObj: [...state.dinnerObj, ...newData],
-          }));
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  },
-
-  addBreakfast: (id) =>
+  addRecipes: (id) =>
     set((state) => ({
-      breakfast: [...state.breakfast, id],
+      recipesArray: [...state.recipesArray, id],
     })),
 
-  addSnacks: (id) =>
+  removeRecipes: (id) =>
     set((state) => ({
-      snacks: [...state.snacks, id],
-    })),
-
-  addLunch: (id) =>
-    set((state) => ({
-      lunch: [...state.lunch, id],
-    })),
-
-  addDinner: (id) =>
-    set((state) => ({
-      dinner: [...state.dinner, id],
-    })),
-
-  removeBreakfast: (id) =>
-    set((state) => ({
-      breakfast: state.breakfast.filter((item) => item !== id),
-      breakfastObj: state.breakfastObj.filter((item) => item._id !== id),
-    })),
-
-  removeSnacks: (id) =>
-    set((state) => ({
-      snacks: state.snacks.filter((item) => item !== id),
-      snacksObj: state.snacksObj.filter((item) => item._id !== id),
-    })),
-
-  removeLunch: (id) =>
-    set((state) => ({
-      lunch: state.lunch.filter((item) => item !== id),
-      lunchObj: state.lunchObj.filter((item) => item._id !== id),
-    })),
-
-  removeDinner: (id) =>
-    set((state) => ({
-      dinner: state.dinner.filter((item) => item !== id),
-      dinnerObj: state.dinnerObj.filter((item) => item._id !== id),
+      recipesArray: state.recipesArray.filter((item) => item !== id),
+      recipesObj: state.recipesObj.filter((item) => item._id !== id),
     })),
 
   clearMeal: () =>
     set((state) => ({
-      breakfastObj: [],
-      snacksObj: [],
-      lunchObj: [],
-      dinnerObj: [],
+      recipesObj: [],
     })),
 }));
 

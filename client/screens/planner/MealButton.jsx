@@ -3,10 +3,10 @@ import { Text, View, Pressable } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { COLORS } from '../../constants';
+import { COLORS, FONT } from '../../constants';
 import { useNavigation } from '@react-navigation/native';
 
-const MealButton = ({ type, label }) => {
+const MealButton = () => {
   const navigation = useNavigation();
 
   const pressableRef = useRef(null);
@@ -25,10 +25,10 @@ const MealButton = ({ type, label }) => {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('Search Recipe', { type })}
+      onPress={() => navigation.navigate('Search Recipe')}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={{ width: '24%' }}
+      style={{ width: '100%' }}
     >
       <View
         ref={pressableRef}
@@ -40,7 +40,7 @@ const MealButton = ({ type, label }) => {
         }}
       >
         <Ionicons name='add-circle-outline' size={24} color='black' />
-        <Text>{label}</Text>
+        <Text style={{ fontFamily: FONT.regular }}>Add Recipe</Text>
       </View>
     </Pressable>
   );

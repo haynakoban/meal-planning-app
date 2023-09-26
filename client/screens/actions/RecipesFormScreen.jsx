@@ -218,12 +218,9 @@ const RecipesFormScreen = ({ navigation }) => {
       });
 
       const response = await axios.post(`recipes`, fd, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      console.log(response.data);
       if (response.data?.status === 'record created') {
         navigation.navigate('Recipes');
       }

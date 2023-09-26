@@ -25,4 +25,7 @@ router.route('/list/types').get(recipesController.paginatedListMealTypes);
 // get method - get single recipe
 router.route('/:id').get(recipesController.show);
 
+// get method - get personal recipes
+router.route('/personal/:id').get(recipesController.personalRecipes);
+
 module.exports = router;

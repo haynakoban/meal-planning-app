@@ -196,10 +196,10 @@ const Recipe = ({ route, navigation }) => {
       type,
     };
 
+    setIsFavorite(!isFavorite);
     await axios.post(`users/manage`, data);
     reFetch(recipe_id);
     setUserInfo(userInfo?._id);
-    setIsFavorite(!isFavorite);
   };
 
   return (
@@ -251,9 +251,11 @@ const Recipe = ({ route, navigation }) => {
                     alignItems: 'center',
                   }}
                   onPress={() => {
-                    navigation.navigate('OtherUserProfile', {
-                      id: recipe?.user_id?._id,
-                    });
+                    userInfo?._id == recipe?.user_id?._id
+                      ? navigation.navigate('Profile')
+                      : navigation.navigate('OtherUserProfile', {
+                          id: recipe?.user_id?._id,
+                        });
                   }}
                 >
                   <Text

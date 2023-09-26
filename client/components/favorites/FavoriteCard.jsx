@@ -3,10 +3,12 @@ import { View, Text, Pressable } from 'react-native';
 import { Avatar, Card } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 import styles from '../../styles/favorites';
+import axios from '../../lib/axiosConfig';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { SIZES } from '../../constants';
+import useAuthStore from '../../store/useAuthStore';
 
 const FavoriteCard = ({
   name,
@@ -16,7 +18,31 @@ const FavoriteCard = ({
   image = '',
   id,
 }) => {
+  const userInfo = useAuthStore((state) => state.userInfo);
+  const [isFavorite, setIsFavorite] = useState(true);
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
+  const reFetch = useAuthStore((state) => state.reFetch);
+
+  useState(() => {
+    const itHas = userInfo?.favorites.some((item) => item === id);
+    setIsFavorite(itHas);
+  }, [userInfo]);
+
   const navigation = useNavigation();
+
+  const handleSetFavorite = async () => {
+    const type = isFavorite ? 'delete' : 'add';
+    const data = {
+      id: userInfo._id,
+      itemId: id,
+      type,
+    };
+
+    setIsFavorite(!isFavorite);
+    await axios.post(`users/manage`, data);
+    reFetch(id);
+    setUserInfo(userInfo?._id);
+  };
 
   const {
     card,
@@ -29,7 +55,6 @@ const FavoriteCard = ({
     mb,
     AvatarIcon,
   } = styles;
-  const [isFavorite, setIsFavorite] = useState(true);
 
   return (
     <Pressable
@@ -72,7 +97,7 @@ const FavoriteCard = ({
           </View>
         </View>
         <Card.Actions style={cardAction}>
-          <Pressable onPress={() => setIsFavorite(!isFavorite)}>
+          <Pressable onPress={handleSetFavorite}>
             {isFavorite ? (
               <Avatar.Icon
                 size={40}

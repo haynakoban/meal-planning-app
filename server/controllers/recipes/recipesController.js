@@ -188,7 +188,7 @@ const paginatedList = async (req, res, next) => {
 
 // get the paginated list of recipes based on meal types
 const paginatedListMealTypes = async (req, res, next) => {
-  const page = parseInt(req.query.page) || 2;
+  const page = parseInt(req.query.page) || 1;
   const perPage = 5;
   let resourceLastModified = new Date();
   try {
@@ -211,17 +211,17 @@ const paginatedListMealTypes = async (req, res, next) => {
         .populate('cooking_time')
         .select('-createAt -__v');
 
-      const singleResult = recipe.map((recipe) => {
-        const r = recipe;
-        const feedbacks = recipe.feedbacks || [];
-        const totalFeedbacks = feedbacks.length;
-        const ratingsSum = feedbacks.reduce(
-          (sum, feedback) => sum + (feedback.rating || 0),
-          0
-        );
+      const singleResult = await Promise.all(
+        recipe.map(async (recipe) => {
+          const r = recipe;
+          const feedbacks = recipe.feedbacks || [];
+          const totalFeedbacks = feedbacks.length;
+          const ratingsSum = feedbacks.reduce(
+            (sum, feedback) => sum + (feedback.rating || 0),
+            0
+          );
 
-        if (typeof r.image === 'object') {
-          (async () => {
+          if (typeof r.image === 'object') {
             const imageBuffer = await dbUtility.fetchImageById(r.image);
 
             const base64Image = imageBuffer.toString('base64');
@@ -236,14 +236,14 @@ const paginatedListMealTypes = async (req, res, next) => {
               reviews: totalFeedbacks,
               ratings: ratingsSum / totalFeedbacks,
             };
-          })();
-        }
-        return {
-          recipes: r,
-          reviews: totalFeedbacks,
-          ratings: ratingsSum / totalFeedbacks,
-        };
-      });
+          }
+          return {
+            recipes: r,
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        })
+      );
 
       const singleData = { title: 'new recipes', data: singleResult };
 
@@ -386,6 +386,67 @@ const show = async (req, res, next) => {
   }
 };
 
+// get the list of personal recipes
+const personalRecipes = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const recipes = await Recipes.find({ user_id: id })
+      .populate({ path: 'user_id', select: 'fullname username' })
+      .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .populate('cooking_time')
+      .populate('ingredients.ingredients_id')
+      .select('-createAt -__v')
+      .sort({ createdAt: -1 });
+
+    const results = await Promise.all(
+      recipes.map(async (recipe) => {
+        const r = recipe;
+        const feedbacks = recipe.feedbacks || [];
+        const totalFeedbacks = feedbacks.length;
+        const ratingsSum = feedbacks.reduce(
+          (sum, feedback) => sum + (feedback.rating || 0),
+          0
+        );
+
+        if (typeof r.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg'; // Change this to match the actual image type
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          return {
+            recipes: {
+              ...r.toObject(),
+              image: dataURI,
+            },
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        }
+
+        return {
+          recipes: r,
+          reviews: totalFeedbacks,
+          ratings: ratingsSum / totalFeedbacks,
+        };
+      })
+    );
+    // Return the paginated data along with pagination information
+    res.json({
+      message: `${results.length} items retrieved successfully`,
+      status: 'success',
+      data: results,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkRecipes,
   create,
@@ -393,4 +454,5 @@ module.exports = {
   paginatedList,
   paginatedListMealTypes,
   show,
+  personalRecipes,
 };
