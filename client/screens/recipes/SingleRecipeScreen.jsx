@@ -24,7 +24,7 @@ import useAuthStore from '../../store/useAuthStore';
 
 const SingleRecipeScreen = ({ route, navigation }) => {
   const recipe_id = route.params.id;
-  const { userInfo } = useAuthStore();
+  const { userInfo, setUserInfo, reFetch } = useAuthStore();
   const { recipe, singleRecipes } = useRecipeStore();
   const { reviews, fetchReviewsData, removeReview } = useReviewsStore();
 
@@ -90,16 +90,14 @@ const SingleRecipeScreen = ({ route, navigation }) => {
   };
 
   const closeModal = () => {
-    setReviewsPerPage(5);
-    loopThroughReviews(4);
+    handleShowLessReviews();
     setModalVisible(false);
   };
 
   const onRemoveItem = async () => {
     await axios.delete(`feedbacks/${recipe_id}/${userInfo?._id}`);
     removeReview(userInfo?._id, recipe_id);
-    setReviewsPerPage(5);
-    loopThroughReviews(0);
+    handleShowLessReviews();
   };
 
   const handleShowMoreReviews = () => {
@@ -120,6 +118,19 @@ const SingleRecipeScreen = ({ route, navigation }) => {
       }
     }
     setReviewsToShow(arr);
+  };
+
+  const handleSetFavorite = async () => {
+    const type = isFavorite ? 'delete' : 'add';
+    const data = {
+      id: userInfo._id,
+      itemId: recipe_id,
+      type,
+    };
+    await axios.post(`users/manage`, data);
+    setIsFavorite(!isFavorite);
+    reFetch(recipe_id);
+    setUserInfo(userInfo?._id);
   };
 
   return (
@@ -172,7 +183,7 @@ const SingleRecipeScreen = ({ route, navigation }) => {
                 </View>
                 <Pressable
                   style={styles.flexRow}
-                  onPress={() => console.log(hello)}
+                  onPress={() => handleSetFavorite()}
                 >
                   {isFavorite ? (
                     <Fragment>
@@ -201,7 +212,7 @@ const SingleRecipeScreen = ({ route, navigation }) => {
               <View style={styles.reviewTab}>
                 <View style={styles.ratingsWrapper}>
                   <RatingCard rating={recipe?.ratings} />
-                  <Text style={styles.text}>({recipe?.reviews})</Text>
+                  <Text style={styles.text}>({reviews?.length || 0})</Text>
                 </View>
                 <View style={styles.flexRow}>
                   <Ionicons

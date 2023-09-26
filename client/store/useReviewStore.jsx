@@ -41,6 +41,13 @@ const useReviewsStore = create((set) => ({
       ),
     }));
   },
+
+  addReview: (review) => {
+    set((state) => ({
+      reviews: [review, ...state.reviews],
+    }));
+  },
+
   clearReviews: () =>
     set((state) => ({
       reviews: [],

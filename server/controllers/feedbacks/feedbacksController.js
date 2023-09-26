@@ -1,4 +1,4 @@
-const { Feedbacks, Recipes, Meals } = require('../../models');
+const { Feedbacks, Recipes, Meals, Users } = require('../../models');
 
 // bulk feedbacks
 const bulkFeedbacks = async (req, res, next) => {
@@ -35,11 +35,22 @@ const create = async (req, res, next) => {
         { $push: { feedbacks: result?._id } }
       );
     }
+    const user = await Users.findOne({ _id: result.user_id }).select(
+      'username fullname'
+    );
+
+    const feedback = result.toObject();
+
+    feedback.user_id = {
+      _id: user._id,
+      username: user.username,
+      fullname: user.fullname,
+    };
 
     return res.status(201).json({
       message: `An item inserted successfully`,
       status: 'record created',
-      data: result,
+      data: feedback,
     });
   } catch (e) {
     return res.status(500).json({

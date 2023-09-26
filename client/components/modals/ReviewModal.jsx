@@ -2,18 +2,13 @@ import { useState, useEffect } from 'react';
 import { Text, TextInput, View, Pressable, Modal } from 'react-native';
 import { Rating } from 'react-native-ratings';
 
-import { COLORS, SIZES, CT, privacyData, FONT } from '../../constants';
+import { COLORS, SIZES, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useReviewsStore from '../../store/useReviewStore';
 import axios from '../../lib/axiosConfig';
-import useRecipeStore from '../../store/useRecipeStore';
 
 const ReviewModal = ({ visible, data, onClose, type }) => {
-  const { fetchRecipesData } = useRecipeStore();
-  const personal = useReviewsStore((state) => state.personal);
-  const fetchPersonalReview = useReviewsStore(
-    (state) => state.fetchPersonalReview
-  );
+  const { personal, addReview, fetchPersonalReview } = useReviewsStore();
 
   const [ratings, setRatings] = useState(5);
   const [form, setForm] = useState({
@@ -57,9 +52,13 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
           rating: ratings,
         };
 
-        await axios.post(`feedbacks`, data);
+        const response = await axios.post(`feedbacks`, data);
+
+        if (response.data.data) {
+          addReview(response.data.data);
+        }
       }
-      fetchRecipesData();
+
       onClose(true);
     } catch (error) {
       console.error('Error posting data: ', error);
