@@ -41,11 +41,23 @@ const useReviewsStore = create((set) => ({
           review.user_id._id !== userId || review.foodItem !== foodItem
       ),
     }));
+    const { recipe } = useRecipeStore.getState();
+
+    const feedbacks = recipe?.feedbacks || [];
+    const totalFeedbacks = feedbacks.length;
+    const ratingsSum = feedbacks.reduce(
+      (sum, feedback) => sum + (feedback.rating || 0),
+      0
+    );
+
+    const newReviews = totalFeedbacks - 1;
+    const newRatings = (ratingsSum - rating) / newReviews;
+
     useRecipeStore.setState((state) => ({
       recipe: {
         ...state.recipe,
-        reviews: state.recipe.reviews - 1,
-        ratings: (state.recipe.ratings - rating) / (state.recipe.reviews - 1),
+        reviews: newReviews,
+        ratings: newRatings,
       },
     }));
   },
@@ -54,12 +66,24 @@ const useReviewsStore = create((set) => ({
     set((state) => ({
       reviews: [review, ...state.reviews],
     }));
+
+    const { recipe } = useRecipeStore.getState();
+
+    const feedbacks = recipe?.feedbacks || [];
+    const totalFeedbacks = feedbacks.length;
+    const ratingsSum = feedbacks.reduce(
+      (sum, feedback) => sum + (feedback.rating || 0),
+      0
+    );
+
+    const newReviews = totalFeedbacks + 1;
+    const newRatings = (ratingsSum - parseInt(review.rating)) / newReviews;
+
     useRecipeStore.setState((state) => ({
       recipe: {
         ...state.recipe,
-        reviews: state.recipe.reviews + 1,
-        ratings:
-          (state.recipe.ratings + review.rating) / (state.recipe.reviews + 1),
+        reviews: newReviews,
+        ratings: newRatings,
       },
     }));
   },
