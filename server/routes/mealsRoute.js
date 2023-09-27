@@ -20,6 +20,8 @@ router.route('/bulk').post(bulkMealsDataMiddleware, mealsController.bulkMeals);
 // get method - get the paginated list of meals
 router.route('/list').get(mealsController.paginatedList);
 
+router.route('/list/day').get(mealsController.listByDay);
+
 // get method - get the list of meal types
 router.route('/types').get(mealsController.listMealTypes);
 

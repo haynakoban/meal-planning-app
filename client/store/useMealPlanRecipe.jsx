@@ -5,9 +5,24 @@ const useMealPlanRecipe = create((set) => ({
   recipesArray: [],
   recipesObj: [],
   meals: [],
+  mealsWithDays: [],
 
   recipeMeal: '',
 
+  fetchMealsDays: async (day) => {
+    try {
+      set({ mealsWithDays: [] });
+      const response = await axios.get(`meals/list/day?day=${day}`);
+
+      if (response && response.data?.status === 'success') {
+        const newData = response.data.data;
+
+        set({ mealsWithDays: newData });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
   setRecipeMeal: (text) =>
     set((state) => ({
       recipeMeal: text,

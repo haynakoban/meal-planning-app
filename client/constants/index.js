@@ -16,6 +16,7 @@ import {
   reviews,
 } from './data';
 import { API } from './API';
+import { useWeeks } from './week';
 
 export {
   DATA,
@@ -36,5 +37,6 @@ export {
   SHADOWS,
   reviews,
   API,
+  useWeeks,
   calculateCalorie,
 };

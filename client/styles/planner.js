@@ -46,6 +46,58 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
     marginBottom: SIZES.sm,
   },
+  mealView: { flex: 1 },
+  weeksView: {
+    backgroundColor: COLORS.primary,
+    elevation: 2,
+    paddingVertical: 8,
+  },
+  weeksScrollView: {
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+  },
+  mealPlanScrollView: { flexGrow: 1, paddingVertical: 8 },
+  dayButton: {
+    paddingVertical: 16,
+    borderRadius: 999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dayText: {
+    fontFamily: FONT.medium,
+    fontSize: SIZES.sm,
+    marginBottom: 8,
+  },
+  mealButton: { marginBottom: 16, paddingHorizontal: 20, paddingVertical: 12 },
+  mealContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00000020',
+    borderRadius: 12,
+  },
+  mealImage: { width: 100, height: 100, borderRadius: 12 },
+  mealContent: { marginLeft: 10, flex: 1, paddingHorizontal: 10 },
+  mealName: {
+    textTransform: 'capitalize',
+    fontFamily: FONT.semiBold,
+    fontSize: SIZES.md,
+    marginBottom: 4,
+  },
+  mealTypes: {
+    textTransform: 'uppercase',
+    fontFamily: FONT.semiBold,
+    fontSize: SIZES.sm + 1,
+    letterSpacing: 0.2,
+    color: COLORS.lightBlack,
+  },
+  noMealPlan: { fontFamily: FONT.medium, fontSize: SIZES.md },
+  growView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
 });
 
 export default styles;

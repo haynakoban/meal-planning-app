@@ -1,31 +1,39 @@
-import { Text, Pressable } from 'react-native';
-import { Card } from 'react-native-paper';
-import styles from '../../styles/planner';
+import { Text, Pressable, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import styles from '../../styles/planner';
 
-const PlansCard = ({ name, username, image, description }) => {
+const PlansCard = ({ name, image, type = 'breakfast' }) => {
   const navigation = useNavigation();
-  const { card, cardCover, title, descriptionStyle, usernameStyle, mb } =
-    styles;
+
   return (
     <Pressable
       onPress={() => navigation.navigate('Meal', { id: 1 })}
-      style={card}
+      style={styles.mealButton}
     >
-      <Card>
-        <Card.Cover source={{ uri: image }} style={[mb, cardCover]} />
-        <Card.Content>
-          <Text variant='titleLarge' style={title}>
+      <View style={styles.mealContainer}>
+        <Image
+          source={
+            image
+              ? { uri: image }
+              : require('../../assets/images/image-not-found.jpg')
+          }
+          style={styles.mealImage}
+        />
+
+        <View style={styles.mealContent}>
+          <Text
+            variant='titleLarge'
+            numberOfLines={2}
+            ellipsizeMode='tail'
+            style={styles.mealName}
+          >
             {name}
           </Text>
-          <Text variant='bodyMedium' style={descriptionStyle}>
-            {description}
+          <Text variant='bodyMedium' style={styles.mealTypes}>
+            {type}
           </Text>
-          <Text variant='bodyMedium' style={usernameStyle}>
-            {username}
-          </Text>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
     </Pressable>
   );
 };

@@ -344,6 +344,59 @@ const personalMeals = async (req, res, next) => {
   }
 };
 
+// get the list of meals by day
+const listByDay = async (req, res, next) => {
+  try {
+    const { day } = req.query;
+
+    if (!day) {
+      return res.status(200).json({
+        message: 'Invalid Day',
+        status: 'error occurred',
+        data: [],
+      });
+    }
+
+    const newDay = day?.toLowerCase();
+    const meals = await Meals.find({ day: newDay })
+      .sort({ updatedAt: -1 })
+      .populate({ path: 'recipes' })
+      .select('-createdAt -__v');
+
+    const results = await Promise.all(
+      meals.map(async (meal) => {
+        const r = meal.toObject();
+
+        if (typeof r.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg';
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          r.image = dataURI;
+          return {
+            ...r,
+          };
+        }
+      })
+    );
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: `${results.length} items retrieved successfully`,
+      status: 'success',
+      data: results,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkMealTypes,
   bulkMeals,
@@ -354,4 +407,5 @@ module.exports = {
   paginatedMealTypes,
   show,
   personalMeals,
+  listByDay,
 };
