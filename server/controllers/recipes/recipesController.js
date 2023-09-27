@@ -1,5 +1,10 @@
 const { Recipes, MealTypes } = require('../../models');
 const dbUtility = require('../../config/connection');
+const ObjectId = require('mongodb').ObjectId;
+const mongoose = require('mongoose');
+const DB_URL =
+  process.env.MONGO_URL || 'mongodb://localhost:27017/meal-planning-app';
+const conn = mongoose.createConnection(DB_URL);
 
 // bulk meal types
 const bulkRecipes = async (req, res, next) => {
@@ -331,7 +336,10 @@ const show = async (req, res, next) => {
     // Query the database to find the recipe by its unique ID
     const recipe = await Recipes.findOne({ _id: id })
       .populate({ path: 'user_id', select: 'fullname username' })
-      .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .populate({
+        path: 'feedbacks',
+        select: 'user_id comment rating foodItemType',
+      })
       .populate('cooking_time')
       .populate('ingredients.ingredients_id')
       .select('-createAt -__v');
@@ -442,6 +450,44 @@ const personalRecipes = async (req, res, next) => {
   }
 };
 
+// delete single recipe
+const deleteRecipe = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the recipe by its unique ID
+    const recipe = await Recipes.findByIdAndDelete(id);
+
+    if (!recipe) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: 'uploads',
+    });
+
+    if (typeof recipe.image === 'object') {
+      await bucket.delete(new ObjectId(recipe.image));
+    }
+
+    // Return the recipe data
+    res.json({
+      message: 'Item deleted successfully',
+      status: 'success',
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkRecipes,
   create,
@@ -450,4 +496,5 @@ module.exports = {
   paginatedListMealTypes,
   show,
   personalRecipes,
+  deleteRecipe,
 };

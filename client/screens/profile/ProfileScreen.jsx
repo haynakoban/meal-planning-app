@@ -5,8 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
+  Pressable,
 } from 'react-native';
-import { Avatar, Text } from 'react-native-paper';
+import { Avatar, Text, Checkbox } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../constants';
@@ -23,6 +24,7 @@ const ProfileScreen = () => {
   const recipes = useRecipeStore((state) => state.recipes);
   const clearRecipe = useRecipeStore((state) => state.clearRecipe);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+  const [isRecipeEditable, setIsRecipeEditable] = useState(false);
 
   useEffect(() => {
     clearRecipe();
@@ -50,6 +52,9 @@ const ProfileScreen = () => {
     setRefreshing(true);
 
     setUserInfo(userInfo?._id);
+
+    clearRecipe();
+    presonalRecipes(userInfo?._id);
 
     setTimeout(() => {
       setRefreshing(false);
@@ -321,7 +326,38 @@ const ProfileScreen = () => {
         {currentScreen === 'meals' ? (
           <Text>This is meals</Text>
         ) : (
-          <ProfileRecipes user_id={userInfo?._id} />
+          <>
+            <View
+              style={{
+                marginHorizontal: 10,
+                marginTop: 20,
+                alignItems: 'flex-end',
+              }}
+            >
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: COLORS.secondary,
+                  paddingLeft: 10,
+                  borderRadius: 5,
+                }}
+                onPress={() => {
+                  setIsRecipeEditable(!isRecipeEditable);
+                }}
+              >
+                <Text style={{ fontFamily: FONT.medium }}>
+                  {/* {isRecipeEditable ? 'Unedit Recipe' : 'Edit Recipe'} */}
+                  Edit Recipes
+                </Text>
+                <Checkbox status={isRecipeEditable ? 'checked' : 'unchecked'} />
+              </Pressable>
+            </View>
+            <ProfileRecipes
+              user_id={userInfo?._id}
+              isEditable={isRecipeEditable}
+            />
+          </>
         )}
       </View>
     </ScrollView>
