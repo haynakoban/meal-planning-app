@@ -375,10 +375,11 @@ const listByDay = async (req, res, next) => {
           const dataURI = `data:${mimeType};base64,${base64Image}`;
 
           r.image = dataURI;
-          return {
-            ...r,
-          };
         }
+
+        return {
+          ...r,
+        };
       })
     );
 
