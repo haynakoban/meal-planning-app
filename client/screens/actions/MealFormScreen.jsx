@@ -11,22 +11,17 @@ import {
   FlatList,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
-
 import DropDownPicker from 'react-native-dropdown-picker';
-import {
-  AntDesign,
-  Ionicons,
-  MaterialCommunityIcons,
-} from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { COLORS, SIZES, privacyData, FONT } from '../../constants';
-import styles from '../../styles/recipeForm';
 import useAuthStore from '../../store/useAuthStore';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import MealButton from '../planner/MealButton';
 
-import { useNavigation } from '@react-navigation/native';
+import { COLORS, SIZES, privacyData, FONT } from '../../constants';
+import styles from '../../styles/recipeForm';
 import axios from '../../lib/axiosConfig';
 
 const MealFormScreen = () => {
@@ -191,6 +186,7 @@ const MealFormScreen = () => {
       }
 
       const fd = new FormData();
+
       fd.append('user_id', userInfo?._id);
       fd.append('name', form.name);
       fd.append('description', form.description);
@@ -206,13 +202,13 @@ const MealFormScreen = () => {
       });
 
       // network error here
-      // const response = await axios.post(`meals`, fd, {
-      //   headers: { 'Content-Type': 'multipart/form-data' },
-      // });
+      const response = await axios.post(`meals`, fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-      // if (response.data?.status === 'record created') {
-      //   navigation.navigate('Planner');
-      // }
+      if (response.data?.status === 'record created') {
+        navigation.navigate('Planner');
+      }
     } catch (error) {
       console.error('Error Says: ', error);
     }

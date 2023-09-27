@@ -42,18 +42,17 @@ const bulkMeals = async (req, res, next) => {
 // create new meal
 const create = async (req, res, next) => {
   try {
-    console.log(req.body);
-    // const fileId = req?.file?.id || null;
-    // const result = await Meals.create({
-    //   user_id: req.body?.user_id,
-    //   name: req.body?.name,
-    //   description: req.body?.description,
-    //   image: fileId,
-    //   privacy: req.body?.privacy,
-    //   day: req.body?.day,
-    //   time: req.body?.time,
-    //   recipes: JSON.parse(req.body?.recipes),
-    // });
+    const fileId = req?.file?.id || null;
+    const result = await Meals.create({
+      user_id: req.body?.user_id,
+      name: req.body?.name,
+      description: req.body?.description,
+      image: fileId,
+      privacy: req.body?.privacy,
+      day: req.body?.day,
+      time: req.body?.time,
+      recipes: JSON.parse(req.body?.recipes),
+    });
 
     return res.status(201).json({
       message: `An item inserted successfully`,

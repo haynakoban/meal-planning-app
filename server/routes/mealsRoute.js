@@ -9,7 +9,10 @@ const {
 const { upload } = require('../config/conn');
 
 // get method - get the list of meals
-router.route('/').get(mealsController.list).post(mealsController.create);
+router
+  .route('/')
+  .get(mealsController.list)
+  .post(upload.single('image'), mealsController.create);
 // upload.single('image'),
 // post method - create multiple meal types
 router.route('/bulk').post(bulkMealsDataMiddleware, mealsController.bulkMeals);
