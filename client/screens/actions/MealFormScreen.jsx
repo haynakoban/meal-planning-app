@@ -25,12 +25,10 @@ import styles from '../../styles/recipeForm';
 import axios from '../../lib/axiosConfig';
 
 const MealFormScreen = () => {
-  const clearMeal = useMealPlanRecipe((state) => state.clearMeal);
   const { multipleRecipes, recipesObj } = useMealPlanRecipe();
 
   const userInfo = useAuthStore((state) => state.userInfo);
-  const recipesArray = useMealPlanRecipe((state) => state.recipesArray);
-  const removeRecipes = useMealPlanRecipe((state) => state.removeRecipes);
+  const { recipesArray, removeRecipes, clearRecipes } = useMealPlanRecipe();
 
   const [permission, setPermission] = useState(false);
   const [openDay, setOpenDay] = useState(false);
@@ -200,13 +198,14 @@ const MealFormScreen = () => {
         uri: form.image,
         type: 'image/jpg',
       });
-      console.log(fd);
+
       // network error here
       const response = await axios.post(`meals`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       if (response.data?.status === 'record created') {
+        clearRecipes();
         navigation.navigate('Planner');
       }
     } catch (error) {

@@ -67,6 +67,10 @@ const useMealPlanRecipe = create((set) => ({
       recipesObj: state.recipesObj.filter((item) => item._id !== id),
     })),
 
+  clearRecipes: () => {
+    set({ recipesArray: [] });
+  },
+
   clearMeal: () =>
     set((state) => ({
       recipesObj: [],
