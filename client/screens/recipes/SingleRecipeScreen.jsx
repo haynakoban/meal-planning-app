@@ -215,7 +215,7 @@ const SingleRecipeScreen = ({ route, navigation }) => {
                 <View style={styles.ratingsWrapper}>
                   <RatingCard rating={recipe?.ratings} />
                   <Text style={styles.text}>
-                    ({(recipe?.ratings).toFixed(1) || 0})
+                    ({recipe?.ratings?.toFixed(1) || 0})
                   </Text>
                 </View>
                 <View style={styles.flexRow}>
