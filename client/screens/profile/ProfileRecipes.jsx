@@ -6,8 +6,10 @@ import FavoriteCard from '../../components/favorites/FavoriteCard';
 import RecipeDeleteModal from '../../components/modals/RecipeDeleteModal';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { COLORS, FONT } from '../../constants';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileRecipes = ({ user_id, isEditable }) => {
+  const navigation = useNavigation();
   const recipes = useRecipeStore((state) => state.recipes);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
   const clearRecipe = useRecipeStore((state) => state.clearRecipe);
@@ -95,7 +97,11 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
                           borderRadius: 3,
                           gap: 5,
                         }}
-                        onPress={() => console.log('update')}
+                        onPress={() =>
+                          navigation.navigate('Update Recipe', {
+                            id: item?.recipes._id,
+                          })
+                        }
                       >
                         <Feather name='edit' size={20} color='black' />
                         <Text style={{ fontFamily: FONT.regular }}>Update</Text>

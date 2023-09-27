@@ -26,6 +26,7 @@ router.route('/list/types').get(recipesController.paginatedListMealTypes);
 router
   .route('/:id')
   .get(recipesController.show)
+  .post(recipesController.updateRecipe)
   .delete(recipesController.deleteRecipe);
 
 // get method - get personal recipes

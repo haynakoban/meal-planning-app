@@ -200,7 +200,7 @@ const MealFormScreen = () => {
         uri: form.image,
         type: 'image/jpg',
       });
-
+      console.log(fd);
       // network error here
       const response = await axios.post(`meals`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' },

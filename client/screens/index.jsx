@@ -19,6 +19,7 @@ import AccountInformation from './profile/AccountInformation';
 import ChangePassword from './profile/ChangePassword';
 import PrivacySettings from './profile/PrivacySettings';
 import LoadingScreen from './loading/LoadingScreen';
+import UpdateRecipe from './recipes/UpdateRecipe';
 
 export {
   FavoritesScreen,
@@ -42,4 +43,5 @@ export {
   ChangePassword,
   PrivacySettings,
   SingleRecipeScreen,
+  UpdateRecipe,
 };
