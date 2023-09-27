@@ -28,7 +28,8 @@ const MealFormScreen = () => {
   const { multipleRecipes, recipesObj } = useMealPlanRecipe();
 
   const userInfo = useAuthStore((state) => state.userInfo);
-  const { recipesArray, removeRecipes, clearRecipes } = useMealPlanRecipe();
+  const { recipesArray, removeRecipes, clearRecipes, addMealPlan } =
+    useMealPlanRecipe();
 
   const [permission, setPermission] = useState(false);
   const [openDay, setOpenDay] = useState(false);
@@ -206,7 +207,8 @@ const MealFormScreen = () => {
 
       if (response.data?.status === 'record created') {
         clearRecipes();
-        navigation.navigate('Planner');
+        addMealPlan(response.data?.data);
+        navigation.navigate('Planner', { day: response?.data?.data?.day });
       }
     } catch (error) {
       console.error('Error Says: ', error);

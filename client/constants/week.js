@@ -1,30 +1,30 @@
 export const useWeeks = [
   {
-    day: 'Sunday',
+    day: 'sunday',
     icon: 'ios-cafe-outline',
   },
   {
-    day: 'Monday',
+    day: 'monday',
     icon: 'ios-restaurant-outline',
   },
   {
-    day: 'Tuesday',
+    day: 'tuesday',
     icon: 'ios-pizza-outline',
   },
   {
-    day: 'Wednesday',
+    day: 'wednesday',
     icon: 'ios-book-outline',
   },
   {
-    day: 'Thursday',
+    day: 'thursday',
     icon: 'ios-ice-cream-outline',
   },
   {
-    day: 'Friday',
+    day: 'friday',
     icon: 'ios-fast-food-outline',
   },
   {
-    day: 'Saturday',
+    day: 'saturday',
     icon: 'ios-fitness-outline',
   },
 ];

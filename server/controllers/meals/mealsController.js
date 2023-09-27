@@ -43,7 +43,7 @@ const bulkMeals = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const fileId = req?.file?.id || null;
-    const result = await Meals.create({
+    const mealData = {
       user_id: req.body?.user_id,
       name: req.body?.name,
       description: req.body?.description,
@@ -52,12 +52,30 @@ const create = async (req, res, next) => {
       day: req.body?.day,
       time: req.body?.time,
       recipes: JSON.parse(req.body?.recipes),
-    });
+    };
+
+    const meal = await Meals.create(mealData);
+
+    // Populate the recipes field separately
+    const result = await Meals.findOne({ _id: meal?._id })
+      .populate({ path: 'recipes' })
+      .select('-createdAt -__v');
+
+    const newResult = result.toObject();
+    if (typeof newResult.image === 'object') {
+      const imageBuffer = await dbUtility.fetchImageById(newResult.image);
+
+      const base64Image = imageBuffer.toString('base64');
+      const mimeType = 'image/jpg'; // Change this to match the actual image type
+      const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+      newResult.image = dataURI;
+    }
 
     return res.status(201).json({
       message: `An item inserted successfully`,
       status: 'record created',
-      data: result,
+      data: newResult,
     });
   } catch (e) {
     return res.status(500).json({

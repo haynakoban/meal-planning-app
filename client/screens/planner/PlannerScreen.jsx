@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
@@ -17,20 +18,30 @@ import LoadingScreen from '../loading/LoadingScreen';
 
 const screenWidth = Dimensions.get('window').width - 16;
 
-const PlannerScreen = () => {
-  const [currentDay, setCurrentDay] = useState('Monday');
+const PlannerScreen = ({ route }) => {
+  const [currentDay, setCurrentDay] = useState('monday');
   const [loading, setLoading] = useState(true);
   const { mealsWithDays, fetchMealsDays } = useMealPlanRecipe();
 
+  useFocusEffect(
+    useCallback(() => {
+      const dayFromRoute = route.params?.day || 'monday';
+      setCurrentDay(dayFromRoute);
+    }, [route.params?.day])
+  );
+
   useEffect(() => {
     setLoading(true);
-    fetchMealsDays(currentDay);
 
-    if (useMealPlanRecipe.getState(mealsWithDays)) {
-      setTimeout(() => {
+    async function fetchData() {
+      await fetchMealsDays(currentDay);
+
+      if (useMealPlanRecipe.getState(mealsWithDays)) {
         setLoading(false);
-      }, 1000);
+      }
     }
+
+    fetchData();
   }, [currentDay]);
 
   return (

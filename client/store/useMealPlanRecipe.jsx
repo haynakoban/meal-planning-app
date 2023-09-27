@@ -22,7 +22,16 @@ const useMealPlanRecipe = create((set) => ({
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+
+    return Promise.resolve();
   },
+
+  addMealPlan: (meal) => {
+    set((state) => ({
+      mealsWithDays: [meal, ...state.mealsWithDays],
+    }));
+  },
+
   setRecipeMeal: (text) =>
     set((state) => ({
       recipeMeal: text,
