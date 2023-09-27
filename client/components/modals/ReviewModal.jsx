@@ -8,7 +8,8 @@ import useReviewsStore from '../../store/useReviewStore';
 import axios from '../../lib/axiosConfig';
 
 const ReviewModal = ({ visible, data, onClose, type }) => {
-  const { personal, addReview, fetchPersonalReview } = useReviewsStore();
+  const { personal, addReview, fetchPersonalReview, updateRatings } =
+    useReviewsStore();
 
   const [ratings, setRatings] = useState(5);
   const [form, setForm] = useState({
@@ -43,6 +44,13 @@ const ReviewModal = ({ visible, data, onClose, type }) => {
         };
 
         await axios.post(`feedbacks/${form.foodItem}/${form.user_id}`, data);
+
+        updateRatings({
+          recipe_id: form.foodItem,
+          user_id: form.user_id,
+          comment: data.comment,
+          ratings: data.rating,
+        });
       } else {
         let data = {
           user_id: form.user_id,

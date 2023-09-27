@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     lineHeight: SIZES.lg,
   },
   mv: {
-    marginVertical: SIZES.md,
+    marginBottom: SIZES.md,
   },
   groupButtonWrapper: {
     marginTop: SIZES.xs,
