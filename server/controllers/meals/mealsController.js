@@ -95,6 +95,7 @@ const create = async (req, res, next) => {
 const list = async (req, res, next) => {
   try {
     const meals = await Meals.find()
+      .populate({ path: 'user_id', select: 'fullname username' })
       .populate({ path: 'recipes' })
       .select('-createdAt -updatedAt -__v');
 
