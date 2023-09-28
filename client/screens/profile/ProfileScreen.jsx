@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   View,
@@ -15,7 +14,9 @@ import useAuthStore from '../../store/useAuthStore';
 import styles from '../../styles/profile';
 import { formatNumber } from '../../lib/formatNumber';
 import ProfileRecipes from './ProfileRecipes';
+import ProfileMeals from './ProfileMeals';
 import useRecipeStore from '../../store/useRecipeStore';
+import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 
 const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
@@ -24,11 +25,17 @@ const ProfileScreen = () => {
   const recipes = useRecipeStore((state) => state.recipes);
   const clearRecipe = useRecipeStore((state) => state.clearRecipe);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+  const personalMeals = useMealPlanRecipe((state) => state.personalMeals);
+  const fetchPersonalMeals = useMealPlanRecipe(
+    (state) => state.fetchPersonalMeals
+  );
   const [isRecipeEditable, setIsRecipeEditable] = useState(false);
+  const [isMealEditable, setIsMealEditable] = useState(false);
 
   useEffect(() => {
     clearRecipe();
     presonalRecipes(userInfo?._id);
+    fetchPersonalMeals(userInfo?._id);
   }, []);
 
   const {
@@ -55,6 +62,7 @@ const ProfileScreen = () => {
 
     clearRecipe();
     presonalRecipes(userInfo?._id);
+    fetchPersonalMeals(userInfo?._id);
 
     setTimeout(() => {
       setRefreshing(false);
@@ -253,7 +261,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                0
+                {personalMeals?.length || 0}
               </Text>
               <Text
                 style={[
@@ -324,13 +332,43 @@ const ProfileScreen = () => {
       {/* content here */}
       <View style={mv}>
         {currentScreen === 'meals' ? (
-          <Text>This is meals</Text>
+          <>
+            <View
+              style={{
+                marginHorizontal: 10,
+                marginTop: 20,
+                marginBottom: 10,
+                alignItems: 'flex-end',
+              }}
+            >
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: COLORS.secondary,
+                  paddingLeft: 10,
+                  borderRadius: 5,
+                }}
+                onPress={() => {
+                  setIsMealEditable(!isMealEditable);
+                }}
+              >
+                <Text style={{ fontFamily: FONT.medium }}>
+                  {/* {isMealEditable ? 'Unedit Meal' : 'Edit Meal'} */}
+                  Edit Meals
+                </Text>
+                <Checkbox status={isMealEditable ? 'checked' : 'unchecked'} />
+              </Pressable>
+            </View>
+            <ProfileMeals user_id={userInfo?._id} isEditable={isMealEditable} />
+          </>
         ) : (
           <>
             <View
               style={{
                 marginHorizontal: 10,
                 marginTop: 20,
+                marginBottom: 10,
                 alignItems: 'flex-end',
               }}
             >

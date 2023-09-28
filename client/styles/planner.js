@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.sm,
     marginBottom: 8,
   },
-  mealButton: { marginBottom: 16, paddingHorizontal: 20, paddingVertical: 12 },
+  mealButton: { marginBottom: 10, paddingHorizontal: 5 },
   mealContainer: {
     flexDirection: 'row',
     alignItems: 'center',

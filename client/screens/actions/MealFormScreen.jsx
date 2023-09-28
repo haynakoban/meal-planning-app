@@ -28,8 +28,13 @@ const MealFormScreen = () => {
   const { multipleRecipes, recipesObj } = useMealPlanRecipe();
 
   const userInfo = useAuthStore((state) => state.userInfo);
-  const { recipesArray, removeRecipes, clearRecipes, addMealPlan } =
+  const { recipesArray, removeRecipes, clearRecipes, addMealPlan, clearMeal } =
     useMealPlanRecipe();
+
+  useEffect(() => {
+    clearRecipes();
+    clearMeal();
+  }, []);
 
   const [permission, setPermission] = useState(false);
   const [openDay, setOpenDay] = useState(false);
