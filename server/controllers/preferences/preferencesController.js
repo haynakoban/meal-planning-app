@@ -22,7 +22,7 @@ const bulkPreferences = async (req, res, next) => {
 // get the list of preferences
 const list = async (req, res, next) => {
   try {
-    const preferences = await Preferences.find().select('_id name');
+    const preferences = await Preferences.find();
 
     // Return the paginated data along with pagination information
     res.json({

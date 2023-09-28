@@ -22,7 +22,7 @@ const bulkAllergies = async (req, res, next) => {
 // get the list of allergies
 const list = async (req, res, next) => {
   try {
-    const allergies = await Allergies.find().select('_id name');
+    const allergies = await Allergies.find();
 
     // Return the paginated data along with pagination information
     res.json({

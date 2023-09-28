@@ -41,7 +41,7 @@ const create = async (req, res, next) => {
 // get the list of cuisines
 const list = async (req, res, next) => {
   try {
-    const cuisines = await Cuisines.find().select('_id name');
+    const cuisines = await Cuisines.find();
 
     // Return the paginated data along with pagination information
     res.json({

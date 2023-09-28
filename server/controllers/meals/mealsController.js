@@ -111,7 +111,7 @@ const list = async (req, res, next) => {
 // get the list of meal types
 const listMealTypes = async (req, res, next) => {
   try {
-    const mealtypes = await MealTypes.find().select('_id name');
+    const mealtypes = await MealTypes.find();
 
     // Return the paginated data along with pagination information
     res.json({

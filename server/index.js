@@ -13,7 +13,7 @@ const HOST = 'localhost';
 
 app.use(
   cors({
-    origin: ['*'],
+    origin: ['http://localhost:3000', '*'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })

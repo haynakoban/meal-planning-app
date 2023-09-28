@@ -91,9 +91,7 @@ const create = async (req, res, next) => {
 // get the list of users
 const list = async (req, res, next) => {
   try {
-    const users = await Users.find().select(
-      '-password -createdAt -updatedAt -__v'
-    );
+    const users = await Users.find().select('-password -updatedAt -__v');
 
     res.json({
       message: `${users.length} items retrieved successfully`,
