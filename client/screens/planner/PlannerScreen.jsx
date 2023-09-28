@@ -15,17 +15,31 @@ import PlansCard from '../../components/planner/PlansCard';
 import { COLORS, SIZES, useWeeks } from '../../constants';
 import styles from '../../styles/planner';
 import LoadingScreen from '../loading/LoadingScreen';
+import useAuthStore from '../../store/useAuthStore';
 
 const screenWidth = Dimensions.get('window').width - 16;
 
 const PlannerScreen = ({ route }) => {
-  const [currentDay, setCurrentDay] = useState('monday');
+  const userInfo = useAuthStore((state) => state.userInfo);
+  const daysOfWeek = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
+  const today = new Date();
+  const dayName = daysOfWeek[today.getDay() || 'sunday'];
+
+  const [currentDay, setCurrentDay] = useState(dayName);
   const [loading, setLoading] = useState(true);
   const { mealsWithDays, fetchMealsDays } = useMealPlanRecipe();
 
   useFocusEffect(
     useCallback(() => {
-      const dayFromRoute = route.params?.day || 'monday';
+      const dayFromRoute = route.params?.day || dayName;
       setCurrentDay(dayFromRoute);
     }, [route.params?.day])
   );
@@ -34,7 +48,7 @@ const PlannerScreen = ({ route }) => {
     setLoading(true);
 
     async function fetchData() {
-      await fetchMealsDays(currentDay);
+      await fetchMealsDays(currentDay, userInfo?._id);
 
       if (useMealPlanRecipe.getState(mealsWithDays)) {
         setLoading(false);

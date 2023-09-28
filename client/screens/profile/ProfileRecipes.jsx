@@ -154,7 +154,6 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
             <RecipeDeleteModal
               visible={modalVisible}
               id={recipe_id}
-              type='recipe'
               onClose={closeModal}
             />
           )}

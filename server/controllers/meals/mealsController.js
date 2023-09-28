@@ -1,5 +1,10 @@
 const { Meals, MealTypes, Recipes } = require('../../models');
 const dbUtility = require('../../config/connection');
+const ObjectId = require('mongodb').ObjectId;
+const mongoose = require('mongoose');
+const DB_URL =
+  process.env.MONGO_URL || 'mongodb://localhost:27017/meal-planning-app';
+const conn = mongoose.createConnection(DB_URL);
 
 // bulk meal types
 const bulkMealTypes = async (req, res, next) => {
@@ -318,65 +323,19 @@ const show = async (req, res, next) => {
 
 // get the personal list of meals
 const personalMeals = async (req, res, next) => {
-  const { id } = req.params;
   try {
-    const meals = await Meals.find({ user_id: id })
-      .sort({ updatedAt: -1 })
-      .populate('recipes')
-      .populate({ path: 'user_id', select: 'fullname username' })
-      .select('-createdAt -__v');
+    const { id } = req.params;
+    console.log(id);
 
-    const results = await Promise.all(
-      meals.map(async (meal) => {
-        if (typeof meal.image === 'object') {
-          const imageBuffer = await dbUtility.fetchImageById(meal.image);
-
-          const base64Image = imageBuffer.toString('base64');
-          const mimeType = 'image/jpg'; // Change this to match the actual image type
-          const dataURI = `data:${mimeType};base64,${base64Image}`;
-
-          return {
-            ...meal.toObject(),
-            image: dataURI,
-          };
-        }
-
-        return meal;
-      })
-    );
-
-    // populate recipes has empty array
-
-    // Return the paginated data along with pagination information
-    res.json({
-      message: `${results.length} items retrieved successfully`,
-      status: 'success',
-      data: results,
-    });
-  } catch (e) {
-    return res.status(500).json({
-      message: 'Internal Server Error',
-      status: 'error occurred',
-      data: [],
-    });
-  }
-};
-
-// get the list of meals by day
-const listByDay = async (req, res, next) => {
-  try {
-    const { day } = req.query;
-
-    if (!day) {
+    if (!id) {
       return res.status(200).json({
-        message: 'Invalid Day',
+        message: 'Invalid Id',
         status: 'error occurred',
         data: [],
       });
     }
 
-    const newDay = day?.toLowerCase();
-    const meals = await Meals.find({ day: newDay })
+    const meals = await Meals.find({ user_id: id })
       .sort({ updatedAt: -1 })
       .populate({ path: 'recipes' })
       .select('-createdAt -__v');
@@ -416,6 +375,98 @@ const listByDay = async (req, res, next) => {
   }
 };
 
+// get the list of meals by day
+const listByDay = async (req, res, next) => {
+  try {
+    const { day, user_id } = req.query;
+
+    if (!day) {
+      return res.status(200).json({
+        message: 'Invalid Day',
+        status: 'error occurred',
+        data: [],
+      });
+    }
+
+    const newDay = day?.toLowerCase();
+    const meals = await Meals.find({ day: newDay, user_id })
+      .sort({ updatedAt: -1 })
+      .populate({ path: 'recipes' })
+      .select('-createdAt -__v');
+
+    const results = await Promise.all(
+      meals.map(async (meal) => {
+        const r = meal.toObject();
+
+        if (typeof r.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg';
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          r.image = dataURI;
+        }
+
+        return {
+          ...r,
+        };
+      })
+    );
+
+    // Return the paginated data along with pagination information
+    res.json({
+      message: `${results.length} items retrieved successfully`,
+      status: 'success',
+      data: results,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// delete meal
+const deleteMeal = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the recipe by its unique ID
+    const meal = await Meals.findByIdAndDelete(id);
+
+    if (!meal) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: 'uploads',
+    });
+
+    if (typeof meal.image === 'object') {
+      await bucket.delete(new ObjectId(meal.image));
+    }
+
+    // Return the recipe data
+    res.json({
+      message: 'Item deleted successfully',
+      status: 'success',
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkMealTypes,
   bulkMeals,
@@ -427,4 +478,5 @@ module.exports = {
   show,
   personalMeals,
   listByDay,
+  deleteMeal,
 };
