@@ -37,7 +37,10 @@ router
   );
 
 // get method - get single meal
-router.route('/:id').get(mealsController.show);
+router
+  .route('/:id')
+  .get(mealsController.show)
+  .delete(mealsController.deleteMeal);
 router.route('/personal/:id').get(mealsController.personalMeals);
 
 module.exports = router;

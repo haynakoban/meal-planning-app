@@ -3,24 +3,24 @@ import { Text, View, Pressable, Modal } from 'react-native';
 import { COLORS, SIZES, FONT } from '../../constants';
 import axios from '../../lib/axiosConfig';
 import { useNavigation } from '@react-navigation/native';
-import useRecipeStore from '../../store/useRecipeStore';
+import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import useAuthStore from '../../store/useAuthStore';
 
-const RecipeDeleteModal = ({ visible, id, onClose }) => {
+const MealDeleteModal = ({ visible, id, onClose }) => {
   const navigation = useNavigation();
 
   const userInfo = useAuthStore((state) => state.userInfo);
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
-  const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+  const fetchPersonalMeals = useMealPlanRecipe(
+    (state) => state.fetchPersonalMeals
+  );
 
   const deleteRecipe = async (id) => {
     try {
-      const result = await axios.delete(`recipes/${id}`);
-      clearRecipe();
-      presonalRecipes(userInfo?._id);
+      const result = await axios.delete(`meals/${id}`);
+      fetchPersonalMeals(userInfo?._id);
       onClose(false);
     } catch (error) {
-      console.error('Error deleting recipe: ', error);
+      console.error('Error deleting meals: ', error);
     }
   };
 
@@ -113,4 +113,4 @@ const RecipeDeleteModal = ({ visible, id, onClose }) => {
   );
 };
 
-export default RecipeDeleteModal;
+export default MealDeleteModal;

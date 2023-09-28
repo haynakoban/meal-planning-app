@@ -6,18 +6,37 @@ const useMealPlanRecipe = create((set) => ({
   recipesObj: [],
   meals: [],
   mealsWithDays: [],
-
+  personalMeals: [],
   recipeMeal: '',
 
-  fetchMealsDays: async (day) => {
+  fetchMealsDays: async (day, user_id) => {
     try {
       set({ mealsWithDays: [] });
-      const response = await axios.get(`meals/list/day?day=${day}`);
+      const response = await axios.get(
+        `meals/list/day?day=${day}&&user_id=${user_id}`
+      );
 
       if (response && response.data?.status === 'success') {
         const newData = response.data.data;
 
         set({ mealsWithDays: newData });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+
+    return Promise.resolve();
+  },
+
+  fetchPersonalMeals: async (user_id) => {
+    try {
+      set({ personalMeals: [] });
+      const response = await axios.get(`meals/personal/${user_id}`);
+
+      if (response && response.data?.status === 'success') {
+        const newData = response.data.data;
+
+        set({ personalMeals: newData });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -54,24 +73,6 @@ const useMealPlanRecipe = create((set) => ({
 
           set((state) => ({
             recipesObj: [...state.recipesObj, ...newData],
-          }));
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  },
-
-  personalMeals: async (user_id) => {
-    try {
-      const response = await axios.get(`meals/personal/${user_id}`);
-
-      if (response && response.data && response.data) {
-        const newData = response.data.data;
-
-        if (Array.isArray(newData) && newData.length > 0) {
-          set((state) => ({
-            meals: [...state.meals, ...newData],
           }));
         }
       }
