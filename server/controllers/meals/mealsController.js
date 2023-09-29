@@ -297,7 +297,28 @@ const show = async (req, res, next) => {
 
   try {
     // Query the database to find the meal by its unique ID
-    const meal = await Meals.findOne({ _id: id });
+    const meal = await Meals.findOne({ _id: id })
+      .populate('recipes')
+      .populate('user_id')
+      .select('-createdAt -__v');
+
+    if (typeof meal.image === 'object') {
+      const imageBuffer = await dbUtility.fetchImageById(meal.image);
+
+      const base64Image = imageBuffer.toString('base64');
+      const mimeType = 'image/jpg'; // Change this to match the actual image type
+      const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+      // Return the meal data
+      return res.json({
+        message: 'Item retrieved successfully',
+        status: 'success',
+        data: {
+          ...meal.toObject(),
+          image: dataURI,
+        },
+      });
+    }
 
     if (!meal) {
       return res.status(404).json({
@@ -326,7 +347,6 @@ const show = async (req, res, next) => {
 const personalMeals = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id);
 
     if (!id) {
       return res.status(200).json({

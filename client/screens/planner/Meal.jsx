@@ -4,49 +4,37 @@ import FavoriteCard from '../../components/favorites/FavoriteCard';
 import useAuthStore from '../../store/useAuthStore';
 import LoadingScreen from '../loading/LoadingScreen';
 import { useState, useEffect } from 'react';
+import useMealPlanRecipe from '../../store/useMealPlanRecipe';
+import NotFound from '../../assets/images/image-not-found.jpg';
+import { FONT } from '../../constants';
 
 const Meal = ({ route }) => {
   // const id = route.params.id;
   const [isLoading, setIsLoading] = useState(false);
   const userInfo = useAuthStore((state) => state.userInfo);
+  const { meal, fetchSingleMeal, mealRecipes, getMealRecipes } =
+    useMealPlanRecipe();
+
+  const meal_id = route.params.id;
+
+  useEffect(() => {
+    fetchSingleMeal(meal_id);
+  }, []);
+
+  useEffect(() => {
+    let ids = [];
+    meal?.recipes?.map((recipe) => {
+      ids.push(recipe?._id);
+    });
+
+    getMealRecipes(ids);
+  }, [meal]);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(true);
     }, Math.floor(Math.random() * (100 - 10 + 1)) + 1000);
   }, []);
-
-  const meal_plan_recipes = [
-    {
-      id: 1,
-      name: 'Adobong Manok',
-      username: 'semicolon101010',
-      meal_time: 'Breakfast',
-      ratings: 224,
-      image:
-        'https://yummyfood.ph/wp-content/uploads/2021/08/Chicken-Adobo-Recipe.jpg',
-    },
-    {
-      id: 2,
-      name: 'Adobong Manok',
-      username: 'xenonnn',
-      meal_time: 'Lunch',
-      ratings: 21,
-      image:
-        'https://yummyfood.ph/wp-content/uploads/2021/08/Chicken-Adobo-Recipe.jpg',
-    },
-    {
-      id: 3,
-      name: 'Adobong Manok',
-      username: 'xxx123',
-      meal_time: 'Dinner',
-      ratings: 147,
-      image:
-        'https://yummyfood.ph/wp-content/uploads/2021/08/Chicken-Adobo-Recipe.jpg',
-    },
-  ];
-
-  const id = 'daw231awe9';
 
   const {
     bigDivider,
@@ -64,10 +52,18 @@ const Meal = ({ route }) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       {isLoading ? (
         <View style={container}>
-          <Image src={meal_plan_recipes[0].image} style={imageStyle} />
+          <Image
+            source={meal?.image ? { uri: meal?.image } : NotFound}
+            style={imageStyle}
+          />
           <View style={wrapper}>
-            <Text style={textBold}>{meal_plan_recipes[0].name}</Text>
-            <Text style={label}>Daily meal plan</Text>
+            <Text style={[textBold, { textTransform: 'capitalize' }]}>
+              {meal?.name}
+            </Text>
+            <Text style={label}>
+              Meal plan by:{' '}
+              <Text style={[label, { fontFamily: FONT.semiBold }]}>You</Text>
+            </Text>
           </View>
           <View style={divider}></View>
           <View style={bigDivider}></View>
@@ -93,18 +89,27 @@ const Meal = ({ route }) => {
           </View>
           <View style={bigDivider}></View>
           <View style={wrapper}>
-            <Text style={textMedium}>Monday (Breakfast) Meal Plan</Text>
+            <Text style={[textMedium, { textTransform: 'capitalize' }]}>
+              {meal?.day} ({meal?.time}) Meal Plan
+            </Text>
           </View>
           <View style={divider}></View>
           <View style={[wrapper, { flexDirection: 'row', flexWrap: 'wrap' }]}>
-            {meal_plan_recipes.map((item) => {
+            {mealRecipes?.map((item) => {
+              let calculated = 0;
+              for (let i = 0; i < item?.feedbacks.length; i++) {
+                calculated += parseInt(item?.feedbacks[i]?.rating);
+              }
+
               return (
-                <View style={{ width: '50%' }} key={item.id}>
+                <View style={{ width: '50%' }} key={item?._id}>
                   <FavoriteCard
-                    name={item.name}
-                    username={item.username}
-                    ratings={item.ratings}
-                    image={item.image}
+                    name={item?.name}
+                    username={item?.user_id?.username || 'anon'}
+                    reviews={item?.feedbacks.length || 0}
+                    ratings={calculated / item?.feedbacks.length || 0}
+                    image={item?.image}
+                    id={item?._id}
                   />
                 </View>
               );
@@ -116,7 +121,7 @@ const Meal = ({ route }) => {
           </View>
           <View style={divider}></View>
           <View style={wrapper}>
-            <Text style={text}>{meal_plan_recipes[0].description}</Text>
+            <Text style={text}>{meal?.description}</Text>
           </View>
         </View>
       ) : (

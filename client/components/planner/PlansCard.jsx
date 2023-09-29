@@ -2,12 +2,11 @@ import { Text, Pressable, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../../styles/planner';
 
-const PlansCard = ({ name, image, type = 'breakfast' }) => {
+const PlansCard = ({ name, image, type = 'breakfast', id }) => {
   const navigation = useNavigation();
-
   return (
     <Pressable
-      onPress={() => navigation.navigate('Meal', { id: 1 })}
+      onPress={() => navigation.navigate('Meal', { id })}
       style={styles.mealButton}
     >
       <View style={styles.mealContainer}>

@@ -127,6 +127,7 @@ const ProfileMeals = ({ user_id, isEditable }) => {
                     name={item?.name}
                     image={item?.image}
                     type={item?.time}
+                    id={item?._id}
                   />
                 </View>
               );
