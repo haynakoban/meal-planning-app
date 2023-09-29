@@ -9,7 +9,6 @@ import {
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
-  Recipe,
   Meal,
   SearchRecipe,
   LoadingScreen,
@@ -40,7 +39,7 @@ const AppNavigator = () => {
   const { isLoggedIn, getUserInfo } = useAuthStore();
   const { fetchRecipesData, searchRecipes } = useRecipeStore();
 
-  const [searchText, setSearchText] = useState('');
+  const { recipeText, setRecipeText } = useRecipeStore();
   const { recipeMeal, setRecipeMeal } = useMealPlanRecipe();
   const [visible, setVisible] = useState(false);
 
@@ -51,8 +50,15 @@ const AppNavigator = () => {
     searchRecipes(text);
   });
 
+  // search recipe for meal
   const setSearchRecipe = (text) => {
     setRecipeMeal(text);
+    delayedSearch(text);
+  };
+
+  // search recipe
+  const searchRecipeText = (text) => {
+    setRecipeText(text);
     delayedSearch(text);
   };
 
@@ -181,8 +187,8 @@ const AppNavigator = () => {
                   <TextInput
                     style={styles.searchTextInput}
                     placeholder='Search...'
-                    onChangeText={(text) => setSearchText(text)}
-                    value={searchText}
+                    onChangeText={(text) => searchRecipeText(text)}
+                    value={recipeText}
                   />
                 </View>
               ),

@@ -219,11 +219,6 @@ export const privacyData = [
     description: 'Anyone can see this recipe.',
   },
   {
-    privacy: 'followers',
-    title: 'Followers',
-    description: 'Only your followers can see this recipe.',
-  },
-  {
     privacy: 'private',
     title: 'Private',
     description: 'Only you can see this recipe.',
@@ -243,7 +238,6 @@ export const people = [
 
 export const searchesScreens = [
   { icon: 'book', label: 'Recipes', screen: 'Recipes' },
-  { icon: 'calendar', label: 'Meal Plans', screen: 'Planner' },
   { icon: 'heart', label: 'Favorites', screen: 'Favorites' },
 ];
 
