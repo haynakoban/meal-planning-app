@@ -91,6 +91,7 @@ const PlannerScreen = ({ route }) => {
                         name={meal?.name}
                         image={meal?.image}
                         type={meal?.time}
+                        id={meal?._id}
                       />
                     </View>
                   ))}
