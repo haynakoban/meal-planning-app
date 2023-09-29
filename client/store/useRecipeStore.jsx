@@ -7,6 +7,7 @@ const useRecipeStore = create((set) => ({
   recipe: {},
   lastModified: null,
   homeRecipes: [],
+  recipeText: '',
 
   searchRecipes: async (text) => {
     try {
@@ -15,11 +16,9 @@ const useRecipeStore = create((set) => ({
       if (response && response.data && response.data) {
         const newData = response.data.data;
 
-        if (Array.isArray(newData) && newData.length > 0) {
-          set((state) => ({
-            recipes: newData,
-          }));
-        }
+        set((state) => ({
+          recipes: newData,
+        }));
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -28,6 +27,7 @@ const useRecipeStore = create((set) => ({
 
   listRecipes: async () => {
     try {
+      set({ recipes: [] });
       const response = await axios.get(`recipes`);
 
       if (response && response.data && response.data) {
@@ -102,6 +102,11 @@ const useRecipeStore = create((set) => ({
       console.error('Error fetching data2:', error);
     }
   },
+
+  setRecipeText: (text) =>
+    set((state) => ({
+      recipeText: text,
+    })),
 
   clearRecipe: () =>
     set((state) => ({
