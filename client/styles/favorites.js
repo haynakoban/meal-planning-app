@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     flex: 1,
     alignItems: 'stretch',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginLeft: 5,
     marginRight: 5,
     marginBottom: SIZES.sm,

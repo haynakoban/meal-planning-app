@@ -103,7 +103,7 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
           </Text>
         </Pressable>
       )}
-      <Card>
+      <Card mode='none'>
         <Card.Cover
           source={
             data.image

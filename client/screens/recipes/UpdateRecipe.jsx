@@ -320,7 +320,7 @@ const UpdateRecipe = () => {
           </Pressable>
         )}
 
-        <Text style={[styles.labels, { marginTop: SIZES.sm }]}>Name</Text>
+        <Text style={[styles.labels, { marginTop: SIZES.lg }]}>Name</Text>
         <TextInput
           placeholder='Name of recipe'
           value={form.name != null ? form.name : recipe?.name}
@@ -628,7 +628,7 @@ const UpdateRecipe = () => {
           style={[styles.submitButton, styles.mtxl]}
           onPress={handleSubmit}
         >
-          <Text style={styles.submitText}>Save</Text>
+          <Text style={styles.submitText}>Update</Text>
         </Pressable>
       </View>
 

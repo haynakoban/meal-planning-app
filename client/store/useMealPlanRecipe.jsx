@@ -70,6 +70,19 @@ const useMealPlanRecipe = create((set) => ({
     }));
   },
 
+  updateMealPlan: (meal, id) => {
+    const { mealsWithDays } = useMealPlanRecipe.getState();
+    const data = mealsWithDays?.map((item) => {
+      if (item._id == id) {
+        return meal;
+      }
+    });
+
+    set((state) => ({
+      mealsWithDays: data,
+    }));
+  },
+
   setRecipeMeal: (text) =>
     set((state) => ({
       recipeMeal: text,
@@ -130,9 +143,44 @@ const useMealPlanRecipe = create((set) => ({
     }
   },
 
+  setMealRecipes: async (id) => {
+    try {
+      set({ mealRecipes: [] });
+
+      let num = id?.length;
+      let ids = '';
+      for (let i = 0; i < num; i++) {
+        if (i == 0) {
+          ids += id[i];
+        } else {
+          ids += '&&ids=' + id[i];
+        }
+      }
+
+      const response = await axios.get(`recipes/list?ids=${ids}`);
+
+      if (response && response.data && response.data) {
+        const newData = response.data.data;
+
+        if (Array.isArray(newData) && newData.length > 0) {
+          set((state) => ({
+            recipesObj: newData,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+
   addRecipes: (id) =>
     set((state) => ({
       recipesArray: [...state.recipesArray, id],
+    })),
+
+  setRecipesArray: (id) =>
+    set((state) => ({
+      recipesArray: id,
     })),
 
   removeRecipes: (id) =>

@@ -14,7 +14,6 @@ router
   .get(mealsController.list)
   .post(upload.single('image'), mealsController.create)
   .delete(mealsController.destroy);
-// upload.single('image'),
 // post method - create multiple meal types
 router.route('/bulk').post(bulkMealsDataMiddleware, mealsController.bulkMeals);
 
@@ -44,7 +43,9 @@ router
 router
   .route('/:id')
   .get(mealsController.show)
+  .put(upload.single('image'), mealsController.updateMeal)
   .delete(mealsController.deleteMeal);
+
 router.route('/personal/:id').get(mealsController.personalMeals);
 
 module.exports = router;
