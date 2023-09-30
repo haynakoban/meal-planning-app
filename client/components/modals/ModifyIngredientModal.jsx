@@ -53,8 +53,11 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
   }, []);
 
   const handleSave = () => {
+    let converted = convertMixedNumberToDecimal(ingredientInfo.amount);
     let isAmountValid =
-      ingredientInfo.amount !== null && ingredientInfo.amount !== '';
+      ingredientInfo.amount !== null &&
+      ingredientInfo.amount !== '' &&
+      converted.length !== 0;
     let isMeasurementValid =
       ingredientInfo.measurement !== null && ingredientInfo.measurement !== '';
 
@@ -68,7 +71,7 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
 
     setSelectedIngredients({
       ...ingredientInfo,
-      amount: convertMixedNumberToDecimal(ingredientInfo.amount),
+      amount: converted,
       ingredients_id: data.id,
     });
     onClose(false);

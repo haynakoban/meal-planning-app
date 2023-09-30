@@ -34,23 +34,10 @@ const UpdateRecipe = () => {
   const route = useRoute();
   const recipe_id = route.params.id;
   const userInfo = useAuthStore((state) => state.userInfo);
-  //   const [value, setThisValue] = useState([]);
 
   useEffect(() => {
     singleRecipes(recipe_id);
   }, []);
-
-  //   useEffect(() => {
-  //     let arr = [];
-  //     for (let i = 0; i < recipe?.ingredients?.length; i++) {
-  //       arr.push([
-  //         recipe?.ingredients[i]?.ingredients_id[0]._id,
-  //         recipe?.ingredients[i]?.ingredients_id[0].name,
-  //       ]);
-  //       console.log(arr);
-  //     }
-  //     setThisValue(arr);
-  //   }, [recipe]);
 
   const [err, setErr] = useState({
     name: false,
@@ -69,6 +56,42 @@ const UpdateRecipe = () => {
     cookingTime: null,
   });
 
+  useEffect(() => {
+    setForm({
+      ...form,
+      name: recipe?.name,
+      description: recipe?.description,
+      procedure: recipe?.procedure,
+      image: null,
+      privacy: recipe?.privacy,
+      cookingTime: recipe?.cooking_time,
+    });
+    addMealTypeValue(recipe?.meal_types);
+    addPreferenceValue(recipe?.preferences);
+    addCuisinesValue(recipe?.cuisines);
+
+    let arr = [];
+    let data = [];
+    for (let i = 0; i < recipe?.ingredients?.length; i++) {
+      arr.push(
+        JSON.stringify([
+          recipe?.ingredients[i]?.ingredients_id[0]._id,
+          recipe?.ingredients[i]?.ingredients_id[0].name,
+        ])
+      );
+
+      data.push({
+        amount: recipe?.ingredients[i]?.amount,
+        description: recipe?.ingredients[i]?.description,
+        ingredients_id: recipe?.ingredients[i]?.ingredients_id[0]._id,
+        measurement: recipe?.ingredients[i]?.measurement,
+      });
+    }
+
+    addIngredientsValue(arr);
+    addIngredientsSelected(data);
+  }, [recipe]);
+
   const [permission, setPermission] = useState(false);
 
   const {
@@ -80,6 +103,8 @@ const UpdateRecipe = () => {
     setItems,
     listIngredients,
     clearValue,
+    addIngredientsValue,
+    addIngredientsSelected,
   } = useIngredientsStore();
 
   // cuisine
@@ -92,6 +117,7 @@ const UpdateRecipe = () => {
   const setCuisineValue = useCuisinesStore((state) => state.setValue);
   const listCuisines = useCuisinesStore((state) => state.listCuisines);
   const clearCuisine = useCuisinesStore((state) => state.clearCuisine);
+  const addCuisinesValue = useCuisinesStore((state) => state.addCuisinesValue);
 
   // mealtype
   const openMealType = useMealTypeStore((state) => state.open);
@@ -102,6 +128,7 @@ const UpdateRecipe = () => {
   const setMealTypeValue = useMealTypeStore((state) => state.setValue);
   const listMealTypes = useMealTypeStore((state) => state.listMealTypes);
   const clearMealType = useMealTypeStore((state) => state.clearMealType);
+  const addMealTypeValue = useMealTypeStore((state) => state.addMealTypeValue);
 
   // preferences
   const openPreferences = usePreferencesStore((state) => state.open);
@@ -113,6 +140,9 @@ const UpdateRecipe = () => {
   const listPreferences = usePreferencesStore((state) => state.listPreferences);
   const clearPreferences = usePreferencesStore(
     (state) => state.clearPreferences
+  );
+  const addPreferenceValue = usePreferencesStore(
+    (state) => state.addPreferenceValue
   );
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -195,9 +225,11 @@ const UpdateRecipe = () => {
   const handleSubmit = async () => {
     try {
       const getSelectedData = selected.filter((selectedItem) =>
-        value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
+        value.some(
+          (valItem) => JSON.parse(valItem)[0] === selectedItem.ingredients_id
+        )
       );
-      const isImageValid = form.image !== null && form.image !== '';
+
       const isNameValid = form.name !== null && form.name !== '';
       const isDescriptionValid =
         form.description !== null && form.description !== '';
@@ -210,7 +242,6 @@ const UpdateRecipe = () => {
         name: !isNameValid,
         description: !isDescriptionValid,
         procedure: !isProcedureValid,
-        image: !isImageValid,
         ingredients: !isIngredientsValid,
         meal_types: !isMealTypeValid,
       };
@@ -235,13 +266,17 @@ const UpdateRecipe = () => {
       fd.append('cooking_time', form.cookingTime);
       fd.append('privacy', form.privacy);
 
-      fd.append('image', {
-        name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
-        uri: form.image,
-        type: 'image/jpg',
-      });
+      if (form.image == null) {
+        fd.append('image', null);
+      } else {
+        fd.append('image', {
+          name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
+          uri: form.image,
+          type: 'image/jpg',
+        });
+      }
 
-      const response = await axios.post(`recipes/${recipe_id}`, fd, {
+      const response = await axios.put(`recipes/${recipe_id}`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -393,21 +428,20 @@ const UpdateRecipe = () => {
             searchable={true}
             open={open}
             value={value}
-            defaultValue={value}
             items={items}
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
             showBadgeDot={false}
-            editable={true}
           />
         </ScrollView>
         {value && <View style={{ marginTop: 10 }}></View>}
         {value &&
           value.map((item, index) => {
+            let it = JSON.parse(item);
             return (
               <Pressable
-                key={item[0]}
+                key={it[0]}
                 style={{
                   padding: 15,
                   backgroundColor: COLORS.primary,
@@ -417,15 +451,18 @@ const UpdateRecipe = () => {
                   justifyContent: 'space-between',
                 }}
                 onPress={() => {
-                  openModal({ id: item[0], name: item[1] });
+                  openModal({
+                    id: it[0],
+                    name: it[1],
+                  });
                   setErr({
                     ...err,
                     ingredients: false,
                   });
                 }}
               >
-                <Text style={styles.smallLabel}>{item[1]}</Text>
-                {checkIfIdExists(item[0]) ? (
+                <Text style={styles.smallLabel}>{it[1]}</Text>
+                {checkIfIdExists(it[0]) ? (
                   <AntDesign
                     name='checkcircle'
                     size={20}

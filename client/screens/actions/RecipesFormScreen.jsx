@@ -171,7 +171,9 @@ const RecipesFormScreen = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const getSelectedData = selected.filter((selectedItem) =>
-        value.some((valItem) => valItem[0] === selectedItem.ingredients_id)
+        value.some(
+          (valItem) => JSON.parse(valItem)[0] === selectedItem.ingredients_id
+        )
       );
       const isImageValid = form.image !== null && form.image !== '';
       const isNameValid = form.name !== null && form.name !== '';
@@ -366,9 +368,10 @@ const RecipesFormScreen = ({ navigation }) => {
         {value && <View style={{ marginTop: 10 }}></View>}
         {value &&
           value.map((item, index) => {
+            let it = JSON.parse(item);
             return (
               <Pressable
-                key={item[0]}
+                key={it[0]}
                 style={{
                   padding: 15,
                   backgroundColor: COLORS.primary,
@@ -378,15 +381,18 @@ const RecipesFormScreen = ({ navigation }) => {
                   justifyContent: 'space-between',
                 }}
                 onPress={() => {
-                  openModal({ id: item[0], name: item[1] });
+                  openModal({
+                    id: it[0],
+                    name: it[1],
+                  });
                   setErr({
                     ...err,
                     ingredients: false,
                   });
                 }}
               >
-                <Text style={styles.smallLabel}>{item[1]}</Text>
-                {checkIfIdExists(item[0]) ? (
+                <Text style={styles.smallLabel}>{it[1]}</Text>
+                {checkIfIdExists(it[0]) ? (
                   <AntDesign
                     name='checkcircle'
                     size={20}
