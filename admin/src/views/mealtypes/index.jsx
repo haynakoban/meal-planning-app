@@ -162,6 +162,10 @@ const MealTypes = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='meals/types'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

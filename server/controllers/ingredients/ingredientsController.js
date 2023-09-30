@@ -41,7 +41,7 @@ const create = async (req, res, next) => {
 // get list of ingredients
 const list = async (req, res, next) => {
   try {
-    const ingredients = await Ingredients.find().select('_id name');
+    const ingredients = await Ingredients.find();
 
     // Return the paginated data along with pagination information
     res.json({
@@ -124,10 +124,40 @@ const show = async (req, res, next) => {
   }
 };
 
+// delete ingredients
+const destroy = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    const result = await Ingredients.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount > 0) {
+      return res.status(200).json({
+        message: `${result.deletedCount} ingredients deleted successfully.`,
+        status: 'success',
+        data: [],
+      });
+    } else {
+      return res.status(404).json({
+        message: `No ingredients found with the provided IDs.`,
+        status: 'error occurred',
+        data: [],
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkIngredients,
   create,
   list,
   paginatedList,
   show,
+  destroy,
 };

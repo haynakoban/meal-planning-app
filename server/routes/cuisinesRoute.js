@@ -12,7 +12,8 @@ const {
 router
   .route('/')
   .get(cuisinesController.list)
-  .post(checkSingleUniquenessMiddleware(Cuisines), cuisinesController.create);
+  .post(checkSingleUniquenessMiddleware(Cuisines), cuisinesController.create)
+  .delete(cuisinesController.destroy);
 
 // post method - create multiple cuisines
 router

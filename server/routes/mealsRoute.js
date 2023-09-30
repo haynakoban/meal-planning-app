@@ -12,7 +12,8 @@ const { upload } = require('../config/conn');
 router
   .route('/')
   .get(mealsController.list)
-  .post(upload.single('image'), mealsController.create);
+  .post(upload.single('image'), mealsController.create)
+  .delete(mealsController.destroy);
 // upload.single('image'),
 // post method - create multiple meal types
 router.route('/bulk').post(bulkMealsDataMiddleware, mealsController.bulkMeals);
@@ -23,7 +24,10 @@ router.route('/list').get(mealsController.paginatedList);
 router.route('/list/day').get(mealsController.listByDay);
 
 // get method - get the list of meal types
-router.route('/types').get(mealsController.listMealTypes);
+router
+  .route('/types')
+  .get(mealsController.listMealTypes)
+  .delete(mealsController.destroyMT);
 
 // get method - get the list of meal types
 router.route('/types/list').get(mealsController.paginatedMealTypes);

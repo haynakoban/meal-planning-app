@@ -9,7 +9,8 @@ const { upload } = require('../config/conn');
 router
   .route('/')
   .get(recipesController.list)
-  .post(upload.single('image'), recipesController.create);
+  .post(upload.single('image'), recipesController.create)
+  .delete(recipesController.destroy);
 
 // post method - create multiple recipes
 router

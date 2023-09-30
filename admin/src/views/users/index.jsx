@@ -174,6 +174,10 @@ const Users = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='users'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

@@ -5,11 +5,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import axios from '../lib/axiosConfig';
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, data } = props;
+  const { numSelected, data, type, rows, setRows, setSelected } = props;
+
+  const destroy = async () => {
+    try {
+      const response = await axios.delete(`${type}`, {
+        data: { ids: data },
+      });
+
+      if (response.data?.status === 'success') {
+        setRows(rows.filter((item) => !data.includes(item._id)));
+        setSelected([]);
+      }
+    } catch (error) {
+      console.error(`Error deleting ${type}:`, error);
+    }
+  };
 
   return (
     <Toolbar
@@ -46,11 +63,20 @@ const EnhancedTableToolbar = (props) => {
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title='Delete'>
-          <IconButton onClick={() => console.log(data)}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <React.Fragment>
+          {numSelected === 1 && (
+            <Tooltip title='Edit'>
+              <IconButton onClick={() => console.log(data)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          <Tooltip title='Delete'>
+            <IconButton onClick={() => destroy()}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </React.Fragment>
       ) : (
         <Tooltip title='Filter list'>
           <IconButton>

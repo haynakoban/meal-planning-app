@@ -180,6 +180,10 @@ const Meals = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='meals'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

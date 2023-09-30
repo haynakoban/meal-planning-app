@@ -162,6 +162,10 @@ const Preferences = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='preferences'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

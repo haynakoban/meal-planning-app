@@ -97,7 +97,7 @@ const list = async (req, res, next) => {
     const meals = await Meals.find()
       .populate({ path: 'user_id', select: 'fullname username' })
       .populate({ path: 'recipes' })
-      .select('-createdAt -updatedAt -__v');
+      .select('-updatedAt -__v');
 
     // Return the paginated data along with pagination information
     res.json({
@@ -144,7 +144,7 @@ const paginatedList = async (req, res, next) => {
     const meals = await Meals.find()
       .skip((page - 1) * perPage)
       .limit(perPage)
-      .select('-createdAt -updatedAt -__v');
+      .select('-updatedAt -__v');
 
     // Get the total count of meals in the collection (for calculating total pages)
     const totalItems = await Meals.countDocuments();
@@ -488,10 +488,70 @@ const deleteMeal = async (req, res, next) => {
   }
 };
 
+// delete meals
+const destroy = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    const result = await Meals.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount > 0) {
+      return res.status(200).json({
+        message: `${result.deletedCount} meals deleted successfully.`,
+        status: 'success',
+        data: [],
+      });
+    } else {
+      return res.status(404).json({
+        message: `No meals found with the provided IDs.`,
+        status: 'error occurred',
+        data: [],
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+// delete meal types
+const destroyMT = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    const result = await MealTypes.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount > 0) {
+      return res.status(200).json({
+        message: `${result.deletedCount} meal types deleted successfully.`,
+        status: 'success',
+        data: [],
+      });
+    } else {
+      return res.status(404).json({
+        message: `No meal types found with the provided IDs.`,
+        status: 'error occurred',
+        data: [],
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkMealTypes,
   bulkMeals,
   create,
+  destroy,
+  destroyMT,
   list,
   listMealTypes,
   paginatedList,

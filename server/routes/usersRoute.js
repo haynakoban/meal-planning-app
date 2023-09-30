@@ -12,10 +12,8 @@ const {
 router
   .route('/')
   .get(usersController.list)
-  .post(
-    checkSingleUniquenessMiddleware(Users, 'email'),
-    usersController.create
-  );
+  .post(checkSingleUniquenessMiddleware(Users, 'email'), usersController.create)
+  .delete(usersController.destroy);
 
 // post method - create multiple user
 router

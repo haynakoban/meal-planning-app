@@ -15,7 +15,8 @@ router
   .post(
     checkSingleUniquenessMiddleware(Ingredients),
     ingredientsController.create
-  );
+  )
+  .delete(ingredientsController.destroy);
 
 // post method - create multiple ingredients
 router

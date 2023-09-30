@@ -156,6 +156,10 @@ const Ingredients = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='ingredients'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

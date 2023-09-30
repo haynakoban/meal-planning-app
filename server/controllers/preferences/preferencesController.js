@@ -39,7 +39,37 @@ const list = async (req, res, next) => {
   }
 };
 
+// delete preferences
+const destroy = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    const result = await Preferences.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount > 0) {
+      return res.status(200).json({
+        message: `${result.deletedCount} preferences deleted successfully.`,
+        status: 'success',
+        data: [],
+      });
+    } else {
+      return res.status(404).json({
+        message: `No preferences found with the provided IDs.`,
+        status: 'error occurred',
+        data: [],
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkPreferences,
   list,
+  destroy,
 };

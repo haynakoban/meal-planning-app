@@ -162,6 +162,10 @@ const Cuisines = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='cuisines'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

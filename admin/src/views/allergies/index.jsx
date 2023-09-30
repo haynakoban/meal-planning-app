@@ -162,6 +162,10 @@ const Allergies = () => {
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
+              type='allergies'
+              rows={rows}
+              setRows={setRows}
+              setSelected={setSelected}
             />
             <TableContainer>
               <Table

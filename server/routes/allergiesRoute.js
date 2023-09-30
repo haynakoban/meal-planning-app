@@ -5,7 +5,10 @@ const { allergiesController } = require('../controllers');
 const { checkBulkUniquenessMiddleware } = require('../middlewares');
 
 // get method - get the list of allergies
-router.route('/').get(allergiesController.list);
+router
+  .route('/')
+  .get(allergiesController.list)
+  .delete(allergiesController.destroy);
 
 // post method - create multiple allergies
 router
