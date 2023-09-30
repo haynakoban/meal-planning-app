@@ -14,7 +14,11 @@ const useIngredientsStore = create((set) => ({
     })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
   clearValue: () => set({ value: [], items: [], selected: [] }),
-
+  addIngredientsValue: (ingredients) =>
+    set({
+      value: ingredients,
+    }),
+  addIngredientsSelected: (data) => set({ selected: data }),
   listIngredients: async () => {
     try {
       const response = await axios.get(`ingredients`);
@@ -25,7 +29,7 @@ const useIngredientsStore = create((set) => ({
         if (Array.isArray(newData) && newData.length > 0) {
           // Transform the data to use '_id' as 'value' and 'name' as 'label'
           const transformedData = newData.map((item) => ({
-            value: [item._id, item.name],
+            value: JSON.stringify([item._id, item.name]),
             label: item.name,
           }));
 

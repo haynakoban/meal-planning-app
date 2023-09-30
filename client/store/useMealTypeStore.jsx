@@ -44,6 +44,10 @@ const useMealTypeStore = create((set) => ({
       value: callback(state.value),
     })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
+  addMealTypeValue: (meal_types) =>
+    set({
+      value: meal_types,
+    }),
   clearMealType: () => set({ value: [], items: [] }),
 
   listMealTypes: async () => {

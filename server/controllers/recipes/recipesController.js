@@ -490,57 +490,83 @@ const deleteRecipe = async (req, res, next) => {
 
 // create new recipe
 const updateRecipe = async (req, res, next) => {
-  const { id } = req.params;
   try {
-    const fileId = req?.file?.id;
+    const { id } = req.params;
+    const recipe = await Recipes.findById(id);
     const procedureValues = JSON.parse(req.body?.procedure);
     const mealTypesValues = JSON.parse(req.body?.meal_types);
     const preferencesValues = JSON.parse(req.body?.preferences);
     const cuisineValues = JSON.parse(req.body?.cuisines);
     const ingredientsValues = JSON.parse(req.body?.ingredients);
 
-    const recipe = await Recipes.findById(id);
+    if (recipe) {
+      const fileId = req?.file?.id;
+      if (fileId != null) {
+        const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
+          bucketName: 'uploads',
+        });
 
-    const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
-      bucketName: 'uploads',
-    });
+        if (typeof recipe.image === 'object') {
+          await bucket.delete(new ObjectId(recipe.image));
+        }
 
-    if (typeof recipe.image === 'object') {
-      await bucket.delete(new ObjectId(recipe.image));
+        const updatedRecipe = await Recipes.findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              user_id: req.body.user_id,
+              name: req.body.name,
+              description: req.body.description,
+              procedure: procedureValues,
+              image: fileId,
+              meal_types: mealTypesValues || [],
+              preferences: preferencesValues || [],
+              cuisines: cuisineValues || [],
+              cooking_time: parseInt(req.body.cooking_time),
+              ingredients: ingredientsValues,
+              privacy: req.body.privacy,
+            },
+          },
+          { new: true } // Return the updated document
+        );
+
+        return res.status(201).json({
+          message: `An item updated successfully`,
+          status: 'record created',
+          data: updatedRecipe,
+        });
+      } else {
+        const updatedRecipe = await Recipes.findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              user_id: req.body.user_id,
+              name: req.body.name,
+              description: req.body.description,
+              procedure: procedureValues,
+              meal_types: mealTypesValues || [],
+              preferences: preferencesValues || [],
+              cuisines: cuisineValues || [],
+              cooking_time: parseInt(req.body.cooking_time),
+              ingredients: ingredientsValues,
+              privacy: req.body.privacy,
+            },
+          },
+          { new: true } // Return the updated document
+        );
+
+        return res.status(201).json({
+          message: `An item updated successfully`,
+          status: 'record created',
+          data: updatedRecipe,
+        });
+      }
     }
 
-    const updatedRecipe = await Recipes.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          user_id: req.body.user_id,
-          name: req.body.name,
-          description: req.body.description,
-          procedure: procedureValues,
-          image: fileId,
-          meal_types: mealTypesValues || [],
-          preferences: preferencesValues || [],
-          cuisines: cuisineValues || [],
-          cooking_time: parseInt(req.body.cooking_time),
-          ingredients: ingredientsValues,
-          privacy: req.body.privacy,
-        },
-      },
-      { new: true } // Return the updated document
-    );
-
-    if (!updatedRecipe) {
-      return res.status(404).json({
-        message: 'Item not found',
-        status: 'error occurred',
-        data: {},
-      });
-    }
-
-    return res.status(201).json({
-      message: `An item updated successfully`,
-      status: 'record created',
-      data: updatedRecipe,
+    return res.status(404).json({
+      message: 'Item not found',
+      status: 'error occurred',
+      data: {},
     });
   } catch (e) {
     return res.status(500).json({

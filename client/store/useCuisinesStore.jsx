@@ -13,7 +13,10 @@ const useCuisinesStore = create((set) => ({
     })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
   clearCuisine: () => set({ value: [], items: [] }),
-
+  addCuisinesValue: (cuisines) =>
+    set({
+      value: cuisines,
+    }),
   listCuisines: async () => {
     try {
       const response = await axios.get(`cuisines/list`);

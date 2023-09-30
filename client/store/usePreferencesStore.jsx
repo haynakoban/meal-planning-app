@@ -13,7 +13,10 @@ const usePreferencesStore = create((set) => ({
     })),
   setItems: (callback) => set((state) => ({ items: callback(state.items) })),
   clearPreferences: () => set({ value: [], items: [] }),
-
+  addPreferenceValue: (preferences) =>
+    set({
+      value: preferences,
+    }),
   listPreferences: async () => {
     try {
       const response = await axios.get(`preferences`);
