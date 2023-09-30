@@ -19,6 +19,7 @@ import {
   PrivacySettings,
   SingleRecipeScreen,
   UpdateRecipe,
+  UpdateMeal,
 } from '../screens';
 import AppBottomNavigation from './AppBottomNavigation';
 import useFilterStore from '../store/useFilterStore';
@@ -218,6 +219,7 @@ const AppNavigator = () => {
           <Stack.Screen name='Recipe Form' component={RecipesFormScreen} />
           <Stack.Screen name='Update Recipe' component={UpdateRecipe} />
           <Stack.Screen name='Meal Form' component={MealFormScreen} />
+          <Stack.Screen name='Update Meal' component={UpdateMeal} />
           <Stack.Screen
             name='Recipe'
             component={SingleRecipeScreen}

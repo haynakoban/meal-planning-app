@@ -85,7 +85,7 @@ const ProfileMeals = ({ user_id, isEditable }) => {
                           gap: 5,
                         }}
                         onPress={() =>
-                          navigation.navigate('Update Recipe', {
+                          navigation.navigate('Update Meal', {
                             id: item?._id,
                           })
                         }

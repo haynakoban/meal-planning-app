@@ -20,6 +20,7 @@ import ChangePassword from './profile/ChangePassword';
 import PrivacySettings from './profile/PrivacySettings';
 import LoadingScreen from './loading/LoadingScreen';
 import UpdateRecipe from './recipes/UpdateRecipe';
+import UpdateMeal from './planner/UpdateMeal';
 
 export {
   FavoritesScreen,
@@ -44,4 +45,5 @@ export {
   PrivacySettings,
   SingleRecipeScreen,
   UpdateRecipe,
+  UpdateMeal,
 };

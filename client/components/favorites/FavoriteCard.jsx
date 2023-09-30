@@ -61,7 +61,7 @@ const FavoriteCard = ({
       onPress={() => navigation.navigate('Recipe', { id })}
       style={card}
     >
-      <Card>
+      <Card mode='none'>
         <Card.Cover
           source={
             image
