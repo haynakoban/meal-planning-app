@@ -34,7 +34,9 @@ const SideDrawerBar = ({ routes, content }) => {
   };
 
   const active = ({ pathname, route }) => {
-    return pathname === route?.path ? true : false;
+    return route.name === 'Home'
+      ? pathname === '/'
+      : pathname.includes(route.path);
   };
 
   // Handle page title parsing.

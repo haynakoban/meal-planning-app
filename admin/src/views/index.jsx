@@ -7,7 +7,10 @@ import Meals from './meals';
 import MealTypes from './mealtypes';
 import Preferences from './preferences';
 import Recipes from './recipes';
-import Users from './users';
+
+import UsersOutlet from './users';
+import Users from './users/Users';
+import UsersUpdate from './users/UsersUpdate';
 
 export {
   PageNotFound,
@@ -20,4 +23,6 @@ export {
   Preferences,
   Recipes,
   Users,
+  UsersOutlet,
+  UsersUpdate,
 };

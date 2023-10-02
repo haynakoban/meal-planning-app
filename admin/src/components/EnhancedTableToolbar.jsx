@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,10 +9,58 @@ import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from '../lib/axiosConfig';
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected, data, type, rows, setRows, setSelected } = props;
+  const navigate = useNavigate();
+
+  const tableTitle = (type) => {
+    switch (type) {
+      case 'users':
+        return 'Users';
+      case 'recipes':
+        return 'Recipes';
+      case 'meals':
+        return 'Meals';
+      case 'meals/types':
+        return 'Meal Types';
+      case 'cuisines':
+        return 'Cuisines';
+      case 'preferences':
+        return 'Preferences';
+      case 'allergies':
+        return 'Allergies';
+      case 'ingredients':
+        return 'Ingredients';
+      default:
+        return 'Home';
+    }
+  };
+
+  const nagivationPrefix = (type) => {
+    switch (type) {
+      case 'users':
+        return '/users';
+      case 'recipes':
+        return '/recipes';
+      case 'meals':
+        return '/meals';
+      case 'meals/types':
+        return '/mealtypes';
+      case 'cuisines':
+        return '/cuisines';
+      case 'preferences':
+        return '/preferences';
+      case 'allergies':
+        return '/allergies';
+      case 'ingredients':
+        return '/ingredients';
+      default:
+        return '/';
+    }
+  };
 
   const destroy = async () => {
     try {
@@ -58,18 +107,29 @@ const EnhancedTableToolbar = (props) => {
           id='tableTitle'
           component='div'
         >
-          Cuisines
+          {tableTitle(type)}
         </Typography>
       )}
 
       {numSelected > 0 ? (
         <React.Fragment>
           {numSelected === 1 && (
-            <Tooltip title='Edit'>
-              <IconButton onClick={() => console.log(data)}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+            <React.Fragment>
+              <Tooltip title='View'>
+                <IconButton onClick={() => console.log('visit')}>
+                  <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='Edit'>
+                <IconButton
+                  onClick={() =>
+                    navigate(`${nagivationPrefix(type)}/${data[0]}`)
+                  }
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            </React.Fragment>
           )}
           <Tooltip title='Delete'>
             <IconButton onClick={() => destroy()}>

@@ -12,6 +12,8 @@ import {
   Preferences,
   Recipes,
   Users,
+  UsersOutlet,
+  UsersUpdate,
 } from '../views';
 
 const AppRoutes = () => {
@@ -25,7 +27,12 @@ const AppRoutes = () => {
       <Route path='mealtypes' element={<MealTypes />} />
       <Route path='preferences' element={<Preferences />} />
       <Route path='recipes' element={<Recipes />} />
-      <Route path='users' element={<Users />} />
+
+      <Route path='users' element={<UsersOutlet />}>
+        <Route index element={<Users />} />
+        <Route path=':id' element={<UsersUpdate />} />
+      </Route>
+
       <Route path='*' element={<PageNotFound />} />
     </Routes>
   );
