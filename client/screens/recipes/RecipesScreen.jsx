@@ -5,6 +5,7 @@ import { useRoute } from '@react-navigation/native';
 import { SIZES } from '../../constants';
 import useMealTypeStore from '../../store/useMealTypeStore';
 import FavoriteCard from '../../components/favorites/FavoriteCard';
+import useRecipeStore from '../../store/useRecipeStore';
 
 const RecipesScreen = () => {
   const route = useRoute();
@@ -12,8 +13,10 @@ const RecipesScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const isFetching = useRef(false);
+  const { homeRecipes } = useRecipeStore();
 
-  const { mealTypesData, fetchMealTypes } = useMealTypeStore();
+  const { mealTypesData, fetchMealTypes, clearMealTypeData } =
+    useMealTypeStore();
 
   useEffect(() => {
     fetchData();
@@ -28,8 +31,12 @@ const RecipesScreen = () => {
     setIsLoading(true);
 
     try {
-      fetchMealTypes(title, page);
-      setPage(page + 1);
+      if (title != 'Recommended Recipes') {
+        fetchMealTypes(title, page);
+        setPage(page + 1);
+      } else {
+        clearMealTypeData();
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -54,18 +61,19 @@ const RecipesScreen = () => {
     <FlatList
       showsVerticalScrollIndicator={false}
       style={{ paddingHorizontal: 4, elevation: 5, paddingTop: SIZES.md }}
-      data={mealTypesData}
+      data={mealTypesData.length > 0 ? mealTypesData : homeRecipes[0]?.data}
       renderItem={({ item }) => {
         return (
-          <FavoriteCard
-            name={item?.recipes?.name}
-            username={item?.recipes?.user_id?.username || 'anon'}
-            reviews={item?.reviews || 0}
-            ratings={item?.ratings || 0}
-            image={item?.recipes?.image}
-            id={item?.recipes?._id}
-            key={item?._id}
-          />
+          <View key={item?._id} style={{ width: '50%' }}>
+            <FavoriteCard
+              name={item?.recipes?.name}
+              username={item?.recipes?.user_id?.username || 'anon'}
+              reviews={item?.reviews || 0}
+              ratings={item?.ratings || 0}
+              image={item?.recipes?.image}
+              id={item?.recipes?._id}
+            />
+          </View>
         );
       }}
       numColumns={2}

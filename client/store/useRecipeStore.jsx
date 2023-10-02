@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from '../lib/axiosConfig';
+import useFilterStore from './useFilterStore';
 
 const useRecipeStore = create((set) => ({
   open: false,
@@ -8,6 +9,21 @@ const useRecipeStore = create((set) => ({
   lastModified: null,
   homeRecipes: [],
   recipeText: '',
+
+  setFilteredRecipe: async () => {
+    try {
+      set({ homeRecipes: [] });
+      const { filteredData } = useFilterStore.getState();
+      const response = await axios.post(`recipes/filter`, filteredData);
+      const results = response.data.data;
+
+      if (results) {
+        set({ homeRecipes: results, lastModified: new Date() });
+      }
+    } catch (error) {
+      console.error('Data cannot fetch: ', error);
+    }
+  },
 
   searchRecipes: async (text) => {
     try {

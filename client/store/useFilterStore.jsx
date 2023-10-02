@@ -6,7 +6,11 @@ const useFilterStore = create((set) => ({
   lastModified: null,
   filters: [
     {
-      title: 'Meal Types',
+      title: 'Ingredients',
+      data: [],
+    },
+    {
+      title: 'MealTypes',
       data: [],
     },
     {
@@ -18,7 +22,7 @@ const useFilterStore = create((set) => ({
       data: [],
     },
     {
-      title: 'Cooking Times',
+      title: 'CookingTimes',
       data: [],
     },
     {
@@ -27,10 +31,11 @@ const useFilterStore = create((set) => ({
     },
   ],
   filteredData: {
-    'Meal Types': [],
+    Ingredients: [],
+    MealTypes: [],
     Cuisines: [],
     Preferences: [],
-    'Cooking Times': [],
+    CookingTimes: [],
     Allergies: [],
   },
 
@@ -52,7 +57,8 @@ const useFilterStore = create((set) => ({
         filters[1].data.length === 0 &&
         filters[2].data.length === 0 &&
         filters[3].data.length === 0 &&
-        filters[4].data.length === 0
+        filters[4].data.length === 0 &&
+        filters[5].data.length === 0
       ) {
         const mergedFilters = response.data.data;
 
@@ -121,6 +127,19 @@ const useFilterStore = create((set) => ({
       // Handle errors when loading cached data
       console.error('Error loading cached filters:', error);
     }
+  },
+
+  clearFilter: () => {
+    set({
+      filteredData: {
+        Ingredients: [],
+        MealTypes: [],
+        Cuisines: [],
+        Preferences: [],
+        CookingTimes: [],
+        Allergies: [],
+      },
+    });
   },
 }));
 

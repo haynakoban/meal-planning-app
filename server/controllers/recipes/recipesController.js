@@ -606,6 +606,103 @@ const destroy = async (req, res, next) => {
   }
 };
 
+// get the list of recipes
+const filteredRecipes = async (req, res, next) => {
+  try {
+    const filter = req.body;
+
+    let query = [];
+
+    if (filter.Ingredients.length > 0) {
+      query.push({ 'ingredients.ingredients_id': { $in: filter.Ingredients } });
+    }
+
+    if (filter.Allergies.length > 0) {
+      query.push({ 'ingredients.ingredients_id': { $nin: filter.Allergies } });
+    }
+
+    if (filter.CookingTimes.length > 0) {
+      query.push({ cooking_time: { $in: filter.CookingTimes } });
+    }
+
+    if (filter.Cuisines.length > 0) {
+      query.push({ cuisines: { $in: filter.Cuisines } });
+    }
+
+    if (filter.MealTypes.length > 0) {
+      query.push({ meal_types: { $in: filter.MealTypes } });
+    }
+
+    if (filter.Preferences.length > 0) {
+      query.push({ preferences: { $in: filter.Preferences } });
+    }
+
+    let find = Recipes.find();
+    if (query.length > 0) {
+      find = find.and(query);
+    }
+
+    const recipe = await find
+      .populate({ path: 'user_id', select: 'fullname username' })
+      .populate({ path: 'feedbacks', select: 'comment rating foodItemType' })
+      .populate('cooking_time')
+      .populate('ingredients.ingredients_id')
+      .select('-createAt -__v');
+
+    const singleResult = await Promise.all(
+      recipe.map(async (recipe) => {
+        const r = recipe;
+        const feedbacks = recipe.feedbacks || [];
+        const totalFeedbacks = feedbacks.length;
+        const ratingsSum = feedbacks.reduce(
+          (sum, feedback) => sum + (feedback.rating || 0),
+          0
+        );
+
+        if (typeof r.image === 'object') {
+          const imageBuffer = await dbUtility.fetchImageById(r.image);
+
+          const base64Image = imageBuffer.toString('base64');
+          const mimeType = 'image/jpg'; // Change this to match the actual image type
+          const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+          return {
+            recipes: {
+              ...r.toObject(),
+              image: dataURI,
+            },
+            reviews: totalFeedbacks,
+            ratings: ratingsSum / totalFeedbacks,
+          };
+        }
+        return {
+          recipes: r,
+          reviews: totalFeedbacks,
+          ratings: ratingsSum / totalFeedbacks,
+        };
+      })
+    );
+
+    const recommended = singleResult.sort((a, b) => {
+      if (isNaN(a.ratings)) return 1;
+      if (isNaN(b.ratings)) return -1;
+
+      return b.ratings - a.ratings;
+    });
+    res.json({
+      message: `${recommended.length} items retrieved successfully`,
+      status: 'success',
+      data: [{ title: 'Recommended Recipes', data: recommended }],
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
 module.exports = {
   bulkRecipes,
   create,
@@ -617,4 +714,5 @@ module.exports = {
   personalRecipes,
   deleteRecipe,
   updateRecipe,
+  filteredRecipes,
 };

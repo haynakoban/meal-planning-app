@@ -12,22 +12,6 @@ import axios from '../../lib/axiosConfig';
 const FilterProgressSteps = ({ filters }) => {
   const { userInfo, setUserInfo } = useAuthStore();
   const { filteredData, setFilteredData } = useFilterStore();
-  // const fats = [10, 15, 20];
-  // const carbs = [30, 35, 40];
-  // const fibers = [5, 7, 9];
-  // const proteins = [25, 30, 35];
-  // const sugars = [8, 10, 12];
-  // const sodiums = [300, 400, 500];
-
-  // const nutritionObjects = calculateCalorie(
-  //   fats,
-  //   carbs,
-  //   fibers,
-  //   proteins,
-  //   sugars,
-  //   sodiums
-  // );
-  // console.log(`Nutrition Objects:`, nutritionObjects);
 
   const {
     buttonNextStyle,

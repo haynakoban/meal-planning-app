@@ -72,6 +72,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         ) : (
           <SectionList
+            style={{ flex: 1, backgroundColor: 'white' }}
             scrollEnabled={false}
             sections={homeRecipes}
             keyExtractor={(item, index) =>
@@ -93,7 +94,10 @@ const HomeScreen = ({ navigation }) => {
               <View
                 style={[
                   headerContainer,
-                  { marginTop: title === 'new recipes' ? 0 : 30 },
+                  {
+                    marginTop:
+                      title === 'new recipes' || 'Recommended Recipes' ? 0 : 30,
+                  },
                 ]}
               >
                 <Text style={[headerTitleStyle]}>{title}</Text>

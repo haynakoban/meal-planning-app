@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Pressable,
 } from 'react-native';
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,10 +13,12 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, FONT, SIZES } from '../../constants';
 import styles from '../../styles/filterDropDown';
 import useFilterStore from '../../store/useFilterStore';
+import useRecipeStore from '../../store/useRecipeStore';
 
 const FilterDropdown = ({ hideModal }) => {
   const [openSections, setOpenSections] = useState(['Meal Types']);
-  const { filters, filteredData, setFilteredData } = useFilterStore();
+  const { filters, filteredData, setFilteredData, clearFilter } =
+    useFilterStore();
   const {
     buttonContent,
     buttonLabel,
@@ -70,7 +73,7 @@ const FilterDropdown = ({ hideModal }) => {
             fontSize: SIZES.sm - 1,
           }}
           compact={true}
-          onPress={() => setSelectedButtons({})}
+          onPress={() => clearFilter()}
         >
           Clear All
         </Button>
@@ -140,6 +143,12 @@ const FilterDropdown = ({ hideModal }) => {
 export const FilterModal = ({ visible, hideModal }) => {
   const { modalContainer } = styles;
 
+  const { setFilteredRecipe } = useRecipeStore();
+
+  const handleFilter = () => {
+    setFilteredRecipe();
+  };
+
   return (
     <Portal>
       <Modal
@@ -148,6 +157,22 @@ export const FilterModal = ({ visible, hideModal }) => {
         contentContainerStyle={modalContainer}
       >
         <FilterDropdown hideModal={hideModal} />
+        <Pressable
+          style={{ paddingHorizontal: 20, paddingTop: 20 }}
+          onPress={handleFilter}
+        >
+          <Text
+            style={{
+              paddingVertical: 10,
+              textAlign: 'center',
+              backgroundColor: COLORS.accent,
+              fontFamily: FONT.semiBold,
+              borderRadius: 5,
+            }}
+          >
+            Show recipes
+          </Text>
+        </Pressable>
       </Modal>
     </Portal>
   );
