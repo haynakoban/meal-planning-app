@@ -167,10 +167,21 @@ const FilterDropdown = ({ hideModal }) => {
 export const FilterModal = ({ visible, hideModal }) => {
   const { modalContainer } = styles;
 
-  const { setFilteredRecipe } = useRecipeStore();
-
+  const { setFilteredRecipe, fetchRecipesData } = useRecipeStore();
+  const { filteredData } = useFilterStore();
   const handleFilter = () => {
-    setFilteredRecipe();
+    if (
+      filteredData.Allergies.length === 0 &&
+      filteredData.CookingTimes.length === 0 &&
+      filteredData.Cuisines.length === 0 &&
+      filteredData.Ingredients.length === 0 &&
+      filteredData.MealTypes.length === 0 &&
+      filteredData.Preferences.length === 0
+    ) {
+      fetchRecipesData();
+    } else {
+      setFilteredRecipe();
+    }
   };
 
   return (
@@ -183,7 +194,7 @@ export const FilterModal = ({ visible, hideModal }) => {
         <FilterDropdown hideModal={hideModal} />
         <Pressable
           style={{ paddingHorizontal: 20, paddingTop: 20 }}
-          onPress={handleFilter}
+          onPress={() => handleFilter()}
         >
           <Text
             style={{
