@@ -1,9 +1,8 @@
 const {
-  Allergies,
-  CookingTimes,
   Cuisines,
   MealTypes,
   Preferences,
+  Ingredients,
   Users,
 } = require('../../models');
 const bcryptjs = require('bcryptjs');
@@ -250,16 +249,54 @@ const filters = async (req, res, next) => {
       res.status(304).end();
     } else {
       const cuisines = await Cuisines.find().select('_id name');
-      const cookingTimes = await CookingTimes.find().select('_id name time');
+      // const cookingTimes = await CookingTimes.find().select('_id name time');
       const mealtypes = await MealTypes.find().select('_id name');
       const preferences = await Preferences.find().select('_id name');
-      const allergies = await Allergies.find().select('_id name');
+      const allergies = await Ingredients.find().select('_id name');
+      const ingredients = await Ingredients.find().select('_id name');
+
+      const cookingTimes = [
+        {
+          _id: 5,
+          name: 'Very Quick',
+          time: '5 minutes',
+        },
+        {
+          _id: 10,
+          name: 'Quick',
+          time: '10 minutes',
+        },
+        {
+          _id: 20,
+          name: 'Moderate',
+          time: '20 minutes',
+        },
+        {
+          _id: 30,
+          name: 'Average',
+          time: '30 minutes',
+        },
+        {
+          _id: 60,
+          name: 'Lengthy',
+          time: '60 minutes (1 hour)',
+        },
+        {
+          _id: 120,
+          name: 'Long',
+          time: '120 minutes (2 hours)',
+        },
+      ];
 
       resourceLastModified = new Date();
 
       let filtersData = [
         {
-          title: 'Meal Types',
+          title: 'Ingredients',
+          data: ingredients,
+        },
+        {
+          title: 'MealTypes',
           data: mealtypes,
         },
         {
@@ -271,7 +308,7 @@ const filters = async (req, res, next) => {
           data: preferences,
         },
         {
-          title: 'Cooking Times',
+          title: 'CookingTimes',
           data: cookingTimes,
         },
         {

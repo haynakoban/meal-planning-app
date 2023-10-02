@@ -32,5 +32,6 @@ router
 
 // get method - get personal recipes
 router.route('/personal/:id').get(recipesController.personalRecipes);
+router.route('/filter').post(recipesController.filteredRecipes);
 
 module.exports = router;

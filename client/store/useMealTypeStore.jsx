@@ -49,6 +49,7 @@ const useMealTypeStore = create((set) => ({
       value: meal_types,
     }),
   clearMealType: () => set({ value: [], items: [] }),
+  clearMealTypeData: () => set({ mealTypesData: [] }),
 
   listMealTypes: async () => {
     try {

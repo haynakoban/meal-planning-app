@@ -1,7 +1,5 @@
-import { FlatList } from 'react-native';
-
-import { DATA } from '../../constants';
-import { Fragment, useEffect, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { useEffect, useState } from 'react';
 import SelectRecipe from '../../components/planner/SelectRecipe';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import useRecipeStore from '../../store/useRecipeStore';
@@ -49,12 +47,14 @@ const SearchRecipe = () => {
           keyboardShouldPersistTaps='always'
           renderItem={({ item }) => {
             return (
-              <SelectRecipe
-                data={item}
-                id={item._id}
-                addRecipe={addRecipe}
-                removeRecipe={removeRecipe}
-              />
+              <View key={item?._id} style={{ width: '50%' }}>
+                <SelectRecipe
+                  data={item}
+                  id={item._id}
+                  addRecipe={addRecipe}
+                  removeRecipe={removeRecipe}
+                />
+              </View>
             );
           }}
           numColumns={2}

@@ -54,14 +54,16 @@ const SearchScreen = () => {
                 }
 
                 return (
-                  <FavoriteCard
-                    name={item?.name}
-                    username={item?.user_id?.username || 'anon'}
-                    reviews={item?.feedbacks.length || 0}
-                    ratings={calculated / item?.feedbacks.length || 0}
-                    image={item?.image}
-                    id={item?._id}
-                  />
+                  <View key={item?._id} style={{ width: '50%' }}>
+                    <FavoriteCard
+                      name={item?.name}
+                      username={item?.user_id?.username || 'anon'}
+                      reviews={item?.feedbacks.length || 0}
+                      ratings={calculated / item?.feedbacks.length || 0}
+                      image={item?.image}
+                      id={item?._id}
+                    />
+                  </View>
                 );
               }}
               numColumns={2}
