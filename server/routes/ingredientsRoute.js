@@ -30,6 +30,9 @@ router
 router.route('/list').get(ingredientsController.paginatedList);
 
 // get method - get single ingredient
-router.route('/:id').get(ingredientsController.show);
+router
+  .route('/:id')
+  .get(ingredientsController.show)
+  .put(ingredientsController.update);
 
 module.exports = router;

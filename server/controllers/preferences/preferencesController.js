@@ -68,8 +68,82 @@ const destroy = async (req, res, next) => {
   }
 };
 
+const show = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the preference by its unique ID
+    const preference = await Preferences.findOne({ _id: id });
+
+    if (!preference) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the preference data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: preference,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+const update = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    if (!['name', 'description'].includes(property)) {
+      return res.status(400).json({
+        message: 'Invalid property provided',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const updateQuery = {};
+    updateQuery[property] = req.body[property];
+
+    const updatedItem = await Preferences.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
+
+    if (!updatedItem) {
+      return res.status(404).json({
+        message: 'Preference not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Preference updated successfully',
+      status: 'success',
+      data: updatedItem,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkPreferences,
   list,
   destroy,
+  show,
+  update,
 };

@@ -27,6 +27,9 @@ router
 router.route('/list').get(cuisinesController.paginatedList);
 
 // get method - get single cuisine
-router.route('/:id').get(cuisinesController.show);
+router
+  .route('/:id')
+  .get(cuisinesController.show)
+  .put(cuisinesController.update);
 
 module.exports = router;

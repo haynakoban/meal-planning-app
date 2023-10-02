@@ -656,6 +656,78 @@ const updateMeal = async (req, res, next) => {
   }
 };
 
+const showMT = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the mealtype by its unique ID
+    const mealtype = await MealTypes.findOne({ _id: id });
+
+    if (!mealtype) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the mealtype data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: mealtype,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+const updateMT = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    if (!['name', 'description'].includes(property)) {
+      return res.status(400).json({
+        message: 'Invalid property provided',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const updateQuery = {};
+    updateQuery[property] = req.body[property];
+
+    const updatedItem = await MealTypes.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
+
+    if (!updatedItem) {
+      return res.status(404).json({
+        message: 'Mealtype not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Mealtype updated successfully',
+      status: 'success',
+      data: updatedItem,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkMealTypes,
   bulkMeals,
@@ -671,4 +743,6 @@ module.exports = {
   listByDay,
   deleteMeal,
   updateMeal,
+  showMT,
+  updateMT,
 };

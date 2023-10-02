@@ -18,4 +18,9 @@ router
     allergiesController.bulkAllergies
   );
 
+router
+  .route('/:id')
+  .get(allergiesController.show)
+  .put(allergiesController.update);
+
 module.exports = router;

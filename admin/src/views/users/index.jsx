@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 
-const Users = () => {
+const UsersOutlet = () => {
   return <Outlet />;
 };
-export default Users;
+export default UsersOutlet;

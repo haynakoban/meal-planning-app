@@ -68,8 +68,83 @@ const destroy = async (req, res, next) => {
   }
 };
 
+// get single allergy
+const show = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Query the database to find the allergy by its unique ID
+    const allergy = await Allergies.findOne({ _id: id });
+
+    if (!allergy) {
+      return res.status(404).json({
+        message: 'Item not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    // Return the allergy data
+    res.json({
+      message: 'Item retrieved successfully',
+      status: 'success',
+      data: allergy,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: [],
+    });
+  }
+};
+
+const update = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    if (!['name', 'description'].includes(property)) {
+      return res.status(400).json({
+        message: 'Invalid property provided',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const updateQuery = {};
+    updateQuery[property] = req.body[property];
+
+    const updatedItem = await Allergies.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
+
+    if (!updatedItem) {
+      return res.status(404).json({
+        message: 'Allergy not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Allergy updated successfully',
+      status: 'success',
+      data: updatedItem,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkAllergies,
   list,
   destroy,
+  show,
+  update,
 };

@@ -39,6 +39,11 @@ router
     mealsController.bulkMealTypes
   );
 
+router
+  .route('/types/:id')
+  .get(mealsController.showMT)
+  .put(mealsController.updateMT);
+
 // get method - get single meal
 router
   .route('/:id')

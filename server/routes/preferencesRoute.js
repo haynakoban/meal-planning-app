@@ -18,4 +18,9 @@ router
     preferencesController.bulkPreferences
   );
 
+router
+  .route('/:id')
+  .get(preferencesController.show)
+  .put(preferencesController.update);
+
 module.exports = router;

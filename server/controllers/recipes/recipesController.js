@@ -703,6 +703,48 @@ const filteredRecipes = async (req, res, next) => {
   }
 };
 
+const update = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { property } = req.body;
+
+    if (!['name', 'description'].includes(property)) {
+      return res.status(400).json({
+        message: 'Invalid property provided',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const updateQuery = {};
+    updateQuery[property] = req.body[property];
+
+    const updatedItem = await Recipes.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
+
+    if (!updatedItem) {
+      return res.status(404).json({
+        message: 'Recipe not found',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Recipe updated successfully',
+      status: 'success',
+      data: updatedItem,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkRecipes,
   create,
@@ -711,6 +753,7 @@ module.exports = {
   paginatedList,
   paginatedListMealTypes,
   show,
+  update,
   personalRecipes,
   deleteRecipe,
   updateRecipe,
