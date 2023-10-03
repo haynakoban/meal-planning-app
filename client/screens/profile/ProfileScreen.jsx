@@ -34,8 +34,8 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     clearRecipe();
-    presonalRecipes(userInfo?._id);
     fetchPersonalMeals(userInfo?._id);
+    presonalRecipes(userInfo?._id);
   }, []);
 
   const {
@@ -261,7 +261,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                {personalMeals?.length || 0}
+                {personalMeals?.length || '...'}
               </Text>
               <Text
                 style={[
@@ -307,7 +307,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                {recipes?.length || 0}
+                {recipes?.length || '...'}
               </Text>
               <Text
                 style={[
@@ -353,7 +353,13 @@ const ProfileScreen = () => {
                   setIsMealEditable(!isMealEditable);
                 }}
               >
-                <Text style={{ fontFamily: FONT.medium }}>
+                <Text
+                  style={{
+                    fontFamily: FONT.medium,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
                   {/* {isMealEditable ? 'Unedit Meal' : 'Edit Meal'} */}
                   Edit Meals
                 </Text>
@@ -384,7 +390,13 @@ const ProfileScreen = () => {
                   setIsRecipeEditable(!isRecipeEditable);
                 }}
               >
-                <Text style={{ fontFamily: FONT.medium }}>
+                <Text
+                  style={{
+                    fontFamily: FONT.medium,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
                   {/* {isRecipeEditable ? 'Unedit Recipe' : 'Edit Recipe'} */}
                   Edit Recipes
                 </Text>

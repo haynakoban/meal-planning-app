@@ -6,26 +6,6 @@ const user_id = {
   required: true,
 };
 
-const privacySchema = {
-  type: String,
-  required: true,
-  enum: ['public', 'followers', 'private'],
-};
-
-const daySchema = {
-  type: String,
-  required: true,
-  enum: [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
-  ],
-};
-
 const timeSchema = {
   type: String,
   required: true,
@@ -42,7 +22,6 @@ const image = {
 const mealsSchema = new mongoose.Schema({
   user_id,
   image,
-  privacy: privacySchema,
   name: { type: String, required: true },
   description: { type: String, required: false, default: null },
   recipes: [
@@ -52,7 +31,8 @@ const mealsSchema = new mongoose.Schema({
       required: true,
     },
   ],
-  day: daySchema,
+  startDate: { type: String, required: true },
+  endDate: { type: String, required: true },
   time: timeSchema,
   createdAt: { type: Date, default: () => Date.now(), immutable: true },
   updatedAt: { type: Date, default: () => Date.now() },

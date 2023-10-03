@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import PlansCard from '../../components/planner/PlansCard';
 
-import { COLORS, SIZES, useWeeks } from '../../constants';
+import { COLORS, FONT, SIZES, useWeeks } from '../../constants';
 import styles from '../../styles/planner';
 import LoadingScreen from '../loading/LoadingScreen';
 import useAuthStore from '../../store/useAuthStore';
@@ -21,27 +21,16 @@ const screenWidth = Dimensions.get('window').width - 16;
 
 const PlannerScreen = ({ route }) => {
   const userInfo = useAuthStore((state) => state.userInfo);
-  const daysOfWeek = [
-    'sunday',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-  ];
-  const today = new Date();
-  const dayName = daysOfWeek[today.getDay() || 'sunday'];
 
-  const [currentDay, setCurrentDay] = useState(dayName);
+  const [currentDay, setCurrentDay] = useState('breakfast');
   const [loading, setLoading] = useState(true);
   const { mealsWithDays, fetchMealsDays } = useMealPlanRecipe();
 
   useFocusEffect(
     useCallback(() => {
-      const dayFromRoute = route.params?.day || dayName;
+      const dayFromRoute = route.params?.time || 'breakfast';
       setCurrentDay(dayFromRoute);
-    }, [route.params?.day])
+    }, [route.params?.time])
   );
 
   useEffect(() => {
@@ -87,12 +76,26 @@ const PlannerScreen = ({ route }) => {
                 <View style={styles.plannerWrapper}>
                   {mealsWithDays.map((meal) => (
                     <View key={meal?._id} style={styles.cardWrapper}>
-                      <PlansCard
-                        name={meal?.name}
-                        image={meal?.image}
-                        type={meal?.time}
-                        id={meal?._id}
-                      />
+                      {new Date(meal?.endDate) < new Date() ? (
+                        <PlansCard
+                          name={meal?.name}
+                          image={meal?.image}
+                          type={meal?.time}
+                          startDate={meal?.startDate}
+                          endDate={meal?.endDate}
+                          expired={true}
+                          id={meal?._id}
+                        />
+                      ) : (
+                        <PlansCard
+                          name={meal?.name}
+                          image={meal?.image}
+                          type={meal?.time}
+                          startDate={meal?.startDate}
+                          endDate={meal?.endDate}
+                          id={meal?._id}
+                        />
+                      )}
                     </View>
                   ))}
                 </View>
@@ -120,12 +123,12 @@ const DayButton = ({ item, value, state }) => {
         styles.dayButton,
         {
           backgroundColor: item.day === value ? '#B2D3F9' : 'transparent',
-          width: screenWidth / 7,
+          width: screenWidth / 4,
         },
       ]}
       onPress={() => state(item.day)}
     >
-      <Text style={styles.dayText}>{item.day?.slice(0, 3).toUpperCase()}</Text>
+      <Text style={styles.dayText}>{item.day?.toUpperCase()}</Text>
       <Ionicons name={item.icon} size={SIZES.lg} color={COLORS.black} />
     </TouchableOpacity>
   );

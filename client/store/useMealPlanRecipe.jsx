@@ -11,11 +11,11 @@ const useMealPlanRecipe = create((set) => ({
   recipeMeal: '',
   mealRecipes: [],
 
-  fetchMealsDays: async (day, user_id) => {
+  fetchMealsDays: async (time, user_id) => {
     try {
       set({ mealsWithDays: [] });
       const response = await axios.get(
-        `meals/list/day?day=${day}&&user_id=${user_id}`
+        `meals/list/time?time=${time}&&user_id=${user_id}`
       );
 
       if (response && response.data?.status === 'success') {
@@ -70,16 +70,11 @@ const useMealPlanRecipe = create((set) => ({
     }));
   },
 
-  updateMealPlan: (meal, id) => {
-    const { mealsWithDays } = useMealPlanRecipe.getState();
-    const data = mealsWithDays?.map((item) => {
-      if (item._id == id) {
-        return meal;
-      }
-    });
+  updateMealPlan: (meal) => {
+    set({ mealsWithDays: [] });
 
     set((state) => ({
-      mealsWithDays: data,
+      mealsWithDays: meal,
     }));
   },
 
@@ -145,7 +140,7 @@ const useMealPlanRecipe = create((set) => ({
 
   setMealRecipes: async (id) => {
     try {
-      set({ mealRecipes: [] });
+      set({ recipesObj: [] });
 
       let num = id?.length;
       let ids = '';
@@ -196,6 +191,11 @@ const useMealPlanRecipe = create((set) => ({
   clearMeal: () =>
     set((state) => ({
       recipesObj: [],
+    })),
+
+  clearMealWithDay: () =>
+    set((state) => ({
+      mealsWithDays: [],
     })),
 }));
 

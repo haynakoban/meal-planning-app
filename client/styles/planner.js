@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   },
   mealPlanScrollView: { flexGrow: 1, paddingVertical: 8 },
   dayButton: {
+    aspectRatio: 1 / 1,
     paddingVertical: 16,
     borderRadius: 999,
     justifyContent: 'center',

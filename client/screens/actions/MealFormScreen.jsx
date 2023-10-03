@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -20,11 +19,53 @@ import useAuthStore from '../../store/useAuthStore';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import MealButton from '../planner/MealButton';
 
-import { COLORS, SIZES, privacyData, FONT } from '../../constants';
+import { COLORS, SIZES, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import axios from '../../lib/axiosConfig';
+import { Calendar } from 'react-native-calendars';
 
 const MealFormScreen = () => {
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+
+  const handleDatePress = (date) => {
+    if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+      setSelectedStartDate(date);
+      setSelectedEndDate(null);
+    } else {
+      if (date > selectedStartDate) {
+        setSelectedEndDate(date);
+      } else {
+        setSelectedEndDate(selectedStartDate);
+        setSelectedStartDate(date);
+      }
+    }
+  };
+
+  const markedDates = {};
+  if (selectedStartDate) {
+    markedDates[selectedStartDate] = {
+      selected: true,
+      startingDay: true,
+      color: COLORS.accent,
+    };
+  }
+  if (selectedEndDate) {
+    markedDates[selectedEndDate] = {
+      selected: true,
+      endingDay: true,
+      color: COLORS.accent,
+    };
+
+    let startDate = new Date(selectedStartDate);
+    let endDate = new Date(selectedEndDate);
+    while (startDate <= endDate) {
+      const currentDate = startDate.toISOString().split('T')[0];
+      markedDates[currentDate] = { selected: true, color: COLORS.accent };
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  }
+
   const { multipleRecipes, recipesObj } = useMealPlanRecipe();
 
   const userInfo = useAuthStore((state) => state.userInfo);
@@ -37,38 +78,6 @@ const MealFormScreen = () => {
   }, []);
 
   const [permission, setPermission] = useState(false);
-  const [openDay, setOpenDay] = useState(false);
-  const [day, setDay] = useState(null);
-  const [data, setData] = useState([
-    {
-      label: 'Monday',
-      value: 'monday',
-    },
-    {
-      label: 'Tuesday',
-      value: 'tuesday',
-    },
-    {
-      label: 'Wednesday',
-      value: 'wednesday',
-    },
-    {
-      label: 'Thursday',
-      value: 'thursday',
-    },
-    {
-      label: 'Friday',
-      value: 'friday',
-    },
-    {
-      label: 'Saturday',
-      value: 'saturday',
-    },
-    {
-      label: 'Sunday',
-      value: 'sunday',
-    },
-  ]);
 
   const [openTime, setOpenTime] = useState(false);
   const [time, setTime] = useState(null);
@@ -94,10 +103,9 @@ const MealFormScreen = () => {
   const [err, setErr] = useState({
     name: false,
     description: false,
-    privacy: false,
-    day: false,
     data: false,
     time: false,
+    date: false,
   });
 
   useEffect(() => {
@@ -107,23 +115,22 @@ const MealFormScreen = () => {
   }, [recipesArray]);
 
   useEffect(() => {
-    if (err.day === true) {
-      setErr({ ...err, day: false });
-    }
-  }, [day]);
-
-  useEffect(() => {
     if (err.time === true) {
       setErr({ ...err, time: false });
     }
   }, [time]);
+
+  useEffect(() => {
+    if (err.time === true) {
+      setErr({ ...err, date: false });
+    }
+  }, [selectedEndDate, selectedStartDate]);
 
   const navigation = useNavigation();
   const [form, setForm] = useState({
     name: '',
     description: '',
     image: null,
-    privacy: 'public',
   });
 
   // ask for storage permission
@@ -172,16 +179,17 @@ const MealFormScreen = () => {
       const isNameValid = form.name !== null && form.name !== '';
       const isDescriptionValid =
         form.description !== null && form.description !== '';
-      const isDayValid = day !== null && day !== 0;
       const isDataValid = recipesArray.length !== 0;
-      const isTimeValid = time !== null && day !== 0;
+      const isTimeValid = time !== null && time !== 0;
+      const isDateValid =
+        selectedStartDate !== null && selectedEndDate !== null;
 
       const err = {
         name: !isNameValid,
         description: !isDescriptionValid,
-        day: !isDayValid,
         data: !isDataValid,
         time: !isTimeValid,
+        date: !isDateValid,
       };
 
       if (Object.values(err).some((value) => value)) {
@@ -194,10 +202,10 @@ const MealFormScreen = () => {
       fd.append('user_id', userInfo?._id);
       fd.append('name', form.name);
       fd.append('description', form.description);
-      fd.append('privacy', form.privacy);
-      fd.append('day', day);
       fd.append('time', time);
       fd.append('recipes', JSON.stringify(recipesArray));
+      fd.append('startDate', selectedStartDate);
+      fd.append('endDate', selectedEndDate);
 
       fd.append('image', {
         name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
@@ -227,7 +235,10 @@ const MealFormScreen = () => {
   DropDownPicker.setListMode('MODAL');
 
   return (
-    <ScrollView keyboardShouldPersistTaps='always'>
+    <ScrollView
+      keyboardShouldPersistTaps='always'
+      style={{ backgroundColor: 'white' }}
+    >
       <View style={styles.container}>
         <Text style={styles.highlights}>Name & Photo</Text>
         {form.image != null ? (
@@ -319,33 +330,32 @@ const MealFormScreen = () => {
         <Text style={[styles.highlights, styles.mtlg]}>
           Daily Plan Information
         </Text>
-        <Text style={styles.labels}>Select Plan Meal Day</Text>
-        <View style={[styles.select, styles.mb]}>
-          <DropDownPicker
-            placeholderStyle={styles.ddPlaceholder}
-            style={styles.dd}
-            placeholder='Select day of the week'
-            open={openDay}
-            value={day}
-            items={data}
-            setOpen={setOpenDay}
-            setValue={setDay}
-            setItems={setData}
-            showBadgeDot={false}
+
+        <Text style={styles.labels}>Meal Plan Duration</Text>
+        <View style={{ marginBottom: 10 }}>
+          <Calendar
+            style={[
+              styles.borderWidth,
+              { borderRadius: 15, padding: 10, marginBottom: 10 },
+            ]}
+            onDayPress={(day) => handleDatePress(day.dateString)}
+            markedDates={markedDates}
+            enableSwipeMonths={true}
+            allowSelectionOutOfRange={true}
           />
+          {err.date && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Please select meal plan duration.
+            </Text>
+          )}
         </View>
-        {err.day && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
-            }}
-          >
-            Please select day of plan.
-          </Text>
-        )}
 
         <Text style={styles.labels}>Select Plan Meal Time</Text>
         <View style={styles.select}>
@@ -485,37 +495,6 @@ const MealFormScreen = () => {
               )}
             </View>
           </View>
-        </View>
-
-        <Text style={[styles.highlights, styles.mtxl]}>Meal Plan Privacy</Text>
-
-        <View>
-          {privacyData.map((_, i) => {
-            const { privacy, title, description } = _;
-            return (
-              <Pressable
-                key={i}
-                style={[
-                  styles.privacyStyle,
-                  ,
-                  form.privacy === privacy
-                    ? { backgroundColor: COLORS.primary }
-                    : '',
-                ]}
-                onPress={() => setForm({ ...form, privacy: privacy })}
-              >
-                <RadioButton
-                  value={privacy}
-                  status={form.privacy === privacy ? 'checked' : 'unchecked'}
-                  onPress={() => setForm({ ...form, privacy: privacy })}
-                />
-                <View>
-                  <Text style={styles.fffs}>{title}</Text>
-                  <Text style={styles.privactDescription}>{description}</Text>
-                </View>
-              </Pressable>
-            );
-          })}
         </View>
 
         <Pressable

@@ -1,9 +1,20 @@
 import { Text, Pressable, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../../styles/planner';
+import { COLORS, formatDate } from '../../constants';
 
-const PlansCard = ({ name, image, type = 'breakfast', id }) => {
+const PlansCard = ({
+  name,
+  image,
+  type = 'breakfast',
+  startDate = null,
+  endDate = null,
+  expired = false,
+  id,
+}) => {
   const navigation = useNavigation();
+  const selectedDate = formatDate(startDate, endDate);
+
   return (
     <Pressable
       onPress={() => navigation.navigate('Meal', { id })}
@@ -18,7 +29,6 @@ const PlansCard = ({ name, image, type = 'breakfast', id }) => {
           }
           style={styles.mealImage}
         />
-
         <View style={styles.mealContent}>
           <Text
             variant='titleLarge'
@@ -31,6 +41,20 @@ const PlansCard = ({ name, image, type = 'breakfast', id }) => {
           <Text variant='bodyMedium' style={styles.mealTypes}>
             {type}
           </Text>
+          {startDate != null && endDate != null && (
+            <Text variant='bodyMedium' style={styles.mealTypes}>
+              {selectedDate.start} - {selectedDate.end}
+            </Text>
+          )}
+
+          {expired && (
+            <Text
+              variant='bodyMedium'
+              style={[styles.mealTypes, { color: COLORS.danger }]}
+            >
+              Meal Plan Ended
+            </Text>
+          )}
         </View>
       </View>
     </Pressable>

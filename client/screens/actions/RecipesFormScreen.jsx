@@ -246,7 +246,10 @@ const RecipesFormScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps='always'>
+    <ScrollView
+      keyboardShouldPersistTaps='always'
+      style={{ backgroundColor: 'white' }}
+    >
       <View style={styles.container}>
         <Text style={styles.highlights}>Name & Photo</Text>
         {form.image != null ? (
@@ -553,13 +556,7 @@ const RecipesFormScreen = ({ navigation }) => {
             return (
               <Pressable
                 key={i}
-                style={[
-                  styles.privacyStyle,
-                  ,
-                  form.privacy === privacy
-                    ? { backgroundColor: COLORS.primary }
-                    : '',
-                ]}
+                style={styles.privacyStyle}
                 onPress={() => setForm({ ...form, privacy: privacy })}
               >
                 <RadioButton
