@@ -117,15 +117,17 @@ const FavoritesScreen = ({ navigation }) => {
               data={favorites}
               renderItem={({ item }) => {
                 return (
-                  <FavoriteCard
-                    name={item?.recipes?.name}
-                    username={item?.recipes?.user_id?.username || 'anon'}
-                    reviews={item?.reviews || 0}
-                    ratings={item?.ratings || 0}
-                    image={item?.recipes?.image}
-                    id={item?.recipes?._id}
-                    key={item?._id}
-                  />
+                  <View key={item?._id} style={{ width: '50%' }}>
+                    <FavoriteCard
+                      name={item?.recipes?.name}
+                      username={item?.recipes?.user_id?.username || 'anon'}
+                      reviews={item?.reviews || 0}
+                      ratings={item?.ratings || 0}
+                      image={item?.recipes?.image}
+                      id={item?.recipes?._id}
+                      key={item?._id}
+                    />
+                  </View>
                 );
               }}
               numColumns={2}

@@ -51,27 +51,6 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
         {isLoading ? (
           <LoadingScreen />
         ) : (
-          // <FlatList
-          //   showsVerticalScrollIndicator={false}
-          //   style={{ padding: 8 }}
-          //   data={recipes}
-          //   keyboardShouldPersistTaps='always'
-          //   renderItem={({ item }) => {
-          //     return (
-          //       <FavoriteCard
-          //         name={item?.recipes.name}
-          //         username={item?.recipes.user_id?.username || 'anon'}
-          //         reviews={item?.reviews || 0}
-          //         ratings={item?.ratings || 0}
-          //         image={item?.recipes.image}
-          //         id={item?.recipes._id}
-          //       />
-          //     );
-          //   }}
-          //   numColumns={2}
-          //   keyExtractor={(item) => item._id}
-          // />
-
           <>
             {recipes.map((item, index) => {
               return (

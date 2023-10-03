@@ -1,30 +1,18 @@
 export const useWeeks = [
   {
-    day: 'sunday',
+    day: 'breakfast',
     icon: 'ios-cafe-outline',
   },
   {
-    day: 'monday',
-    icon: 'ios-restaurant-outline',
-  },
-  {
-    day: 'tuesday',
+    day: 'snacks',
     icon: 'ios-pizza-outline',
   },
   {
-    day: 'wednesday',
-    icon: 'ios-book-outline',
-  },
-  {
-    day: 'thursday',
-    icon: 'ios-ice-cream-outline',
-  },
-  {
-    day: 'friday',
+    day: 'lunch',
     icon: 'ios-fast-food-outline',
   },
   {
-    day: 'saturday',
-    icon: 'ios-fitness-outline',
+    day: 'dinner',
+    icon: 'ios-restaurant-outline',
   },
 ];

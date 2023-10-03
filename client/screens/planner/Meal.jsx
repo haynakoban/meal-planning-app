@@ -1,17 +1,28 @@
 import { Image, ScrollView, View, Text, Pressable } from 'react-native';
 import styles from '../../styles/recipe';
 import FavoriteCard from '../../components/favorites/FavoriteCard';
-import useAuthStore from '../../store/useAuthStore';
 import LoadingScreen from '../loading/LoadingScreen';
 import { useState, useEffect } from 'react';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import NotFound from '../../assets/images/image-not-found.jpg';
-import { FONT } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
+import { Calendar } from 'react-native-calendars';
 
 const Meal = ({ route }) => {
-  // const id = route.params.id;
+  const [minDate, setMinDate] = useState(null); // Example minimum date
+  const [maxDate, setMaxDate] = useState(null); // Example maximum date
+  const markedDates = {};
+
+  let currentDate = new Date(minDate);
+  const endDate = new Date(maxDate);
+
+  while (currentDate <= endDate) {
+    const dateString = currentDate.toISOString().split('T')[0];
+    markedDates[dateString] = { selected: true, color: COLORS.accent };
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
   const [isLoading, setIsLoading] = useState(false);
-  const userInfo = useAuthStore((state) => state.userInfo);
   const { meal, fetchSingleMeal, mealRecipes, getMealRecipes } =
     useMealPlanRecipe();
 
@@ -26,6 +37,9 @@ const Meal = ({ route }) => {
     meal?.recipes?.map((recipe) => {
       ids.push(recipe?._id);
     });
+
+    setMinDate(meal?.startDate);
+    setMaxDate(meal?.endDate);
 
     getMealRecipes(ids);
   }, [meal]);
@@ -60,10 +74,7 @@ const Meal = ({ route }) => {
             <Text style={[textBold, { textTransform: 'capitalize' }]}>
               {meal?.name}
             </Text>
-            <Text style={label}>
-              Meal plan by:{' '}
-              <Text style={[label, { fontFamily: FONT.semiBold }]}>You</Text>
-            </Text>
+            <Text style={label}>{meal?.description}</Text>
           </View>
           <View style={divider}></View>
           <View style={bigDivider}></View>
@@ -90,10 +101,14 @@ const Meal = ({ route }) => {
           <View style={bigDivider}></View>
           <View style={wrapper}>
             <Text style={[textMedium, { textTransform: 'capitalize' }]}>
-              {meal?.day} ({meal?.time}) Meal Plan
+              Meal Plan ({meal?.time})
             </Text>
           </View>
-          <View style={divider}></View>
+          <View style={{ paddingHorizontal: 10, marginBottom: -15 }}>
+            <Text style={[text, { paddingHorizontal: 15, fontSize: SIZES.md }]}>
+              Meal Plan Recipes
+            </Text>
+          </View>
           <View style={[wrapper, { flexDirection: 'row', flexWrap: 'wrap' }]}>
             {mealRecipes?.map((item) => {
               let calculated = 0;
@@ -115,13 +130,29 @@ const Meal = ({ route }) => {
               );
             })}
           </View>
-          <View style={bigDivider}></View>
-          <View style={wrapper}>
-            <Text style={textMedium}>Description</Text>
-          </View>
-          <View style={divider}></View>
-          <View style={wrapper}>
-            <Text style={text}>{meal?.description}</Text>
+
+          <View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
+            <Text
+              style={[
+                text,
+                { paddingHorizontal: 15, fontSize: SIZES.md, marginBottom: 5 },
+              ]}
+            >
+              Meal Plan Duration
+            </Text>
+            <Calendar
+              style={[
+                styles.borderWidth,
+                {
+                  borderRadius: 15,
+                  padding: 10,
+                  marginHorizontal: 15,
+                  marginBottom: 10,
+                  elevation: 5,
+                },
+              ]}
+              markedDates={markedDates}
+            />
           </View>
         </View>
       ) : (

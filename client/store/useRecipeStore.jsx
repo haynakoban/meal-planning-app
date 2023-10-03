@@ -62,6 +62,7 @@ const useRecipeStore = create((set) => ({
 
   presonalRecipes: async (user_id) => {
     try {
+      set({ recipes: [] });
       const response = await axios.get(`recipes/personal/${user_id}`);
 
       if (response && response.data && response.data) {
@@ -69,7 +70,7 @@ const useRecipeStore = create((set) => ({
 
         if (Array.isArray(newData) && newData.length > 0) {
           set((state) => ({
-            recipes: [...state.recipes, ...newData],
+            recipes: newData,
           }));
         }
       }

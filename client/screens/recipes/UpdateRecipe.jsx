@@ -30,6 +30,9 @@ import useRecipeStore from '../../store/useRecipeStore';
 const UpdateRecipe = () => {
   const navigation = useNavigation();
   const singleRecipes = useRecipeStore((state) => state.singleRecipes);
+  const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+  const setFilteredRecipe = useRecipeStore((state) => state.setFilteredRecipe);
+
   const recipe = useRecipeStore((state) => state.recipe);
   const route = useRoute();
   const recipe_id = route.params.id;
@@ -281,7 +284,9 @@ const UpdateRecipe = () => {
       });
 
       if (response.data?.status === 'record created') {
-        navigation.navigate('Recipes');
+        presonalRecipes(userInfo?._id);
+        setFilteredRecipe();
+        navigation.navigate('Profile');
       }
     } catch (error) {
       console.error('Error posting data:', error);

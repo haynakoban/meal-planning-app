@@ -1,6 +1,7 @@
 import { COLORS, FONT, SIZES, SHADOWS } from './theme';
 import Logo from './images';
 import { calculateCalorie } from './calculateCalorie';
+import { formatDate } from './formatDate';
 import {
   data as DATA,
   homeData as HOMEDATA,
@@ -39,4 +40,5 @@ export {
   API,
   useWeeks,
   calculateCalorie,
+  formatDate,
 };

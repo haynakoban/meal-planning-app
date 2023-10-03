@@ -53,8 +53,8 @@ const create = async (req, res, next) => {
       name: req.body?.name,
       description: req.body?.description,
       image: fileId,
-      privacy: req.body?.privacy,
-      day: req.body?.day,
+      startDate: req.body?.startDate,
+      endDate: req.body?.endDate,
       time: req.body?.time,
       recipes: JSON.parse(req.body?.recipes),
     };
@@ -397,11 +397,11 @@ const personalMeals = async (req, res, next) => {
 };
 
 // get the list of meals by day
-const listByDay = async (req, res, next) => {
+const listByTime = async (req, res, next) => {
   try {
-    const { day, user_id } = req.query;
+    const { time, user_id } = req.query;
 
-    if (!day) {
+    if (!time) {
       return res.status(200).json({
         message: 'Invalid Day',
         status: 'error occurred',
@@ -409,9 +409,9 @@ const listByDay = async (req, res, next) => {
       });
     }
 
-    const newDay = day?.toLowerCase();
-    const meals = await Meals.find({ day: newDay, user_id })
-      .sort({ updatedAt: -1 })
+    const newTime = time?.toLowerCase();
+    const meals = await Meals.find({ time: newTime, user_id })
+      .sort({ endDate: -1 })
       .populate({ path: 'recipes' })
       .select('-createdAt -__v');
 
@@ -570,36 +570,47 @@ const updateMeal = async (req, res, next) => {
               user_id: req.body?.user_id,
               name: req.body?.name,
               description: req.body?.description,
-              image: fileId,
-              privacy: req.body?.privacy,
-              day: req.body?.day,
               time: req.body?.time,
+              startDate: req.body?.startDate,
+              endDate: req.body?.endDate,
               recipes: JSON.parse(req.body?.recipes),
             },
           },
           { new: true } // Return the updated document
         );
 
-        // Populate the recipes field separately
-        const result = await Meals.findOne({ _id: meal?._id })
+        const meals = await Meals.find({
+          time: meal?.time,
+          user_id: meal?.user_id,
+        })
+          .sort({ endDate: -1 })
           .populate({ path: 'recipes' })
           .select('-createdAt -__v');
 
-        const newResult = result.toObject();
-        if (typeof newResult.image === 'object') {
-          const imageBuffer = await dbUtility.fetchImageById(newResult.image);
+        const results = await Promise.all(
+          meals.map(async (meal) => {
+            const r = meal.toObject();
 
-          const base64Image = imageBuffer.toString('base64');
-          const mimeType = 'image/jpg'; // Change this to match the actual image type
-          const dataURI = `data:${mimeType};base64,${base64Image}`;
+            if (typeof r.image === 'object') {
+              const imageBuffer = await dbUtility.fetchImageById(r.image);
 
-          newResult.image = dataURI;
-        }
+              const base64Image = imageBuffer.toString('base64');
+              const mimeType = 'image/jpg';
+              const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+              r.image = dataURI;
+            }
+
+            return {
+              ...r,
+            };
+          })
+        );
 
         return res.status(201).json({
           message: `An item inserted successfully`,
           status: 'record created',
-          data: newResult,
+          data: results,
         });
       }
 
@@ -610,35 +621,47 @@ const updateMeal = async (req, res, next) => {
             user_id: req.body?.user_id,
             name: req.body?.name,
             description: req.body?.description,
-            privacy: req.body?.privacy,
-            day: req.body?.day,
             time: req.body?.time,
+            startDate: req.body?.startDate,
+            endDate: req.body?.endDate,
             recipes: JSON.parse(req.body?.recipes),
           },
         },
         { new: true } // Return the updated document
       );
 
-      // Populate the recipes field separately
-      const result = await Meals.findOne({ _id: meal?._id })
+      const meals = await Meals.find({
+        time: meal?.time,
+        user_id: meal?.user_id,
+      })
+        .sort({ endDate: -1 })
         .populate({ path: 'recipes' })
         .select('-createdAt -__v');
 
-      const newResult = result.toObject();
-      if (typeof newResult.image === 'object') {
-        const imageBuffer = await dbUtility.fetchImageById(newResult.image);
+      const results = await Promise.all(
+        meals.map(async (meal) => {
+          const r = meal.toObject();
 
-        const base64Image = imageBuffer.toString('base64');
-        const mimeType = 'image/jpg'; // Change this to match the actual image type
-        const dataURI = `data:${mimeType};base64,${base64Image}`;
+          if (typeof r.image === 'object') {
+            const imageBuffer = await dbUtility.fetchImageById(r.image);
 
-        newResult.image = dataURI;
-      }
+            const base64Image = imageBuffer.toString('base64');
+            const mimeType = 'image/jpg';
+            const dataURI = `data:${mimeType};base64,${base64Image}`;
+
+            r.image = dataURI;
+          }
+
+          return {
+            ...r,
+          };
+        })
+      );
 
       return res.status(201).json({
         message: `An item inserted successfully`,
         status: 'record created',
-        data: newResult,
+        data: results,
       });
     }
 
@@ -740,7 +763,7 @@ module.exports = {
   paginatedMealTypes,
   show,
   personalMeals,
-  listByDay,
+  listByTime,
   deleteMeal,
   updateMeal,
   showMT,

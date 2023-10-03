@@ -34,7 +34,7 @@ const MealButton = () => {
         ref={pressableRef}
         style={{
           alignItems: 'center',
-          backgroundColor: COLORS.secondary,
+          backgroundColor: COLORS.primary,
           padding: 10,
           borderRadius: 8,
         }}

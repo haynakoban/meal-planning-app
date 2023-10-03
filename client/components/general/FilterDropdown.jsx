@@ -182,6 +182,7 @@ export const FilterModal = ({ visible, hideModal }) => {
     } else {
       setFilteredRecipe();
     }
+    hideModal();
   };
 
   return (
