@@ -7,7 +7,6 @@ import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import HealingOutlinedIcon from '@mui/icons-material/HealingOutlined';
 import EggOutlinedIcon from '@mui/icons-material/EggOutlined';
 
 import SideDrawerBar from './SideDrawerBar';
@@ -47,11 +46,6 @@ const routes = [
     name: 'Preferences',
     path: '/preferences',
     icon: <TuneOutlinedIcon />,
-  },
-  {
-    name: 'Allergies',
-    path: '/allergies',
-    icon: <HealingOutlinedIcon />,
   },
   {
     name: 'Ingredients',

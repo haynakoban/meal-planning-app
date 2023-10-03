@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+// import FilterListIcon from '@mui/icons-material/FilterList';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from '../lib/axiosConfig';
 
@@ -132,11 +132,12 @@ const EnhancedTableToolbar = (props) => {
           </Tooltip>
         </React.Fragment>
       ) : (
-        <Tooltip title='Filter list'>
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <></>
+        // <Tooltip title='Filter list'>
+        //   <IconButton>
+        //     <FilterListIcon />
+        //   </IconButton>
+        // </Tooltip>
       )}
     </Toolbar>
   );

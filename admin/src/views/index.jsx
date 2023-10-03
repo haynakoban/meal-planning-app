@@ -1,9 +1,5 @@
 import PageNotFound from './404';
 
-import Allergies from './allergies/Allergies';
-import AllergiesOutlet from './allergies';
-import AllergiesUpdate from './allergies/AllergiesUpdate';
-
 import Cuisines from './cuisines/Cuisines';
 import CuisinesOutlet from './cuisines';
 import CuisinesUpdate from './cuisines/CuisinesUpdate';
@@ -11,6 +7,7 @@ import CuisinesUpdate from './cuisines/CuisinesUpdate';
 import Home from './home';
 
 import Ingredients from './ingredients/Ingredients';
+import IngredientsCreate from './ingredients/IngredientsCreate';
 import IngredientsOutlet from './ingredients';
 import IngredientsUpdate from './ingredients/IngredientsUpdate';
 
@@ -21,6 +18,7 @@ import MealTypesOutlet from './mealtypes';
 import MealTypesUpdate from './mealtypes/MealTypesUpdate';
 
 import Preferences from './preferences/Preferences';
+import PreferencesCreate from './preferences/PreferencesCreate';
 import PreferencesOutlet from './preferences';
 import PreferencesUpdate from './preferences/PreferencesUpdate';
 
@@ -34,14 +32,12 @@ import UsersUpdate from './users/UsersUpdate';
 
 export {
   PageNotFound,
-  Allergies,
-  AllergiesOutlet,
-  AllergiesUpdate,
   Cuisines,
   CuisinesOutlet,
   CuisinesUpdate,
   Home,
   Ingredients,
+  IngredientsCreate,
   IngredientsOutlet,
   IngredientsUpdate,
   Meals,
@@ -49,6 +45,7 @@ export {
   MealTypesOutlet,
   MealTypesUpdate,
   Preferences,
+  PreferencesCreate,
   PreferencesOutlet,
   PreferencesUpdate,
   Recipes,

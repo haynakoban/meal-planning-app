@@ -140,9 +140,53 @@ const update = async (req, res, next) => {
   }
 };
 
+const create = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(500).json({
+        message: 'Name field is required',
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const existingItem = await Preferences.findOne({
+      name: name,
+    });
+
+    if (existingItem) {
+      return res.status(200).json({
+        message: `Item is not unique`,
+        status: 'error occurred',
+        data: {},
+      });
+    }
+
+    const result = await Preferences.create({
+      name: name,
+      description: req.body?.description,
+    });
+
+    return res.status(201).json({
+      message: `An item inserted successfully`,
+      status: 'record created',
+      data: result,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: 'Error occurred while creating the item',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkPreferences,
   list,
+  create,
   destroy,
   show,
   update,

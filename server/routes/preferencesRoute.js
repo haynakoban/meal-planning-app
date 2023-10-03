@@ -7,6 +7,7 @@ const { checkBulkUniquenessMiddleware } = require('../middlewares');
 // get method - get the list of preferences
 router
   .route('/')
+  .post(preferencesController.create)
   .get(preferencesController.list)
   .delete(preferencesController.destroy);
 

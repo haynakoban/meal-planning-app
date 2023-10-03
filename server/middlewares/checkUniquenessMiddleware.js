@@ -45,7 +45,7 @@ const checkSingleUniquenessMiddleware =
     const data = req.body;
 
     if (!data[property] || !data) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: `The request must contain a property name called '${property}'`,
         status: 'error occurred',
         data: {},
@@ -57,7 +57,7 @@ const checkSingleUniquenessMiddleware =
     });
 
     if (existingItem) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: `Item is not unique`,
         status: 'error occurred',
         data: {},

@@ -3,14 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 // views
 import {
   PageNotFound,
-  Allergies,
-  AllergiesOutlet,
-  AllergiesUpdate,
   Cuisines,
   CuisinesOutlet,
   CuisinesUpdate,
   Home,
   Ingredients,
+  IngredientsCreate,
   IngredientsOutlet,
   IngredientsUpdate,
   Meals,
@@ -18,6 +16,7 @@ import {
   MealTypesOutlet,
   MealTypesUpdate,
   Preferences,
+  PreferencesCreate,
   PreferencesOutlet,
   PreferencesUpdate,
   Recipes,
@@ -33,11 +32,6 @@ const AppRoutes = () => {
     <Routes>
       <Route index element={<Home />} />
 
-      <Route path='allergies' element={<AllergiesOutlet />}>
-        <Route index element={<Allergies />} />
-        <Route path=':id' element={<AllergiesUpdate />} />
-      </Route>
-
       <Route path='cuisines' element={<CuisinesOutlet />}>
         <Route index element={<Cuisines />} />
         <Route path=':id' element={<CuisinesUpdate />} />
@@ -45,6 +39,7 @@ const AppRoutes = () => {
 
       <Route path='ingredients' element={<IngredientsOutlet />}>
         <Route index element={<Ingredients />} />
+        <Route path='create' element={<IngredientsCreate />} />
         <Route path=':id' element={<IngredientsUpdate />} />
       </Route>
 
@@ -57,6 +52,7 @@ const AppRoutes = () => {
 
       <Route path='preferences' element={<PreferencesOutlet />}>
         <Route index element={<Preferences />} />
+        <Route path='create' element={<PreferencesCreate />} />
         <Route path=':id' element={<PreferencesUpdate />} />
       </Route>
 

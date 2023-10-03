@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -40,6 +42,7 @@ const headCells = [
 ];
 
 const Preferences = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState('asc');
@@ -159,6 +162,15 @@ const Preferences = () => {
       <Box sx={{ width: '100%' }}>
         {!loading ? (
           <Paper sx={{ width: '100%', mb: 2 }}>
+            <Box display='flex' justifyContent='flex-end' px={2} pt={2}>
+              <Button
+                variant='contained'
+                onClick={() => navigate('/preferences/create')}
+              >
+                Create
+              </Button>
+            </Box>
+
             <EnhancedTableToolbar
               numSelected={selected.length}
               data={selected}
