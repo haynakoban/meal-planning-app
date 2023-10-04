@@ -4,8 +4,6 @@ import Cuisines from './cuisines/Cuisines';
 import CuisinesOutlet from './cuisines';
 import CuisinesUpdate from './cuisines/CuisinesUpdate';
 
-import Home from './home';
-
 import Ingredients from './ingredients/Ingredients';
 import IngredientsCreate from './ingredients/IngredientsCreate';
 import IngredientsOutlet from './ingredients';
@@ -30,12 +28,13 @@ import Users from './users/Users';
 import UsersOutlet from './users';
 import UsersUpdate from './users/UsersUpdate';
 
+import Login from './login/Login';
+
 export {
   PageNotFound,
   Cuisines,
   CuisinesOutlet,
   CuisinesUpdate,
-  Home,
   Ingredients,
   IngredientsCreate,
   IngredientsOutlet,
@@ -54,4 +53,5 @@ export {
   Users,
   UsersOutlet,
   UsersUpdate,
+  Login,
 };
