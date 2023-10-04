@@ -1,0 +1,40 @@
+.four {
+  font-size: 200px;
+  font-weight: bolder;
+}
+
+.logoos {
+  height: 20px;
+}
+
+.textttt {
+  width: 50%;
+  text-align: center;
+}
+
+.oops {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .textttt {
+    width: 90%;
+    text-align: center;
+  }
+
+  .logoos {
+    height: 150px;
+  }
+
+  .oops {
+    font-size: 20px;
+  }
+
+  .four {
+    font-size: 100px;
+    font-weight: bolder;
+  }
+}

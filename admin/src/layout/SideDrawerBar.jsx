@@ -34,7 +34,7 @@ const SideDrawerBar = ({ routes, content }) => {
   };
 
   const active = ({ pathname, route }) => {
-    return route.name === 'Home'
+    return route.name === 'Users'
       ? pathname === '/'
       : pathname.includes(route.path);
   };
@@ -59,7 +59,7 @@ const SideDrawerBar = ({ routes, content }) => {
     } else if (pathname.includes('ingredients')) {
       title = 'Ingredients';
     } else {
-      title = 'Home';
+      title = 'Users';
     }
     document.title = `${title}`;
     setPageTitle(title);

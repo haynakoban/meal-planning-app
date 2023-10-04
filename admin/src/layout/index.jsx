@@ -1,6 +1,4 @@
 import { Fragment } from 'react';
-
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import RamenDiningOutlinedIcon from '@mui/icons-material/RamenDiningOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
@@ -13,13 +11,8 @@ import SideDrawerBar from './SideDrawerBar';
 
 const routes = [
   {
-    name: 'Home',
-    path: '/',
-    icon: <HomeOutlinedIcon />,
-  },
-  {
     name: 'Users',
-    path: '/users',
+    path: '/',
     icon: <PeopleOutlineOutlinedIcon />,
   },
   {

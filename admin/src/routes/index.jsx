@@ -6,7 +6,6 @@ import {
   Cuisines,
   CuisinesOutlet,
   CuisinesUpdate,
-  Home,
   Ingredients,
   IngredientsCreate,
   IngredientsOutlet,
@@ -30,7 +29,7 @@ import {
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route index element={<Home />} />
+      <Route index element={<Users />} />
 
       <Route path='cuisines' element={<CuisinesOutlet />}>
         <Route index element={<Cuisines />} />
