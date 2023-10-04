@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { View, TextInput, ScrollView } from 'react-native';
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
@@ -7,16 +7,63 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useAuthStore from '../../store/useAuthStore';
 import axios from '../../lib/axiosConfig';
 
-// import * as Facebook from 'expo-auth-session/providers/facebook';
-// import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
 
-// WebBrowser.maybeCompleteAuthSession();
+// import * as Facebook from 'expo-auth-session/providers/facebook';
+
+WebBrowser.maybeCompleteAuthSession();
 
 import styles from '../../styles/login';
 import { COLORS } from '../../constants';
 
 const LoginScreen = ({ navigation }) => {
-  // const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = React.useState(null);
+  const [resquest, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      '1081573021974-d8rectvr7ssg5eksinrtl29gmiv8vpdg.apps.googleusercontent.com',
+    webClientId:
+      '1081573021974-d8rectvr7ssg5eksinrtl29gmiv8vpdg.apps.googleusercontent.com',
+  });
+
+  React.useEffect(() => {
+    handleSignInWithGoogle();
+  }, [response]);
+
+  const handleSignInWithGoogle = async () => {
+    const user = await AsyncStorage.getItem('@user');
+
+    if (!user) {
+      if (response?.type === 'success') {
+        await getUserInfo(response.authentication.accessToken);
+      }
+    } else {
+      setUserInfo(JSON.parse(user));
+    }
+  };
+
+  const getUserInfo = async (token) => {
+    if (!token) return;
+
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/userinfo/v2/me',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+
+      // user variable meron siyang email and name jan na pwedeng gamitin for sign up
+      // make a request from axios and after request store the data from axios in asyncstorage
+
+      // await AsyncStorage.setItem('@user', JSON.stringify(user));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // const [resquest, response, promptAsync] = Facebook.useAuthRequest({
   //   clientId: '1646439895855834',
   // });
@@ -69,12 +116,12 @@ const LoginScreen = ({ navigation }) => {
   } = styles;
 
   const { login } = useAuthStore();
-  const [focusEmail, setFocusEmail] = useState(1);
-  const [focusPassword, setFocusPassword] = useState(1);
+  const [focusEmail, setFocusEmail] = React.useState(1);
+  const [focusPassword, setFocusPassword] = React.useState(1);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [err, setError] = useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [err, setError] = React.useState('');
 
   const handleLogin = () => {
     if (!email && !password) {
@@ -184,6 +231,7 @@ const LoginScreen = ({ navigation }) => {
               contentStyle={buttonContent}
               labelStyle={buttonLabel}
               textColor={black}
+              onPress={() => promptAsync()}
             >
               Continue with Google
             </Button>
