@@ -14,21 +14,18 @@ import { COLORS, FONT, SIZES } from '../../constants';
 import { formatNumber } from '../../lib/formatNumber';
 import useAuthStore from '../../store/useAuthStore';
 import useRecipeStore from '../../store/useRecipeStore';
-import ProfileRecipes from './ProfileRecipes';
 import UserRecipes from './UserRecipes';
 
 const UserProfile = ({ route, navigation }) => {
-  const { id } = route.params;
+  const id = route.params.id;
   const [userData, setUserData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [hasFollowed, setHasFollowed] = useState(false);
-  const recipes = useRecipeStore((state) => state.recipes);
-  const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const otherRecipes = useRecipeStore((state) => state.otherRecipes);
+  const setOtherRecipes = useRecipeStore((state) => state.setOtherRecipes);
 
   useEffect(() => {
-    clearRecipe();
-    presonalRecipes(id);
+    setOtherRecipes(id);
   }, []);
 
   const { userInfo, followUser } = useAuthStore();
@@ -336,6 +333,7 @@ const UserProfile = ({ route, navigation }) => {
                   marginTop: 4,
                   textAlign: 'center',
                   width: '75%',
+                  color: '#222',
                 },
               ]}
             >
@@ -366,7 +364,7 @@ const UserProfile = ({ route, navigation }) => {
                   },
                 ]}
               >
-                {recipes?.length || '...'}
+                {otherRecipes?.length || '...'}
               </Text>
               <Text
                 style={[

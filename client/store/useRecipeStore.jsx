@@ -10,6 +10,7 @@ const useRecipeStore = create((set) => ({
   homeRecipes: [],
   personal: [],
   recipeText: '',
+  otherRecipes: [],
 
   setFilteredRecipe: async () => {
     try {
@@ -91,6 +92,25 @@ const useRecipeStore = create((set) => ({
         if (Array.isArray(newData) && newData.length > 0) {
           set({
             personal: newData,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
+
+  setOtherRecipes: async (user_id) => {
+    try {
+      set({ otherRecipes: [] });
+      const response = await axios.get(`recipes/personal/${user_id}`);
+
+      if (response && response.data && response.data) {
+        const newData = response.data.data;
+
+        if (Array.isArray(newData) && newData.length > 0) {
+          set({
+            otherRecipes: newData,
           });
         }
       }

@@ -230,7 +230,7 @@ const ProfileScreen = () => {
                   marginTop: 4,
                   textAlign: 'center',
                   width: '75%',
-                  color: COLORS.gray2,
+                  color: '#222',
                 },
               ]}
             >
