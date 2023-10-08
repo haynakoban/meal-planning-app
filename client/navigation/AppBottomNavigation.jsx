@@ -47,7 +47,7 @@ const AppBottomNavigation = () => {
               style={{
                 fontFamily: FONT.medium,
                 fontSize: SIZES.xs,
-                color: COLORS.gray2,
+                color: '#222',
               }}
             >
               {route.name}
