@@ -35,7 +35,7 @@ const IngredientsCreate = () => {
       } else {
         setError('name', {
           type: 'server',
-          message: response.data?.message || 'Invalid input. Please try again.',
+          message: response.data?.err || 'item already exist',
         });
       }
     }

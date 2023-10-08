@@ -31,7 +31,6 @@ const HomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const userInfo = useAuthStore((state) => state.userInfo);
-  const favorites = useAuthStore((state) => state.favorites);
   const homeRecipes = useRecipeStore((state) => state.homeRecipes);
   const fetchRecipesData = useRecipeStore((state) => state.fetchRecipesData);
   const setFilteredRecipe = useRecipeStore((state) => state.setFilteredRecipe);
@@ -56,21 +55,6 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(false);
     }, 1500);
   }, []);
-
-  useEffect(() => {
-    if (
-      filteredData.Allergies.length === 0 &&
-      filteredData.CookingTimes.length === 0 &&
-      filteredData.Cuisines.length === 0 &&
-      filteredData.Ingredients.length === 0 &&
-      filteredData.MealTypes.length === 0 &&
-      filteredData.Preferences.length === 0
-    ) {
-      fetchRecipesData();
-    } else {
-      setFilteredRecipe();
-    }
-  }, [favorites]);
 
   const handleRefresh = () => {
     setRefreshing(true);

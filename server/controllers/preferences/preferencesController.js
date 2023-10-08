@@ -152,14 +152,13 @@ const create = async (req, res, next) => {
       });
     }
 
-    const existingItem = await Preferences.findOne({
-      name: name,
+    const existingItem = await Preferences.find({
+      name: { $regex: new RegExp(name, 'i') },
     });
 
     if (existingItem) {
       return res.status(200).json({
-        message: `Item is not unique`,
-        status: 'error occurred',
+        err: `item already exist`,
         data: {},
       });
     }

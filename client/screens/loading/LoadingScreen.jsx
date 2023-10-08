@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { View, Image } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
+import { COLORS } from '../../constants';
 
 function LoadingScreen() {
   return (
@@ -12,7 +13,7 @@ function LoadingScreen() {
         alignItems: 'center',
       }}
     >
-      <ActivityIndicator animating={true} />
+      <ActivityIndicator animating={true} color={COLORS.accent} />
     </View>
   );
 }

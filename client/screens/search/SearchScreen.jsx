@@ -70,7 +70,12 @@ const SearchScreen = () => {
             />
           ) : (
             <View>
-              <Text style={[styles.headerTitle, { textAlign: 'center' }]}>
+              <Text
+                style={[
+                  styles.headerTitle,
+                  { textAlign: 'center', color: COLORS.black },
+                ]}
+              >
                 No recipe found
               </Text>
             </View>
@@ -79,7 +84,9 @@ const SearchScreen = () => {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={[SHADOWS.small, styles.bg]}>
-            <Text style={styles.headerTitle}>Recently searches</Text>
+            <Text style={[styles.headerTitle, { color: COLORS.black }]}>
+              Search recipes
+            </Text>
             {recipeSearchData.map((_, i) => {
               return (
                 <Button

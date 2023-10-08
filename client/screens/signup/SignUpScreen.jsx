@@ -327,7 +327,9 @@ const RegisterScreen = () => {
             Submit
           </Button>
           <View style={footerWrapper}>
-            <Text style={footerText}>Already have an account?</Text>
+            <Text style={[footerText, { color: COLORS.black }]}>
+              Already have an account?
+            </Text>
             <Button
               mode='text'
               textColor={accent}

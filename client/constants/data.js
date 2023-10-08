@@ -244,43 +244,43 @@ export const searchesScreens = [
 export const recipeSearchData = [
   {
     id: 1,
-    search: 'carbonara pasta recipe',
+    search: 'carbonara pasta',
   },
   {
     id: 2,
-    search: 'chicken Alfredo recipe',
+    search: 'chicken adobo',
   },
   {
     id: 3,
-    search: 'vegetable stir-fry recipe',
+    search: 'vegetable salad',
   },
   {
     id: 4,
-    search: 'chocolate chip cookie recipe',
+    search: 'chocolate',
   },
   {
     id: 5,
-    search: 'Caesar salad recipe',
+    search: 'buko salad',
   },
   {
     id: 6,
-    search: 'homemade pizza recipe',
+    search: 'homemade pizza',
   },
   {
     id: 7,
-    search: 'spicy chicken curry recipe',
+    search: 'spicy chicken curry',
   },
   {
     id: 8,
-    search: 'blueberry pancake recipe',
+    search: 'blueberry pancake',
   },
   {
     id: 9,
-    search: 'grilled steak recipe',
+    search: 'grilled steak',
   },
   {
     id: 10,
-    search: 'vegetarian lasagna recipe',
+    search: 'lasagna',
   },
 ];
 

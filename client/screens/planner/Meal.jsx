@@ -7,6 +7,7 @@ import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import NotFound from '../../assets/images/image-not-found.jpg';
 import { COLORS, FONT, SIZES } from '../../constants';
 import { Calendar } from 'react-native-calendars';
+import { formatDate } from '../../constants';
 
 const Meal = ({ route }) => {
   const [minDate, setMinDate] = useState(null); // Example minimum date
@@ -138,7 +139,12 @@ const Meal = ({ route }) => {
                 { paddingHorizontal: 15, fontSize: SIZES.md, marginBottom: 5 },
               ]}
             >
-              Meal Plan Duration
+              Duration{' '}
+              {minDate != null && maxDate != null
+                ? `(${formatDate(minDate, maxDate)?.start} - ${
+                    formatDate(minDate, maxDate)?.end
+                  })`
+                : '-'}
             </Text>
             <Calendar
               style={[
