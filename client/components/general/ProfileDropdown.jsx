@@ -1,5 +1,11 @@
 import { Modal, Portal } from 'react-native-paper';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Linking,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,6 +14,18 @@ import styles from '../../styles/profileDropDown';
 import useAuthStore from '../../store/useAuthStore';
 
 const ProfileDropdown = ({ hideModal, navigation }) => {
+  const handleOpenPrivacy = async () => {
+    const url =
+      'https://nutri-smart.vercel.app/terms-and-condition-privacy-policy.html';
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.warn(`Don't know how to open URL: ${url}`);
+    }
+  };
+
   const { logout } = useAuthStore();
   return (
     <ScrollView>
@@ -28,10 +46,10 @@ const ProfileDropdown = ({ hideModal, navigation }) => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('hello')}>
+        <TouchableOpacity onPress={() => handleOpenPrivacy()}>
           <View style={[styles.container, styles.bb]}>
             <Feather name='lock' size={SIZES.lg + 1} color={COLORS.black} />
-            <Text style={[styles.text, styles.marginLeft]}>Privacy</Text>
+            <Text style={[styles.text, styles.marginLeft]}>Terms & Policy</Text>
             <Feather
               name='chevron-right'
               size={SIZES.xl}

@@ -10,9 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const ProfileRecipes = ({ user_id, isEditable }) => {
   const navigation = useNavigation();
-  const recipes = useRecipeStore((state) => state.recipes);
+  const personal = useRecipeStore((state) => state.personal);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [recipe_id, setRecipeId] = useState('');
@@ -33,7 +32,6 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
   };
 
   useEffect(() => {
-    clearRecipe();
     presonalRecipes(user_id);
   }, []);
 
@@ -52,9 +50,9 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
           <LoadingScreen />
         ) : (
           <>
-            {recipes.map((item, index) => {
+            {personal.map((item, index) => {
               return (
-                <View key={index} style={{ width: '50%' }}>
+                <View key={index} style={{ width: '100%' }}>
                   {isEditable && (
                     <View
                       style={{
@@ -139,7 +137,7 @@ const ProfileRecipes = ({ user_id, isEditable }) => {
         </>
       </View>
 
-      {!recipes.length > 0 && (
+      {!personal.length > 0 && (
         <Text style={{ fontFamily: FONT.regular, textAlign: 'center' }}>
           Create new recipe
         </Text>

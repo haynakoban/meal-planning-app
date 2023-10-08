@@ -37,7 +37,9 @@ const CreateMealRecipeModal = () => {
         style={modal}
       >
         <View style={modalWrapper}>
-          <Text style={modalHeader}>Craft Your Signature Dish</Text>
+          <Text style={[modalHeader, { color: COLORS.black }]}>
+            Craft Your Signature Dish
+          </Text>
 
           <Button
             mode='outlined'

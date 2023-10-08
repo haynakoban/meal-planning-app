@@ -43,7 +43,13 @@ const AppBottomNavigation = () => {
           return route.name === 'Meal Recipe Modal' ? (
             ''
           ) : (
-            <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.xs }}>
+            <Text
+              style={{
+                fontFamily: FONT.medium,
+                fontSize: SIZES.xs,
+                color: COLORS.gray2,
+              }}
+            >
               {route.name}
             </Text>
           );
@@ -133,24 +139,6 @@ const AppBottomNavigation = () => {
                 style={{ backgroundColor: COLORS.primary }}
                 source={require('../assets/images/logo.png')}
               />
-            </View>
-          ),
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', marginRight: SIZES.md }}>
-              <Ionicons
-                name='search'
-                size={26}
-                color={COLORS.white}
-                style={{ marginRight: SIZES.sm }}
-                onPress={() => navigation.navigate('Search')}
-              />
-              <Ionicons
-                name='filter'
-                size={26}
-                color={COLORS.white}
-                onPress={showModal}
-              />
-              <FilterModal visible={visible} hideModal={hideModal} />
             </View>
           ),
         })}

@@ -7,9 +7,21 @@ const {
 } = require('../../models');
 const bcryptjs = require('bcryptjs');
 const { generateUniqueUsername } = require('../../lib');
+const { transporter } = require('../../lib/mailer');
 
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
+
+function generateRandomPassword(length) {
+  const charset =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
 
 // bulk users
 const bulkUsers = async (req, res, next) => {
@@ -217,19 +229,50 @@ const login = async (req, res, next) => {
       });
     }
 
-    // Check the provided password against the stored hash
-    if (bcryptjs.compareSync(password, user.password)) {
-      return res.json({
-        message: 'Authentication successful',
-        status: 'success',
-        data: user,
-      });
+    const expiryTime = new Date(user.updatedAt.getTime() + 30 * 60 * 1000);
+    const isPasswordExpired = new Date() > expiryTime;
+    console.log(expiryTime);
+    console.log(user.updatedAt);
+    console.log(new Date());
+
+    if (user.forgot_password == true) {
+      if (isPasswordExpired) {
+        return res.status(401).json({
+          message: 'Authentication failed',
+          status: 'error occurred',
+          data: {},
+        });
+      } else {
+        if (bcryptjs.compareSync(password, user.password)) {
+          user.forgot_password = false;
+          await user.save();
+          return res.json({
+            message: 'Authentication successful',
+            status: 'success',
+            data: user,
+          });
+        } else {
+          return res.status(401).json({
+            message: 'Authentication failed',
+            status: 'error occurred',
+            data: {},
+          });
+        }
+      }
     } else {
-      return res.status(401).json({
-        message: 'Authentication failed',
-        status: 'error occurred',
-        data: {},
-      });
+      if (bcryptjs.compareSync(password, user.password)) {
+        return res.json({
+          message: 'Authentication successful',
+          status: 'success',
+          data: user,
+        });
+      } else {
+        return res.status(401).json({
+          message: 'Authentication failed',
+          status: 'error occurred',
+          data: {},
+        });
+      }
     }
   } catch (e) {
     return res.status(500).json({
@@ -592,6 +635,62 @@ const password = async (req, res, next) => {
   }
 };
 
+// forget pass
+
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await Users.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        err: 'Email not registered',
+      });
+    }
+    const password = generateRandomPassword(12);
+
+    const hashPassword = await bcryptjs.hash(password, 10);
+
+    user.password = hashPassword;
+    user.forgot_password = true;
+    user.updatedAt = new Date();
+    await user.save();
+
+    const info = await transporter.sendMail({
+      from: 'arnoldcreap22@gmail.com',
+      to: email,
+      subject: 'Password Reset Request',
+      html: `<html>
+        <head></head>
+        <body>
+          <h2>Hi, ${user.fullname}</h2>
+          <p>Your temporary password is <b>${password}</b></p>
+          <p>Please login using this password and update/change it immediately.</p>
+          <p>The password will expires in 30 minutes.</p>
+        </body>
+      </html>`,
+    });
+
+    if (!info) {
+      return res.json({
+        err: 'Something went wrong, please try again.',
+      });
+    }
+
+    return res.status(201).json({
+      status: 'success',
+      data: info.response,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      status: 'error occurred',
+      data: {},
+    });
+  }
+};
+
 module.exports = {
   bulkUsers,
   create,
@@ -607,4 +706,5 @@ module.exports = {
   update,
   validate,
   password,
+  forgotPassword,
 };

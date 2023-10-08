@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 import { TextInput, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +16,6 @@ import {
   ProfileSettings,
   AccountInformation,
   ChangePassword,
-  PrivacySettings,
   SingleRecipeScreen,
   UpdateRecipe,
   UpdateMeal,
@@ -28,7 +27,6 @@ import useRecipeStore from '../store/useRecipeStore';
 
 import { COLORS, FONT, SIZES } from '../constants';
 import styles from '../styles/appNavigation';
-import { FilterModal } from '../components/general/FilterDropdown';
 
 import useMealPlanRecipe from '../store/useMealPlanRecipe';
 const Stack = createStackNavigator();
@@ -42,10 +40,6 @@ const AppNavigator = () => {
 
   const { recipeText, setRecipeText } = useRecipeStore();
   const { recipeMeal, setRecipeMeal } = useMealPlanRecipe();
-  const [visible, setVisible] = useState(false);
-
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
 
   const delayedSearch = debounce((text) => {
     searchRecipes(text);
@@ -93,24 +87,6 @@ const AppNavigator = () => {
               headerTitleAlign: 'left',
               headerTitleStyle: styles.arHeaderTitleStyle,
               headerTitleContainerStyle: styles.arHeaderTitleContainerStyle,
-              headerRight: () => (
-                <View style={styles.arHeaderRightView}>
-                  <Ionicons
-                    name='search'
-                    size={26}
-                    color={COLORS.white}
-                    style={styles.mr}
-                    onPress={() => navigation.navigate('Search')}
-                  />
-                  <Ionicons
-                    name='filter'
-                    size={26}
-                    color={COLORS.white}
-                    onPress={showModal}
-                  />
-                  <FilterModal visible={visible} hideModal={hideModal} />
-                </View>
-              ),
             })}
           />
           <Stack.Screen
@@ -155,18 +131,6 @@ const AppNavigator = () => {
             component={ChangePassword}
             options={{
               headerTitle: 'Change Password',
-              headerTitleAlign: 'left',
-              headerTitleStyle: {
-                fontFamily: FONT.bold,
-              },
-            }}
-          />
-
-          <Stack.Screen
-            name='PrivacySettings'
-            component={PrivacySettings}
-            options={{
-              headerTitle: 'Privacy Settings',
               headerTitleAlign: 'left',
               headerTitleStyle: {
                 fontFamily: FONT.bold,

@@ -66,7 +66,7 @@ const FilterProgressSteps = ({ filters }) => {
         activeStepNumColor={COLORS.white}
       >
         <ProgressStep
-          label='Meal Type'
+          label='Ingredients'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
@@ -87,7 +87,7 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      if (filteredData['Meal Types']?.includes(item._id)) {
+                      if (filteredData['Ingredients']?.includes(item._id)) {
                         return (
                           <Ionicons name='checkbox' size={24} color='black' />
                         );
@@ -105,7 +105,7 @@ const FilterProgressSteps = ({ filters }) => {
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: filteredData['Meal Types']?.includes(
+                        fontFamily: filteredData['Ingredients']?.includes(
                           item._id
                         )
                           ? FONT.semiBold
@@ -113,7 +113,7 @@ const FilterProgressSteps = ({ filters }) => {
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => setFilteredData('Meal Types', item._id)}
+                    onPress={() => setFilteredData('Ingredients', item._id)}
                   >
                     {item?.time || item.name}
                   </Button>
@@ -133,7 +133,7 @@ const FilterProgressSteps = ({ filters }) => {
           </View>
         </ProgressStep>
         <ProgressStep
-          label='Cuisine'
+          label='Meal Type'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
@@ -156,7 +156,7 @@ const FilterProgressSteps = ({ filters }) => {
                   <Button
                     key={item._id}
                     icon={() => {
-                      if (filteredData['Cuisines']?.includes(item._id)) {
+                      if (filteredData['MealTypes']?.includes(item._id)) {
                         return (
                           <Ionicons name='checkbox' size={24} color='black' />
                         );
@@ -174,13 +174,15 @@ const FilterProgressSteps = ({ filters }) => {
                     labelStyle={[
                       buttonLabel,
                       {
-                        fontFamily: filteredData['Cuisines']?.includes(item._id)
+                        fontFamily: filteredData['MealTypes']?.includes(
+                          item._id
+                        )
                           ? FONT.semiBold
                           : FONT.medium,
                       },
                     ]}
                     textColor={COLORS.black}
-                    onPress={() => setFilteredData('Cuisines', item._id)}
+                    onPress={() => setFilteredData('MealTypes', item._id)}
                   >
                     {item?.time || item.name}
                   </Button>
@@ -200,7 +202,7 @@ const FilterProgressSteps = ({ filters }) => {
           </View>
         </ProgressStep>
         <ProgressStep
-          label='Preference'
+          label='Preferences'
           onNext={onNextStep}
           onPrevious={onPrevStep}
           scrollViewProps={defaultScrollViewProps}
@@ -217,8 +219,8 @@ const FilterProgressSteps = ({ filters }) => {
               marginBottom: 8,
             }}
           >
-            {filters[2]?.data.length > 0 ? (
-              filters[2]?.data.map((item) => {
+            {filters[3]?.data.length > 0 ? (
+              filters[3]?.data.map((item) => {
                 return (
                   <Button
                     key={item._id}
@@ -286,8 +288,8 @@ const FilterProgressSteps = ({ filters }) => {
               marginBottom: 8,
             }}
           >
-            {filters[4]?.data.length > 0 ? (
-              filters[4]?.data.map((item) => {
+            {filters[5]?.data.length > 0 ? (
+              filters[5]?.data.map((item) => {
                 return (
                   <Button
                     key={item._id}

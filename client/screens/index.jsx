@@ -17,7 +17,6 @@ import UserProfile from './profile/UserProfile';
 import ProfileSettings from './profile/ProfileSettings';
 import AccountInformation from './profile/AccountInformation';
 import ChangePassword from './profile/ChangePassword';
-import PrivacySettings from './profile/PrivacySettings';
 import LoadingScreen from './loading/LoadingScreen';
 import UpdateRecipe from './recipes/UpdateRecipe';
 import UpdateMeal from './planner/UpdateMeal';
@@ -42,7 +41,6 @@ export {
   ProfileSettings,
   AccountInformation,
   ChangePassword,
-  PrivacySettings,
   SingleRecipeScreen,
   UpdateRecipe,
   UpdateMeal,
