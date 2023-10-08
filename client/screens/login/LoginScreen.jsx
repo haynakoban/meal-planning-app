@@ -176,7 +176,9 @@ const LoginScreen = ({ navigation }) => {
             </Button>
 
             <View style={footerWrapper}>
-              <Text style={footerText}>Don't have an account?</Text>
+              <Text style={[footerText, { color: COLORS.black }]}>
+                Don't have an account?
+              </Text>
               <Button
                 mode='text'
                 textColor={accent}

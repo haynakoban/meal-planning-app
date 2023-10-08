@@ -22,6 +22,18 @@ const bulkIngredients = async (req, res, next) => {
 // create new ingredient
 const create = async (req, res, next) => {
   try {
+    const name = req.body.name;
+    const ingredient = await Ingredients.find({
+      name: { $regex: new RegExp(name, 'i') },
+    });
+
+    if (ingredient) {
+      return res.json({
+        err: `item already exist`,
+        data: {},
+      });
+    }
+
     const result = await Ingredients.create(req.uniqueData);
 
     return res.status(201).json({
