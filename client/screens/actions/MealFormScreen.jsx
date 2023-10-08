@@ -446,21 +446,10 @@ const MealFormScreen = () => {
                           style={{
                             fontSize: SIZES.md,
                             fontFamily: FONT.medium,
-                            paddingHorizontal: 10,
-                            paddingTop: 10,
+                            padding: 10,
                           }}
                         >
                           {name}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: SIZES.sm,
-                            fontFamily: FONT.regular,
-                            paddingHorizontal: 10,
-                            paddingBottom: 10,
-                          }}
-                        >
-                          @{item?.user_id?.username}
                         </Text>
                         <Pressable
                           onPress={() => {

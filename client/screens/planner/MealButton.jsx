@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Text, View, Pressable } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -9,29 +8,12 @@ import { useNavigation } from '@react-navigation/native';
 const MealButton = () => {
   const navigation = useNavigation();
 
-  const pressableRef = useRef(null);
-
-  const handlePressIn = () => {
-    pressableRef.current.setNativeProps({
-      style: { backgroundColor: COLORS.gray2 },
-    });
-  };
-
-  const handlePressOut = () => {
-    pressableRef.current.setNativeProps({
-      style: { backgroundColor: COLORS.secondary },
-    });
-  };
-
   return (
     <Pressable
       onPress={() => navigation.navigate('Search Recipe')}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
       style={{ width: '100%' }}
     >
       <View
-        ref={pressableRef}
         style={{
           alignItems: 'center',
           backgroundColor: COLORS.primary,

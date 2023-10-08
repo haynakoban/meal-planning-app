@@ -69,29 +69,6 @@ const ProfileSettings = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.accountContainer}>
-          <TouchableOpacity
-            style={styles.accountButton}
-            onPress={() => navigation.navigate('PrivacySettings')}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons
-                name='shield-checkmark-outline'
-                size={SIZES.xxl}
-                color={COLORS.lightBlack}
-              />
-            </View>
-            <View style={[styles.ml, { flex: 1 }]}>
-              <Text style={styles.headerText}>Privacy Settings</Text>
-              <Text
-                numberOfLines={2}
-                style={[styles.accountMarginTop, styles.captionText]}
-              >
-                Manage how your recipes and meals are shared.
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
       </View>
     </ScrollView>
   );

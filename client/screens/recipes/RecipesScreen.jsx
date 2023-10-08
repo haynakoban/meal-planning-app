@@ -64,16 +64,23 @@ const RecipesScreen = () => {
       data={mealTypesData.length > 0 ? mealTypesData : homeRecipes[0]?.data}
       renderItem={({ item }) => {
         return (
-          <View key={item?._id} style={{ width: '50%' }}>
-            <FavoriteCard
-              name={item?.recipes?.name}
-              username={item?.recipes?.user_id?.username || 'anon'}
-              reviews={item?.reviews || 0}
-              ratings={item?.ratings || 0}
-              image={item?.recipes?.image}
-              id={item?.recipes?._id}
-            />
-          </View>
+          <>
+            {item?.recipes?.privacy == 'public' ||
+            item?.recipes?.user_id._id == userInfo?._id ? (
+              <View key={item?._id} style={{ width: '50%' }}>
+                <FavoriteCard
+                  name={item?.recipes?.name}
+                  username={item?.recipes?.user_id?.username || 'anon'}
+                  reviews={item?.reviews || 0}
+                  ratings={item?.ratings || 0}
+                  image={item?.recipes?.image}
+                  id={item?.recipes?._id}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
+          </>
         );
       }}
       numColumns={2}

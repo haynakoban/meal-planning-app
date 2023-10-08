@@ -16,6 +16,7 @@ import useRecipeStore from '../../store/useRecipeStore';
 
 import { COLORS, SIZES } from '../../constants';
 import styles from '../../styles/homeRecipes';
+import LoadingScreen from '../loading/LoadingScreen';
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -27,28 +28,66 @@ const HomeScreen = ({ navigation }) => {
   } = styles;
 
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const userInfo = useAuthStore((state) => state.userInfo);
   const favorites = useAuthStore((state) => state.favorites);
   const homeRecipes = useRecipeStore((state) => state.homeRecipes);
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
   const fetchRecipesData = useRecipeStore((state) => state.fetchRecipesData);
+  const setFilteredRecipe = useRecipeStore((state) => state.setFilteredRecipe);
   const filters = useFilterStore((state) => state.filters);
   const loadCachedFilters = useFilterStore((state) => state.loadCachedFilters);
-
+  const { filteredData } = useFilterStore();
   useEffect(() => {
-    fetchRecipesData();
+    if (
+      filteredData.Allergies.length === 0 &&
+      filteredData.CookingTimes.length === 0 &&
+      filteredData.Cuisines.length === 0 &&
+      filteredData.Ingredients.length === 0 &&
+      filteredData.MealTypes.length === 0 &&
+      filteredData.Preferences.length === 0
+    ) {
+      fetchRecipesData();
+    } else {
+      setFilteredRecipe();
+    }
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
   }, []);
 
   useEffect(() => {
-    fetchRecipesData();
+    if (
+      filteredData.Allergies.length === 0 &&
+      filteredData.CookingTimes.length === 0 &&
+      filteredData.Cuisines.length === 0 &&
+      filteredData.Ingredients.length === 0 &&
+      filteredData.MealTypes.length === 0 &&
+      filteredData.Preferences.length === 0
+    ) {
+      fetchRecipesData();
+    } else {
+      setFilteredRecipe();
+    }
   }, [favorites]);
 
   const handleRefresh = () => {
     setRefreshing(true);
 
     loadCachedFilters();
-    fetchRecipesData();
+    if (
+      filteredData.Allergies.length === 0 &&
+      filteredData.CookingTimes.length === 0 &&
+      filteredData.Cuisines.length === 0 &&
+      filteredData.Ingredients.length === 0 &&
+      filteredData.MealTypes.length === 0 &&
+      filteredData.Preferences.length === 0
+    ) {
+      fetchRecipesData();
+    } else {
+      setFilteredRecipe();
+    }
 
     setTimeout(() => {
       setRefreshing(false);
@@ -63,71 +102,86 @@ const HomeScreen = ({ navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      {userInfo?.filtered ? (
-        homeRecipes[0]?.data?.length === 0 ? (
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={[headerTitleStyle]}>
-              No content available, please reload
-            </Text>
-          </View>
-        ) : (
-          <SectionList
-            style={{ flex: 1, backgroundColor: 'white' }}
-            scrollEnabled={false}
-            sections={homeRecipes}
-            keyExtractor={(item, index) =>
-              `${item?.recipes?._id.toString()}-${index}`
-            }
-            renderItem={({ item }) => {
-              return (
-                <FavoriteCard
-                  name={item?.recipes?.name}
-                  username={item?.recipes?.user_id?.username || 'anon'}
-                  reviews={item?.reviews || 0}
-                  ratings={item?.ratings || 0}
-                  image={item?.recipes?.image}
-                  id={item?.recipes?._id}
-                />
-              );
-            }}
-            renderSectionHeader={({ section: { title } }) => (
-              <View
-                style={[
-                  headerContainer,
-                  {
-                    marginTop:
-                      title === 'new recipes' || 'Recommended Recipes' ? 0 : 30,
-                  },
-                ]}
-              >
-                <Text style={[headerTitleStyle]}>{title}</Text>
-                <Button
-                  mode='text'
-                  icon={() => (
-                    <FontAwesome
-                      name='angle-right'
-                      size={SIZES.lg}
-                      color={COLORS.black}
-                    />
-                  )}
-                  contentStyle={headerButtonContent}
-                  style={headerButtonStyle}
-                  textColor={COLORS.black}
-                  labelStyle={headerButtonLabel}
-                  onPress={() => {
-                    navigation.navigate('Show All Recipes', {
-                      title: title,
-                    });
-                  }}
-                >
-                  See all
-                </Button>
-              </View>
-            )}
-          />
-        )
+      {isLoading ? (
+        <LoadingScreen />
       ) : (
-        <FilterProgressSteps filters={filters} />
+        <>
+          {userInfo?.filtered ? (
+            homeRecipes[0]?.data?.length === 0 ? (
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={[headerTitleStyle]}>
+                  No content available, please reload
+                </Text>
+              </View>
+            ) : (
+              <SectionList
+                style={{ flex: 1, backgroundColor: 'white' }}
+                scrollEnabled={false}
+                sections={homeRecipes}
+                keyExtractor={(item, index) =>
+                  `${item?.recipes?._id.toString()}-${index}`
+                }
+                renderItem={({ item }) => {
+                  return (
+                    <>
+                      {item?.recipes?.privacy == 'public' ||
+                      item?.recipes?.user_id._id == userInfo?._id ? (
+                        <FavoriteCard
+                          name={item?.recipes?.name}
+                          username={item?.recipes?.user_id?.username || 'anon'}
+                          reviews={item?.reviews || 0}
+                          ratings={item?.ratings || 0}
+                          image={item?.recipes?.image}
+                          id={item?.recipes?._id}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  );
+                }}
+                renderSectionHeader={({ section: { title } }) => (
+                  <View
+                    style={[
+                      headerContainer,
+                      {
+                        marginTop:
+                          title === 'new recipes' || 'Recommended Recipes'
+                            ? 0
+                            : 30,
+                      },
+                    ]}
+                  >
+                    <Text style={[headerTitleStyle]}>{title}</Text>
+                    <Button
+                      mode='text'
+                      icon={() => (
+                        <FontAwesome
+                          name='angle-right'
+                          size={SIZES.lg}
+                          color={COLORS.black}
+                        />
+                      )}
+                      contentStyle={headerButtonContent}
+                      style={headerButtonStyle}
+                      textColor={COLORS.black}
+                      labelStyle={headerButtonLabel}
+                      onPress={() => {
+                        navigation.navigate('Show All Recipes', {
+                          title: title,
+                        });
+                      }}
+                    >
+                      See all
+                    </Button>
+                  </View>
+                )}
+              />
+            )
+          ) : (
+            <FilterProgressSteps filters={filters} />
+          )}
+        </>
       )}
     </ScrollView>
   );

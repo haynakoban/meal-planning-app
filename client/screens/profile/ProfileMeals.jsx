@@ -62,7 +62,7 @@ const ProfileMeals = ({ user_id, isEditable }) => {
           <>
             {personalMeals.map((item, index) => {
               return (
-                <View key={index} style={{ width: '50%' }}>
+                <View key={index} style={{ width: '100%' }}>
                   {isEditable && (
                     <View
                       style={{

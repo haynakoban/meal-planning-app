@@ -1,7 +1,7 @@
 import api from 'axios';
 
 export const SERVER_URL =
-  'https://3b21-136-158-118-226.ngrok-free.app' || process.env.SERVER_URL;
+  'https://meal-planning-server-43a3a89f3caa.herokuapp.com';
 
 const axios = api.create({
   baseURL: `${SERVER_URL}/api/`,

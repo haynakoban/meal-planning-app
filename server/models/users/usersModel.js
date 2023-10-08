@@ -23,6 +23,7 @@ const usersSchema = new mongoose.Schema({
   bio: { type: String, required: false },
   password: { type: String, required: false },
   favorites: { type: Array, required: false },
+  forgot_password: { type: Boolean, default: false },
   public_metrics,
   image,
   registrationMethod,

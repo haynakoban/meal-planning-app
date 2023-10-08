@@ -8,32 +8,41 @@
         }
       ]
     ],
-    "name": "client",
-    "slug": "client",
+    "name": "Nutri Smart",
+    "slug": "nutri-smart",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/logo-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo-splash.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.mialupin.client"
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.mealplanningapp.capstone"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "nutri-smart"
+    "scheme": "nutri-smart",
+    "extra": {
+      "eas": {
+        "projectId": "21ccc222-f914-43a4-b3c2-ee61be711aad"
+      }
+    }
   }
 }

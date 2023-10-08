@@ -1,93 +1,55 @@
-import * as React from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { View, TextInput, ScrollView } from 'react-native';
-import { Avatar, Button, Divider, Text } from 'react-native-paper';
+import { Avatar, Button, Divider, Text, Modal } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useAuthStore from '../../store/useAuthStore';
 import axios from '../../lib/axiosConfig';
+import { useEffect, useState } from 'react';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 
-// import * as Facebook from 'expo-auth-session/providers/facebook';
-
 WebBrowser.maybeCompleteAuthSession();
 
 import styles from '../../styles/login';
-import { COLORS } from '../../constants';
+import { COLORS, FONT } from '../../constants';
 
 const LoginScreen = ({ navigation }) => {
-  const [userInfo, setUserInfo] = React.useState(null);
-  const [resquest, response, promptAsync] = Google.useAuthRequest({
-    androidClientId:
-      '1081573021974-d8rectvr7ssg5eksinrtl29gmiv8vpdg.apps.googleusercontent.com',
-    webClientId:
-      '1081573021974-d8rectvr7ssg5eksinrtl29gmiv8vpdg.apps.googleusercontent.com',
-  });
+  function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
 
-  React.useEffect(() => {
-    handleSignInWithGoogle();
-  }, [response]);
+  const [verify, setVerify] = useState(false);
+  const [forgotModal, setForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotError, setForgotError] = useState(null);
 
-  const handleSignInWithGoogle = async () => {
-    const user = await AsyncStorage.getItem('@user');
-
-    if (!user) {
-      if (response?.type === 'success') {
-        await getUserInfo(response.authentication.accessToken);
-      }
-    } else {
-      setUserInfo(JSON.parse(user));
-    }
+  const handleCloseVerify = () => {
+    setForgotError(null);
+    setVerify(false);
+    setForgotModal(false);
   };
 
-  const getUserInfo = async (token) => {
-    if (!token) return;
-
+  const handleForgot = async () => {
     try {
-      const response = await fetch(
-        'https://www.googleapis.com/userinfo/v2/me',
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      setForgotError(null);
+      if (forgotEmail == '') return setForgotError('please input valid email');
+      if (!validateEmail(forgotEmail))
+        return setForgotError('please input valid email');
 
-      const user = await response.json();
+      const response = await axios.post(`users/auth/forgot`, {
+        email: forgotEmail,
+      });
 
-      // user variable meron siyang email and name jan na pwedeng gamitin for sign up
-      // make a request from axios and after request store the data from axios in asyncstorage
-
-      // await AsyncStorage.setItem('@user', JSON.stringify(user));
+      if (response.data.status === 'success') {
+        return setVerify(true);
+      }
+      setForgotError('email not registered');
     } catch (error) {
-      console.log(error);
+      setForgotError('email not registered');
     }
-  };
-
-  // const [resquest, response, promptAsync] = Facebook.useAuthRequest({
-  //   clientId: '1646439895855834',
-  // });
-
-  // useEffect(() => {
-  //   if (response && response.type == 'success' && response.authentication) {
-  //     async () => {
-  //       const userInfoResponse = await fetch(
-  //         `https://graph.facebook.com/me?access_token=${response.authentication.accessToken}&fields=id,name,picture.type(large)`
-  //       );
-  //       const userInfo = await userInfoResponse.json();
-  //       setUser(userInfo);
-  //     };
-  //   }
-  // }, [response]);
-
-  const handlePressAsync = async () => {
-    // const result = await promptAsync();
-    // if (result.type !== 'success') {
-    //   alert('Uh oh, something went wrong!');
-    //   return;
-    // }
-
-    console.log('fb login');
   };
 
   const { black, white, accent } = COLORS;
@@ -116,12 +78,12 @@ const LoginScreen = ({ navigation }) => {
   } = styles;
 
   const { login } = useAuthStore();
-  const [focusEmail, setFocusEmail] = React.useState(1);
-  const [focusPassword, setFocusPassword] = React.useState(1);
+  const [focusEmail, setFocusEmail] = useState(1);
+  const [focusPassword, setFocusPassword] = useState(1);
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [err, setError] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [err, setError] = useState('');
 
   const handleLogin = () => {
     if (!email && !password) {
@@ -151,116 +113,165 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps='always'
-    >
-      <SafeAreaView style={container}>
-        <Avatar.Image
-          size={150}
-          style={{ backgroundColor: 'transparent' }}
-          source={require('../../assets/images/logo.png')}
-        />
-
-        <View style={loginWrapper}>
-          <TextInput
-            placeholder='Username or Email'
-            onFocus={() => setFocusEmail(2)}
-            onBlur={() => setFocusEmail(1)}
-            style={[input, { borderWidth: focusEmail }]}
-            onChangeText={(text) => setEmail(text)}
-            value={email}
-          />
-          {err ? <Text style={error}>{err}</Text> : null}
-
-          <TextInput
-            secureTextEntry
-            placeholder='Password'
-            onFocus={() => setFocusPassword(2)}
-            onBlur={() => setFocusPassword(1)}
-            style={[input, { borderWidth: focusPassword }]}
-            onChangeText={(text) => setPassword(text)}
-            value={password}
+    <>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps='always'
+        style={{
+          backgroundColor: 'white',
+        }}
+        contentContainerStyle={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <SafeAreaView style={[container, { backgroundColor: 'white' }]}>
+          <Avatar.Image
+            size={150}
+            style={{ backgroundColor: 'transparent' }}
+            source={require('../../assets/images/logo.png')}
           />
 
-          <Button
-            mode='text'
-            textColor={black}
-            style={forgotPassword}
-            labelStyle={footerText}
-          >
-            Forgot your password?
-          </Button>
+          <View style={loginWrapper}>
+            <TextInput
+              placeholder='Username or Email'
+              onFocus={() => setFocusEmail(2)}
+              onBlur={() => setFocusEmail(1)}
+              style={[input, { borderWidth: focusEmail }]}
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+            />
+            {err ? <Text style={error}>{err}</Text> : null}
 
-          <Button
-            mode='contained'
-            uppercase
-            style={button}
-            labelStyle={[letterSpacing, buttonText]}
-            textColor={white}
-            onPress={() => handleLogin()}
-          >
-            Sign In
-          </Button>
+            <TextInput
+              secureTextEntry
+              placeholder='Password'
+              onFocus={() => setFocusPassword(2)}
+              onBlur={() => setFocusPassword(1)}
+              style={[input, { borderWidth: focusPassword }]}
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+            />
 
-          <View style={dividerWrapper}>
-            <Divider style={divider} bold />
-            <Text style={[connectText, footerText]}>or connect with</Text>
-            <Divider style={divider} bold />
-          </View>
-          <View style={socialWrapper}>
-            <Button
-              onPress={handlePressAsync}
-              icon={() => (
-                <FontAwesome5 name='facebook' size={24} color={black} />
-              )}
-              mode='outlined'
-              style={[noBorderRadius, mb, socialButton]}
-              contentStyle={buttonContent}
-              labelStyle={buttonLabel}
-              textColor={black}
-            >
-              Continue with Facebook
-            </Button>
-            <Button
-              icon={() => (
-                <FontAwesome5 name='google' size={24} color={black} />
-              )}
-              mode='outlined'
-              style={[noBorderRadius, mb, socialButton]}
-              contentStyle={buttonContent}
-              labelStyle={buttonLabel}
-              textColor={black}
-              onPress={() => promptAsync()}
-            >
-              Continue with Google
-            </Button>
-            <Button
-              icon={() => <FontAwesome5 name='apple' size={24} color={black} />}
-              mode='outlined'
-              style={[noBorderRadius, mb, socialButton]}
-              contentStyle={buttonContent}
-              labelStyle={buttonLabel}
-              textColor={black}
-            >
-              Continue with Apple
-            </Button>
-          </View>
-          <View style={footerWrapper}>
-            <Text style={footerText}>Don't have an account?</Text>
             <Button
               mode='text'
-              textColor={accent}
-              style={signUpButton}
+              textColor={black}
+              style={forgotPassword}
               labelStyle={footerText}
-              onPress={() => navigation.navigate('Sign Up')}
+              onPress={() => setForgotModal(!forgotModal)}
             >
-              Sign Up
+              Forgot your password?
             </Button>
+
+            <Button
+              mode='contained'
+              uppercase
+              style={button}
+              labelStyle={[letterSpacing, buttonText]}
+              textColor={white}
+              onPress={() => handleLogin()}
+            >
+              Sign In
+            </Button>
+
+            <View style={footerWrapper}>
+              <Text style={footerText}>Don't have an account?</Text>
+              <Button
+                mode='text'
+                textColor={accent}
+                style={signUpButton}
+                labelStyle={footerText}
+                onPress={() => navigation.navigate('Sign Up')}
+              >
+                Sign Up
+              </Button>
+            </View>
           </View>
-        </View>
-      </SafeAreaView>
-    </ScrollView>
+        </SafeAreaView>
+      </ScrollView>
+
+      {forgotModal && (
+        <Modal
+          visible={forgotModal}
+          onDismiss={() => setForgotModal(!forgotModal)}
+          contentContainerStyle={{
+            backgroundColor: 'white',
+            padding: 20,
+            marginHorizontal: 10,
+            borderRadius: 15,
+          }}
+        >
+          {verify ? (
+            <>
+              <Text
+                style={[
+                  buttonText,
+                  { textAlign: 'center', color: COLORS.black },
+                ]}
+              >
+                Email Sent
+              </Text>
+              <Text
+                style={{
+                  fontFamily: FONT.regular,
+                  marginTop: 10,
+                  textAlign: 'center',
+                  color: COLORS.black,
+                }}
+              >
+                An email with instructions to reset your password has been sent
+                to your registered email address.
+              </Text>
+              <Button
+                mode='contained'
+                uppercase
+                style={button}
+                labelStyle={[letterSpacing, buttonText]}
+                textColor={white}
+                onPress={() => handleCloseVerify()}
+              >
+                Close
+              </Button>
+            </>
+          ) : (
+            <>
+              <Text style={[buttonText, { textAlign: 'center' }]}>
+                Forgot Password
+              </Text>
+              <TextInput
+                placeholder='Email'
+                style={[input, { borderWidth: focusPassword }]}
+                onChangeText={(text) => setForgotEmail(text)}
+                value={forgotEmail}
+              />
+              {forgotError && (
+                <Text
+                  style={{
+                    fontFamily: FONT.regular,
+                    marginTop: 10,
+                    color: COLORS.danger,
+                    textAlign: 'center',
+                  }}
+                >
+                  {forgotError}
+                </Text>
+              )}
+              <Button
+                mode='contained'
+                uppercase
+                style={button}
+                labelStyle={[letterSpacing, buttonText]}
+                textColor={white}
+                onPress={() => handleForgot()}
+              >
+                Submit
+              </Button>
+            </>
+          )}
+        </Modal>
+      )}
+    </>
   );
 };
 

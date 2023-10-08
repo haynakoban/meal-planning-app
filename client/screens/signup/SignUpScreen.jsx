@@ -1,15 +1,27 @@
 import { useState } from 'react';
-import { View, TextInput, ScrollView } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { View, TextInput, ScrollView, Linking, Pressable } from 'react-native';
+import { Button, Text, Checkbox } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import styles from '../../styles/signup';
-import { COLORS } from '../../constants';
+import { COLORS, FONT, SIZES } from '../../constants';
 import axios from '../../lib/axiosConfig';
 import useAuthStore from '../../store/useAuthStore';
 import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = () => {
+  const handleOpenTerms = async () => {
+    const url =
+      'https://nutri-smart.vercel.app/terms-and-condition-privacy-policy.html';
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.warn(`Don't know how to open URL: ${url}`);
+    }
+  };
+
   const navigation = useNavigation();
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
   const { white, accent } = COLORS;
@@ -30,6 +42,7 @@ const RegisterScreen = () => {
   } = styles;
 
   const [focusName, setFocusName] = useState(1);
+  const [isAgreed, setIsAgreed] = useState(false);
   const [focusEmail, setFocusEmail] = useState(1);
   const [focusPassword, setFocusPassword] = useState(1);
   const [focusConfirmPassword, setFocusConfirmPassword] = useState(1);
@@ -193,8 +206,9 @@ const RegisterScreen = () => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps='always'
+      style={{ backgroundColor: 'white' }}
     >
-      <SafeAreaView style={container}>
+      <SafeAreaView style={[container, { backgroundColor: 'white' }]}>
         <View style={bannerWrapper}>
           <Text style={bannerHeader}>Create Your Account</Text>
           <Text style={bannerDescription}>
@@ -263,7 +277,10 @@ const RegisterScreen = () => {
               setFocusConfirmPassword(1);
               validateConfirmPasswordOnBlur();
             }}
-            style={[input, { borderWidth: focusConfirmPassword }]}
+            style={[
+              input,
+              { borderWidth: focusConfirmPassword, marginBottom: 10 },
+            ]}
             onChangeText={(text) => {
               setConfirmPassword(text);
               validateConfirmPassword(text);
@@ -273,12 +290,39 @@ const RegisterScreen = () => {
             <Text style={error}>{confirmPasswordError}</Text>
           ) : null}
 
+          <Pressable
+            style={{ flexDirection: 'row', alignItems: 'center' }}
+            onPress={() => setIsAgreed(!isAgreed)}
+          >
+            <Checkbox status={isAgreed ? 'checked' : 'unchecked'} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ fontFamily: FONT.regular }}>I agree to the </Text>
+              <Pressable onPress={() => handleOpenTerms()}>
+                <Text
+                  style={{ fontFamily: FONT.regular, color: COLORS.accent }}
+                >
+                  terms & policy.
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
+
           <Button
             uppercase
-            style={button}
+            style={
+              isAgreed
+                ? button
+                : {
+                    backgroundColor: COLORS.secondary,
+                    marginTop: SIZES.sm,
+                    paddingVertical: 3,
+                    borderRadius: 999,
+                  }
+            }
             labelStyle={[letterSpacing, buttonText]}
             textColor={white}
             onPress={() => handleRegistration()}
+            disabled={!isAgreed}
           >
             Submit
           </Button>

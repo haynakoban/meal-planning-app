@@ -13,13 +13,23 @@ import axios from '../../lib/axiosConfig';
 import { COLORS, FONT, SIZES } from '../../constants';
 import { formatNumber } from '../../lib/formatNumber';
 import useAuthStore from '../../store/useAuthStore';
+import useRecipeStore from '../../store/useRecipeStore';
+import ProfileRecipes from './ProfileRecipes';
+import UserRecipes from './UserRecipes';
 
 const UserProfile = ({ route, navigation }) => {
   const { id } = route.params;
   const [userData, setUserData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [hasFollowed, setHasFollowed] = useState(false);
-  const [currentScreen, setCurrentScreen] = useState('meals');
+  const recipes = useRecipeStore((state) => state.recipes);
+  const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
+  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+
+  useEffect(() => {
+    clearRecipe();
+    presonalRecipes(id);
+  }, []);
 
   const { userInfo, followUser } = useAuthStore();
   const {
@@ -155,7 +165,7 @@ const UserProfile = ({ route, navigation }) => {
             <Text
               numberOfLines={1}
               ellipsizeMode='tail'
-              style={[name, profileText]}
+              style={[name, profileText, { color: COLORS.black }]}
             >
               {userData?.fullname}
             </Text>
@@ -340,86 +350,30 @@ const UserProfile = ({ route, navigation }) => {
             style={[
               groupButton,
               {
-                backgroundColor:
-                  currentScreen === 'meals' ? COLORS.lightWhite : 'transparent',
-              },
-            ]}
-            activeOpacity={1}
-            onPress={() => setCurrentScreen('meals')}
-          >
-            <View style={groupButtonView}>
-              <Text
-                style={[
-                  groupButtonViewNumber,
-                  {
-                    fontFamily:
-                      currentScreen === 'meals' ? FONT.bold : FONT.medium,
-                    color:
-                      currentScreen === 'meals'
-                        ? COLORS.accent
-                        : COLORS.primary,
-                  },
-                ]}
-              >
-                0
-              </Text>
-              <Text
-                style={[
-                  groupButtonViewText,
-                  {
-                    fontFamily:
-                      currentScreen === 'meals' ? FONT.bold : FONT.medium,
-                    color:
-                      currentScreen === 'meals'
-                        ? COLORS.accent
-                        : COLORS.primary,
-                  },
-                ]}
-              >
-                Meal Plans
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              groupButton,
-              {
-                backgroundColor:
-                  currentScreen === 'recipes'
-                    ? COLORS.lightWhite
-                    : 'transparent',
+                backgroundColor: COLORS.lightWhite,
               },
             ]}
             colo
             activeOpacity={1}
-            onPress={() => setCurrentScreen('recipes')}
           >
             <View style={groupButtonView}>
               <Text
                 style={[
                   groupButtonViewNumber,
                   {
-                    fontFamily:
-                      currentScreen === 'recipes' ? FONT.bold : FONT.medium,
-                    color:
-                      currentScreen === 'recipes'
-                        ? COLORS.accent
-                        : COLORS.primary,
+                    fontFamily: FONT.bold,
+                    color: COLORS.accent,
                   },
                 ]}
               >
-                0
+                {recipes?.length || '...'}
               </Text>
               <Text
                 style={[
                   groupButtonViewText,
                   {
-                    fontFamily:
-                      currentScreen === 'recipes' ? FONT.bold : FONT.medium,
-                    color:
-                      currentScreen === 'recipes'
-                        ? COLORS.accent
-                        : COLORS.primary,
+                    fontFamily: FONT.bold,
+                    color: COLORS.accent,
                   },
                 ]}
               >
@@ -430,12 +384,8 @@ const UserProfile = ({ route, navigation }) => {
         </View>
 
         {/* content here */}
-        <View style={mv}>
-          {currentScreen === 'meals' ? (
-            <Text>This is meals</Text>
-          ) : (
-            <Text>This is recipes</Text>
-          )}
+        <View style={{ marginTop: 20 }}>
+          <UserRecipes user_id={id} />
         </View>
       </View>
     </ScrollView>

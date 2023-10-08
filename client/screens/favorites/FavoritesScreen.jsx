@@ -22,7 +22,7 @@ const FavoritesScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 100);
+    }, 1500);
   }, []);
 
   // custom header/remove back button

@@ -22,8 +22,7 @@ const ProfileScreen = () => {
   const [currentScreen, setCurrentScreen] = useState('meals');
   const [refreshing, setRefreshing] = useState(false);
   const { userInfo, getUserInfo, setUserInfo } = useAuthStore();
-  const recipes = useRecipeStore((state) => state.recipes);
-  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const personal = useRecipeStore((state) => state.personal);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
   const personalMeals = useMealPlanRecipe((state) => state.personalMeals);
   const fetchPersonalMeals = useMealPlanRecipe(
@@ -31,9 +30,15 @@ const ProfileScreen = () => {
   );
   const [isRecipeEditable, setIsRecipeEditable] = useState(false);
   const [isMealEditable, setIsMealEditable] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    clearRecipe();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  }, []);
+
+  useEffect(() => {
     fetchPersonalMeals(userInfo?._id);
     presonalRecipes(userInfo?._id);
   }, []);
@@ -60,7 +65,6 @@ const ProfileScreen = () => {
 
     setUserInfo(userInfo?._id);
 
-    clearRecipe();
     presonalRecipes(userInfo?._id);
     fetchPersonalMeals(userInfo?._id);
 
@@ -116,7 +120,7 @@ const ProfileScreen = () => {
             <Text
               numberOfLines={1}
               ellipsizeMode='tail'
-              style={[name, profileText]}
+              style={[name, profileText, { color: COLORS.black }]}
             >
               {userInfo?.fullname}
             </Text>
@@ -226,6 +230,7 @@ const ProfileScreen = () => {
                   marginTop: 4,
                   textAlign: 'center',
                   width: '75%',
+                  color: COLORS.gray2,
                 },
               ]}
             >
@@ -261,7 +266,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                {personalMeals?.length || '...'}
+                {isLoading ? '...' : personalMeals?.length || '...'}
               </Text>
               <Text
                 style={[
@@ -307,7 +312,7 @@ const ProfileScreen = () => {
                   },
                 ]}
               >
-                {recipes?.length || '...'}
+                {isLoading ? '...' : personal?.length || '...'}
               </Text>
               <Text
                 style={[
@@ -358,12 +363,16 @@ const ProfileScreen = () => {
                     fontFamily: FONT.medium,
                     paddingHorizontal: 10,
                     paddingVertical: 5,
+                    color: COLORS.black,
                   }}
                 >
-                  {/* {isMealEditable ? 'Unedit Meal' : 'Edit Meal'} */}
                   Edit Meals
                 </Text>
-                <Checkbox status={isMealEditable ? 'checked' : 'unchecked'} />
+                <Checkbox
+                  status={isMealEditable ? 'checked' : 'unchecked'}
+                  color={COLORS.black}
+                  uncheckedColor={COLORS.black}
+                />
               </Pressable>
             </View>
             <ProfileMeals user_id={userInfo?._id} isEditable={isMealEditable} />
@@ -395,12 +404,16 @@ const ProfileScreen = () => {
                     fontFamily: FONT.medium,
                     paddingHorizontal: 10,
                     paddingVertical: 5,
+                    color: COLORS.black,
                   }}
                 >
-                  {/* {isRecipeEditable ? 'Unedit Recipe' : 'Edit Recipe'} */}
                   Edit Recipes
                 </Text>
-                <Checkbox status={isRecipeEditable ? 'checked' : 'unchecked'} />
+                <Checkbox
+                  status={isRecipeEditable ? 'checked' : 'unchecked'}
+                  color={COLORS.black}
+                  uncheckedColor={COLORS.black}
+                />
               </Pressable>
             </View>
             <ProfileRecipes

@@ -38,6 +38,9 @@ router.route('/auth/login').post(usersController.login);
 // post method - validate password
 router.route('/auth/password').post(usersController.password);
 
+// post method - forgot password
+router.route('/auth/forgot').post(usersController.forgotPassword);
+
 // get method - get filters data
 // patch method - update filtered field
 router

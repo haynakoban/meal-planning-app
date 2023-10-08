@@ -44,7 +44,12 @@ const SelectRecipe = ({ data, id, addRecipe, removeRecipe }) => {
   return (
     <Pressable
       onPress={() => navigation.navigate('Recipe', { id: data._id })}
-      style={card}
+      style={{
+        backgroundColor: COLORS.white,
+        borderRadius: SIZES.sm,
+        elevation: 5,
+        marginHorizontal: 5,
+      }}
     >
       {!isExists ? (
         <Pressable

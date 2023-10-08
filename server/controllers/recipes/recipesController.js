@@ -692,7 +692,7 @@ const filteredRecipes = async (req, res, next) => {
     res.json({
       message: `${recommended.length} items retrieved successfully`,
       status: 'success',
-      data: [{ title: 'Recommended Recipes', data: recommended }],
+      data: [{ title: 'Filtered Recipes', data: recommended }],
     });
   } catch (e) {
     return res.status(500).json({

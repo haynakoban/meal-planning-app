@@ -1,5 +1,4 @@
-import { Fragment, useState, useCallback, useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { Fragment, useState, useEffect } from 'react';
 import {
   Image,
   ScrollView,
@@ -30,40 +29,72 @@ const SingleRecipeScreen = ({ route, navigation }) => {
 
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [nutritionFacts, setNutritionFacts] = useState({});
+  const [nutritionFacts, setNutritionFacts] = useState({
+    calories: {
+      value: 0,
+      dailyValue: 0,
+    },
+    fat: {
+      value: 0,
+      dailyValue: 0,
+    },
+    carbs: {
+      value: 0,
+      dailyValue: 0,
+    },
+    fiber: {
+      value: 0,
+      dailyValue: 0,
+    },
+    protein: {
+      value: 0,
+      dailyValue: 0,
+    },
+    sugars: {
+      value: 0,
+      dailyValue: 0,
+    },
+    sodium: {
+      value: 0,
+      dailyValue: 0,
+    },
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [reviewsToShow, setReviewsToShow] = useState([]);
   const [reviewsPerPage, setReviewsPerPage] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
+  useEffect(() => {
+    if (recipe?.ingredients?.length > 0) {
+      fetchNutrition();
+    }
+  }, [recipe]);
 
-      if (recipe_id) {
-        singleRecipes(recipe_id);
-        fetchReviewsData(recipe_id);
-        const fav = userInfo?.favorites.includes(recipe_id) || false;
-        fav ? setIsFavorite(true) : setIsFavorite(false);
+  useEffect(() => {
+    setLoading(true);
 
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      }
-    }, [recipe_id])
-  );
+    const fetchData = async () => {
+      singleRecipes(recipe_id);
+      fetchReviewsData(recipe_id);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (recipe) {
-        fetchNutrition();
-      }
-    }, [recipe])
-  );
+      setTimeout(() => {
+        const itHas = userInfo?.favorites.some((item) => item === recipe_id);
+        itHas ? setIsFavorite(true) : setIsFavorite(false);
+        setLoading(false);
+      }, Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000);
+    };
+
+    fetchData();
+  }, [recipe_id]);
 
   const fetchNutrition = async () => {
+    // const apiURL = 'api.api-ninjas.com'
+    const apiURL = 'api.calorieninjas.com';
+
     try {
       let query = '';
-      for (let i = 0; i < recipe?.ingredients?.length; i++) {
+
+      for (let i = 0; i < recipe?.ingredients.length; i++) {
         query +=
           recipe?.ingredients[i].amount +
           recipe?.ingredients[i].measurement +
@@ -75,7 +106,7 @@ const SingleRecipeScreen = ({ route, navigation }) => {
       }
 
       const response = await axios.get(
-        `https://api.api-ninjas.com/v1/nutrition?query=${query}`,
+        `https://${apiURL}/v1/nutrition?query=${query}`,
         {
           headers: {
             'X-Api-Key': API,
@@ -83,9 +114,15 @@ const SingleRecipeScreen = ({ route, navigation }) => {
           },
         }
       );
-      setNutritionFacts(calculateCalorie(response.data));
+
+      if (response?.data) {
+        setNutritionFacts(calculateCalorie(response?.data?.items));
+        setErrorMessage(null);
+      } else {
+        console.error('Invalid response from API');
+      }
     } catch (error) {
-      console.error('Error:', error);
+      setErrorMessage(`502 error in ${apiURL} server`);
     }
   };
 
@@ -281,23 +318,36 @@ const SingleRecipeScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.nutritionWrapper}>
               <View style={styles.flexRowBetween}>
-                <Text style={styles.textSm}>AMMOUNT PER SERVING</Text>
+                <Text style={styles.textSm}>AMOUNT PER SERVING</Text>
                 <Text style={styles.textSm}>% DAILY VALUE</Text>
               </View>
               <View style={styles.dividerBlue} />
-              <View>
-                {Object.keys(nutritionFacts).map((key) => {
+              {errorMessage != null ? (
+                <Text
+                  style={[
+                    styles.textSm,
+                    {
+                      color: COLORS.danger,
+                      marginTop: 10,
+                      textTransform: 'uppercase',
+                    },
+                  ]}
+                >
+                  {errorMessage}
+                </Text>
+              ) : (
+                Object.keys(nutritionFacts).map((key) => {
                   const nutrient = nutritionFacts[key];
                   return (
                     <NutritionFactsData
                       name={key}
-                      value={nutrient.value}
-                      dailyValue={nutrient.dailyValue}
+                      value={nutrient?.value || 0}
+                      dailyValue={nutrient?.dailyValue || 0}
                       key={key}
                     />
                   );
-                })}
-              </View>
+                })
+              )}
             </View>
 
             <View style={styles.bigDivider} />

@@ -133,9 +133,9 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             }}
           >
             <View style={{ width: '48%' }}>
-              <Text style={[styles.addLabel, styles.mb]}>Ammount</Text>
+              <Text style={[styles.addLabel, styles.mb]}>Amount</Text>
               <TextInput
-                placeholder='Ammount'
+                placeholder='Amount'
                 value={ingredientInfo.amount}
                 onChangeText={(text) =>
                   setIngredientInfo({
