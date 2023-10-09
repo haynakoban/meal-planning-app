@@ -32,22 +32,10 @@ const headCells = [
     label: 'Full Name',
   },
   {
-    id: 'day',
-    numeric: true,
-    disablePadding: false,
-    label: 'Day',
-  },
-  {
     id: 'time',
     numeric: true,
     disablePadding: false,
     label: 'Time',
-  },
-  {
-    id: 'privacy',
-    numeric: true,
-    disablePadding: false,
-    label: 'Privacy',
   },
   {
     id: 'created_date',
@@ -242,19 +230,7 @@ const Meals = () => {
                           align='right'
                           sx={{ textTransform: 'capitalize' }}
                         >
-                          {row?.day || '-'}
-                        </TableCell>
-                        <TableCell
-                          align='right'
-                          sx={{ textTransform: 'capitalize' }}
-                        >
                           {row?.time || '-'}
-                        </TableCell>
-                        <TableCell
-                          align='right'
-                          sx={{ textTransform: 'capitalize' }}
-                        >
-                          {row?.privacy || '-'}
                         </TableCell>
                         <TableCell align='right'>{date}</TableCell>
                       </TableRow>

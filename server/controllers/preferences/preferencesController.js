@@ -1,4 +1,6 @@
 const { Preferences } = require('../../models');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 // bulk preferences
 const bulkPreferences = async (req, res, next) => {
@@ -142,7 +144,7 @@ const update = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { name } = req.body;
+    const { name, admin_id } = req.body;
 
     if (!name) {
       return res.status(500).json({
@@ -166,6 +168,7 @@ const create = async (req, res, next) => {
     const result = await Preferences.create({
       name: name,
       description: req.body?.description,
+      admin_id: new ObjectId(admin_id),
     });
 
     return res.status(201).json({

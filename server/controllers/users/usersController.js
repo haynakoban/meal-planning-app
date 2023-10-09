@@ -231,9 +231,6 @@ const login = async (req, res, next) => {
 
     const expiryTime = new Date(user.updatedAt.getTime() + 30 * 60 * 1000);
     const isPasswordExpired = new Date() > expiryTime;
-    console.log(expiryTime);
-    console.log(user.updatedAt);
-    console.log(new Date());
 
     if (user.forgot_password == true) {
       if (isPasswordExpired) {

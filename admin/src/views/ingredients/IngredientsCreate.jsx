@@ -26,9 +26,20 @@ const IngredientsCreate = () => {
 
   const handleFormSubmit = async (data) => {
     const { name } = data;
+    const userInfo = await axios.get(`admin/auth`);
+
+    if (!userInfo) {
+      return setError('name', {
+        type: 'server',
+        message: 'Something went wrong, please try again',
+      });
+    }
 
     if (name) {
-      const response = await axios.post('ingredients', { name: name });
+      const response = await axios.post('ingredients', {
+        name: name,
+        admin_id: userInfo?.user_id,
+      });
 
       if (response.data?.status === 'record created') {
         navigate('/ingredients');
