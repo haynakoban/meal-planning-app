@@ -2,20 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { Ingredients } = require('../models');
 const { ingredientsController } = require('../controllers');
-const {
-  checkBulkUniquenessMiddleware,
-  checkSingleUniquenessMiddleware,
-} = require('../middlewares');
+const { checkBulkUniquenessMiddleware } = require('../middlewares');
 
 // get method - get the list of ingredients
 // post method - create new ingredient
 router
   .route('/')
   .get(ingredientsController.list)
-  .post(
-    checkSingleUniquenessMiddleware(Ingredients),
-    ingredientsController.create
-  )
+  .post(ingredientsController.create)
   .delete(ingredientsController.destroy);
 
 // post method - create multiple ingredients

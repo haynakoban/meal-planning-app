@@ -38,12 +38,6 @@ const headCells = [
     label: 'Email',
   },
   {
-    id: 'registrationMethod',
-    numeric: true,
-    disablePadding: false,
-    label: 'Registration Method',
-  },
-  {
     id: 'created_date',
     numeric: true,
     disablePadding: false,
@@ -233,12 +227,6 @@ const Users = () => {
                           {row?.username || '-'}
                         </TableCell>
                         <TableCell align='right'>{row?.email || '-'}</TableCell>
-                        <TableCell
-                          align='right'
-                          sx={{ textTransform: 'capitalize' }}
-                        >
-                          {row?.registrationMethod || '-'}
-                        </TableCell>
                         <TableCell align='right'>{date}</TableCell>
                       </TableRow>
                     );

@@ -51,12 +51,6 @@ const cuisines = [
   },
 ];
 
-// const cooking_time = {
-//   type: mongoose.Schema.Types.ObjectId,
-//   ref: 'Cooking_Times',
-//   required: true,
-// };
-
 const feedbacks = [
   {
     type: mongoose.Schema.Types.ObjectId,

@@ -1,4 +1,6 @@
 const { Ingredients } = require('../../models');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 // bulk ingredients
 const bulkIngredients = async (req, res, next) => {
@@ -22,19 +24,23 @@ const bulkIngredients = async (req, res, next) => {
 // create new ingredient
 const create = async (req, res, next) => {
   try {
-    const name = req.body.name;
+    const { name, admin_id } = req.body;
+
     const ingredient = await Ingredients.find({
       name: { $regex: new RegExp(name, 'i') },
     });
 
-    if (ingredient) {
+    if (ingredient.length > 0) {
       return res.json({
         err: `item already exist`,
         data: {},
       });
     }
 
-    const result = await Ingredients.create(req.uniqueData);
+    const result = await Ingredients.create({
+      name: name,
+      admin_id: new ObjectId(admin_id),
+    });
 
     return res.status(201).json({
       message: `An item inserted successfully`,
