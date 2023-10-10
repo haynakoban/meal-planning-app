@@ -2,11 +2,9 @@ const mongoose = require('mongoose');
 
 const ingredients = {
   type: Array,
-  ref: 'Ingredients',
   required: false,
   ingredients_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ingredients',
+    type: String,
     required: false,
   },
   measurement: { type: String, required: false },
