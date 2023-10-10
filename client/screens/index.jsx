@@ -9,7 +9,6 @@ import ProfileScreen from './profile/ProfileScreen';
 import RecipesFormScreen from './actions/RecipesFormScreen';
 import RecipesScreen from './recipes/RecipesScreen';
 import SingleRecipeScreen from './recipes/SingleRecipeScreen';
-import Recipe from './recipes/Recipe';
 import SearchScreen from './search/SearchScreen';
 import SearchRecipe from './search/SearchRecipe';
 import SignUpScreen from './signup/SignUpScreen';
@@ -33,7 +32,6 @@ export {
   RecipesScreen,
   SearchScreen,
   SignUpScreen,
-  Recipe,
   Meal,
   SearchRecipe,
   LoadingScreen,
