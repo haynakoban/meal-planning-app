@@ -11,6 +11,7 @@ const useRecipeStore = create((set) => ({
   personal: [],
   recipeText: '',
   otherRecipes: [],
+  added: false,
 
   setFilteredRecipe: async () => {
     try {
@@ -158,6 +159,11 @@ const useRecipeStore = create((set) => ({
     } catch (error) {
       console.error('Error fetching data2:', error);
     }
+  },
+
+  newAdded: () => {
+    const { added } = useRecipeStore.getState();
+    set({ added: !added });
   },
 
   setRecipeText: (text) =>

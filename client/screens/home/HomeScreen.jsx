@@ -34,6 +34,7 @@ const HomeScreen = ({ navigation }) => {
   const homeRecipes = useRecipeStore((state) => state.homeRecipes);
   const fetchRecipesData = useRecipeStore((state) => state.fetchRecipesData);
   const setFilteredRecipe = useRecipeStore((state) => state.setFilteredRecipe);
+  const added = useRecipeStore((state) => state.added);
   const filters = useFilterStore((state) => state.filters);
   const loadCachedFilters = useFilterStore((state) => state.loadCachedFilters);
   const { filteredData } = useFilterStore();
@@ -54,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1500);
-  }, []);
+  }, [added]);
 
   const handleRefresh = () => {
     setRefreshing(true);

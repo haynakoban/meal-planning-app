@@ -10,7 +10,7 @@ import {
   Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton, ActivityIndicator } from 'react-native-paper';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -26,6 +26,60 @@ import useAuthStore from '../../store/useAuthStore';
 import axios from '../../lib/axiosConfig';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useRecipeStore from '../../store/useRecipeStore';
+
+function LoadingScreen({ failed, success }) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.25)',
+        zIndex: 999,
+        width: '100%',
+      }}
+    >
+      {!failed && !success && (
+        <ActivityIndicator animating={true} color={COLORS.white} />
+      )}
+      {failed && (
+        <View
+          style={{
+            padding: 15,
+            borderRadius: 8,
+            backgroundColor: COLORS.danger,
+            width: '80%',
+          }}
+        >
+          <Text style={{ fontFamily: FONT.regular, color: COLORS.white }}>
+            Something went wrong, please try again.
+          </Text>
+        </View>
+      )}
+      {success && (
+        <View
+          style={{
+            padding: 15,
+            borderRadius: 8,
+            backgroundColor: 'green',
+            width: '80%',
+          }}
+        >
+          <Text style={{ fontFamily: FONT.regular, color: COLORS.white }}>
+            Recipe updated successfully.
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
 
 const UpdateRecipe = () => {
   const navigation = useNavigation();
@@ -96,6 +150,9 @@ const UpdateRecipe = () => {
   }, [recipe]);
 
   const [permission, setPermission] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const {
     open,
@@ -254,6 +311,8 @@ const UpdateRecipe = () => {
         return;
       }
 
+      setIsLoading(true);
+
       const fd = new FormData();
       const procedureString =
         form.procedure?.filter((item) => item != '') || [];
@@ -286,7 +345,16 @@ const UpdateRecipe = () => {
       if (response.data?.status === 'record created') {
         presonalRecipes(userInfo?._id);
         setFilteredRecipe();
-        navigation.navigate('Profile');
+        setSuccess(true);
+        setTimeout(() => {
+          navigation.navigate('Profile');
+        }, 1000);
+      } else {
+        setFailed(true);
+        setTimeout(() => {
+          setFailed(false);
+          setIsLoading(false);
+        }, 2000);
       }
     } catch (error) {
       console.error('Error posting data:', error);
@@ -308,380 +376,390 @@ const UpdateRecipe = () => {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps='always'>
-      <View style={styles.container}>
-        <Text style={styles.highlights}>Name & Photo</Text>
-        {recipe?.image ? (
-          <>
-            {form.image == null ? (
-              <TouchableHighlight onPress={pickImage}>
-                <Image
-                  source={{ uri: recipe?.image }}
-                  style={styles.hasImage}
+    <>
+      {isLoading && <LoadingScreen failed={failed} success={success} />}
+      <ScrollView keyboardShouldPersistTaps='always'>
+        <View style={styles.container}>
+          <Text style={styles.highlights}>Name & Photo</Text>
+          {recipe?.image ? (
+            <>
+              {form.image == null ? (
+                <TouchableHighlight onPress={pickImage}>
+                  <Image
+                    source={{ uri: recipe?.image }}
+                    style={styles.hasImage}
+                  />
+                </TouchableHighlight>
+              ) : (
+                <TouchableHighlight onPress={pickImage}>
+                  <Image source={{ uri: form.image }} style={styles.hasImage} />
+                </TouchableHighlight>
+              )}
+            </>
+          ) : (
+            <TouchableHighlight onPress={pickImage}>
+              <View style={styles.noImage}>
+                <AntDesign
+                  name='camerao'
+                  size={SIZES.xl}
+                  color={COLORS.black}
                 />
-              </TouchableHighlight>
-            ) : (
-              <TouchableHighlight onPress={pickImage}>
-                <Image source={{ uri: form.image }} style={styles.hasImage} />
-              </TouchableHighlight>
-            )}
-          </>
-        ) : (
-          <TouchableHighlight onPress={pickImage}>
-            <View style={styles.noImage}>
-              <AntDesign name='camerao' size={SIZES.xl} color={COLORS.black} />
-              <Text style={styles.addLabel}>Add Cover Photo</Text>
-            </View>
-          </TouchableHighlight>
-        )}
+                <Text style={styles.addLabel}>Add Cover Photo</Text>
+              </View>
+            </TouchableHighlight>
+          )}
 
-        {form.image && (
-          <Pressable
-            onPress={() =>
-              setForm({
-                ...form,
-                image: null,
-              })
-            }
-          >
-            <View
+          {form.image && (
+            <Pressable
+              onPress={() =>
+                setForm({
+                  ...form,
+                  image: null,
+                })
+              }
+            >
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: SIZES.sm,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name='delete-circle'
+                  size={SIZES.xxl}
+                  color={COLORS.danger}
+                />
+              </View>
+            </Pressable>
+          )}
+
+          <Text style={[styles.labels, { marginTop: SIZES.lg }]}>Name</Text>
+          <TextInput
+            placeholder='Name of recipe'
+            value={form.name != null ? form.name : recipe?.name}
+            onChangeText={(text) => {
+              setForm({ ...form, name: text });
+              setErr({
+                ...err,
+                name: false,
+              });
+            }}
+            style={[styles.input, styles.borderWidth]}
+          />
+          {err.name && (
+            <Text
               style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: SIZES.sm,
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
               }}
             >
-              <MaterialCommunityIcons
-                name='delete-circle'
-                size={SIZES.xxl}
-                color={COLORS.danger}
-              />
-            </View>
-          </Pressable>
-        )}
+              Name field is requried.
+            </Text>
+          )}
 
-        <Text style={[styles.labels, { marginTop: SIZES.lg }]}>Name</Text>
-        <TextInput
-          placeholder='Name of recipe'
-          value={form.name != null ? form.name : recipe?.name}
-          onChangeText={(text) => {
-            setForm({ ...form, name: text });
-            setErr({
-              ...err,
-              name: false,
-            });
-          }}
-          style={[styles.input, styles.borderWidth]}
-        />
-        {err.name && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
-            }}
-          >
-            Name field is requried.
+          <Text style={[styles.labels, { marginTop: SIZES.sm }]}>
+            Description
           </Text>
-        )}
-
-        <Text style={[styles.labels, { marginTop: SIZES.sm }]}>
-          Description
-        </Text>
-        <TextInput
-          placeholder='Add recipe description'
-          value={
-            form.description != null ? form.description : recipe?.description
-          }
-          onChangeText={(text) => {
-            setForm({ ...form, description: text });
-            setErr({
-              ...err,
-              description: false,
-            });
-          }}
-          style={[styles.textarea, styles.borderWidth]}
-          multiline={true}
-          numberOfLines={10}
-        />
-        {err.description && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
+          <TextInput
+            placeholder='Add recipe description'
+            value={
+              form.description != null ? form.description : recipe?.description
+            }
+            onChangeText={(text) => {
+              setForm({ ...form, description: text });
+              setErr({
+                ...err,
+                description: false,
+              });
             }}
-          >
-            Description field is requried.
-          </Text>
-        )}
-
-        <Text style={[styles.highlights, styles.mtlg]}>
-          Ingredients & Procedure
-        </Text>
-
-        <Text style={styles.labels}>Ingredients</Text>
-        <ScrollView style={styles.select}>
-          <DropDownPicker
-            placeholderStyle={styles.ddPlaceholder}
-            style={[styles.noBorderWidth, styles.noBG]}
-            placeholder='Select ingredients'
-            searchPlaceholder='Search ingredients'
-            multiple={true}
-            searchable={true}
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            showBadgeDot={false}
+            style={[styles.textarea, styles.borderWidth]}
+            multiline={true}
+            numberOfLines={10}
           />
-        </ScrollView>
-        {value && <View style={{ marginTop: 10 }}></View>}
-        {value &&
-          value.map((item, index) => {
-            let it = JSON.parse(item);
-            return (
-              <Pressable
-                key={it[0]}
-                style={{
-                  padding: 15,
-                  backgroundColor: COLORS.primary,
-                  borderRadius: 8,
-                  marginBottom: 5,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-                onPress={() => {
-                  openModal({
-                    id: it[0],
-                    name: it[1],
-                  });
-                  setErr({
-                    ...err,
-                    ingredients: false,
-                  });
-                }}
-              >
-                <Text style={styles.smallLabel}>{it[1]}</Text>
-                {checkIfIdExists(it[0]) ? (
-                  <AntDesign
-                    name='checkcircle'
-                    size={20}
-                    color={COLORS.accent}
-                  />
-                ) : (
-                  <Text style={[styles.smallLabel, { color: COLORS.danger }]}>
-                    Setup Required
-                  </Text>
-                )}
-              </Pressable>
-            );
-          })}
-        {err.ingredients && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
-            }}
-          >
-            Please select and setup the ingredients.
+          {err.description && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Description field is requried.
+            </Text>
+          )}
+
+          <Text style={[styles.highlights, styles.mtlg]}>
+            Ingredients & Procedure
           </Text>
-        )}
 
-        <Text style={[styles.labels, styles.mt]}>Procedure</Text>
-        <TextInput
-          placeholder='Add one procedure per line'
-          value={
-            form.procedure != null
-              ? (form?.procedure || []).join('\n')
-              : (recipe?.procedure || []).join('\n')
-          }
-          onChangeText={(text) => {
-            setForm({
-              ...form,
-              procedure: text.split('\n'),
-            });
-            setErr({
-              ...err,
-              procedure: false,
-            });
-          }}
-          style={[styles.textarea, styles.borderWidth]}
-          multiline={true}
-          numberOfLines={10}
-          textAlignVertical='top'
-        />
-        {err.procedure && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
+          <Text style={styles.labels}>Ingredients</Text>
+          <ScrollView style={styles.select}>
+            <DropDownPicker
+              placeholderStyle={styles.ddPlaceholder}
+              style={[styles.noBorderWidth, styles.noBG]}
+              placeholder='Select ingredients'
+              searchPlaceholder='Search ingredients'
+              multiple={true}
+              searchable={true}
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              showBadgeDot={false}
+            />
+          </ScrollView>
+          {value && <View style={{ marginTop: 10 }}></View>}
+          {value &&
+            value.map((item, index) => {
+              let it = JSON.parse(item);
+              return (
+                <Pressable
+                  key={it[0]}
+                  style={{
+                    padding: 15,
+                    backgroundColor: COLORS.primary,
+                    borderRadius: 8,
+                    marginBottom: 5,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                  onPress={() => {
+                    openModal({
+                      id: it[0],
+                      name: it[1],
+                    });
+                    setErr({
+                      ...err,
+                      ingredients: false,
+                    });
+                  }}
+                >
+                  <Text style={styles.smallLabel}>{it[1]}</Text>
+                  {checkIfIdExists(it[0]) ? (
+                    <AntDesign
+                      name='checkcircle'
+                      size={20}
+                      color={COLORS.accent}
+                    />
+                  ) : (
+                    <Text style={[styles.smallLabel, { color: COLORS.danger }]}>
+                      Setup Required
+                    </Text>
+                  )}
+                </Pressable>
+              );
+            })}
+          {err.ingredients && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Please select and setup the ingredients.
+            </Text>
+          )}
+
+          <Text style={[styles.labels, styles.mt]}>Procedure</Text>
+          <TextInput
+            placeholder='Add one procedure per line'
+            value={
+              form.procedure != null
+                ? (form?.procedure || []).join('\n')
+                : (recipe?.procedure || []).join('\n')
+            }
+            onChangeText={(text) => {
+              setForm({
+                ...form,
+                procedure: text.split('\n'),
+              });
+              setErr({
+                ...err,
+                procedure: false,
+              });
             }}
-          >
-            Procedure field is required.
+            style={[styles.textarea, styles.borderWidth]}
+            multiline={true}
+            numberOfLines={10}
+            textAlignVertical='top'
+          />
+          {err.procedure && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Procedure field is required.
+            </Text>
+          )}
+
+          <Text style={[styles.highlights, styles.mtlg]}>
+            Recipe Information
           </Text>
-        )}
 
-        <Text style={[styles.highlights, styles.mtlg]}>Recipe Information</Text>
+          <Text style={styles.labels}>Meal Type</Text>
+          <View style={styles.select}>
+            <DropDownPicker
+              placeholderStyle={styles.ddPlaceholder}
+              style={styles.dd}
+              placeholder='Select course type'
+              searchPlaceholder='Search course type'
+              multiple={true}
+              searchable={true}
+              open={openMealType}
+              value={mealTypeValue}
+              items={meal_types}
+              setOpen={setOpenMealtype}
+              setValue={setMealTypeValue}
+              setItems={setMealType}
+              showBadgeDot={false}
+            />
+          </View>
+          {err.meal_types && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Please select meal type.
+            </Text>
+          )}
 
-        <Text style={styles.labels}>Meal Type</Text>
-        <View style={styles.select}>
-          <DropDownPicker
-            placeholderStyle={styles.ddPlaceholder}
-            style={styles.dd}
-            placeholder='Select course type'
-            searchPlaceholder='Search course type'
-            multiple={true}
-            searchable={true}
-            open={openMealType}
-            value={mealTypeValue}
-            items={meal_types}
-            setOpen={setOpenMealtype}
-            setValue={setMealTypeValue}
-            setItems={setMealType}
-            showBadgeDot={false}
-          />
-        </View>
-        {err.meal_types && (
-          <Text
-            style={{
-              color: COLORS.danger,
-              fontFamily: FONT.regular,
-              fontSize: SIZES.sm,
-              textAlign: 'center',
-            }}
-          >
-            Please select meal type.
-          </Text>
-        )}
+          <Text style={[styles.labels, styles.mt]}>Preference</Text>
+          <View style={styles.select}>
+            <DropDownPicker
+              placeholderStyle={styles.ddPlaceholder}
+              style={styles.dd}
+              placeholder='Select preferences'
+              searchPlaceholder='Search preferences'
+              multiple={true}
+              searchable={true}
+              open={openPreferences}
+              value={preferencesValue}
+              items={preferences}
+              setOpen={setOpenPreferences}
+              setValue={setPreferencesValue}
+              setItems={setPreferences}
+              showBadgeDot={false}
+            />
+          </View>
 
-        <Text style={[styles.labels, styles.mt]}>Preference</Text>
-        <View style={styles.select}>
-          <DropDownPicker
-            placeholderStyle={styles.ddPlaceholder}
-            style={styles.dd}
-            placeholder='Select preferences'
-            searchPlaceholder='Search preferences'
-            multiple={true}
-            searchable={true}
-            open={openPreferences}
-            value={preferencesValue}
-            items={preferences}
-            setOpen={setOpenPreferences}
-            setValue={setPreferencesValue}
-            setItems={setPreferences}
-            showBadgeDot={false}
-          />
-        </View>
+          <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
+          <View style={styles.select}>
+            <DropDownPicker
+              placeholderStyle={styles.ddPlaceholder}
+              style={styles.dd}
+              placeholder='Select cuisine'
+              searchPlaceholder='Search cuisine'
+              multiple={true}
+              searchable={true}
+              open={openCuisine}
+              value={cuisineValue}
+              items={cuisines}
+              setOpen={setOpenCuisine}
+              setValue={setCuisineValue}
+              setItems={setCuisine}
+              showBadgeDot={false}
+            />
+          </View>
 
-        <Text style={[styles.labels, styles.mt]}>Cuisine</Text>
-        <View style={styles.select}>
-          <DropDownPicker
-            placeholderStyle={styles.ddPlaceholder}
-            style={styles.dd}
-            placeholder='Select cuisine'
-            searchPlaceholder='Search cuisine'
-            multiple={true}
-            searchable={true}
-            open={openCuisine}
-            value={cuisineValue}
-            items={cuisines}
-            setOpen={setOpenCuisine}
-            setValue={setCuisineValue}
-            setItems={setCuisine}
-            showBadgeDot={false}
-          />
-        </View>
-
-        <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
-        <View>
-          {CT.map((_, i) => {
-            const { t, s } = _;
-            return (
-              <Pressable
-                key={i}
-                style={styles.cookingTime}
-                onPress={() => setForm({ ...form, cookingTime: t })}
-              >
-                <RadioButton
-                  value={t}
-                  status={
-                    (form.cookingTime != null
-                      ? form.cookingTime
-                      : recipe?.cooking_time) === t
-                      ? 'checked'
-                      : 'unchecked'
-                  }
+          <Text style={[styles.labels, styles.mt]}>Cooking Time</Text>
+          <View>
+            {CT.map((_, i) => {
+              const { t, s } = _;
+              return (
+                <Pressable
+                  key={i}
+                  style={styles.cookingTime}
                   onPress={() => setForm({ ...form, cookingTime: t })}
-                />
-                <Text style={styles.fffs}>
-                  {t === 60 ? '1' : t === 120 ? '2' : t} {s}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                >
+                  <RadioButton
+                    value={t}
+                    status={
+                      (form.cookingTime != null
+                        ? form.cookingTime
+                        : recipe?.cooking_time) === t
+                        ? 'checked'
+                        : 'unchecked'
+                    }
+                    onPress={() => setForm({ ...form, cookingTime: t })}
+                  />
+                  <Text style={styles.fffs}>
+                    {t === 60 ? '1' : t === 120 ? '2' : t} {s}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
 
-        <Text style={[styles.highlights, styles.mtxl]}>Recipe Privacy</Text>
+          <Text style={[styles.highlights, styles.mtxl]}>Recipe Privacy</Text>
 
-        <View>
-          {privacyData.map((_, i) => {
-            const { privacy, title, description } = _;
-            return (
-              <Pressable
-                key={i}
-                style={[
-                  styles.privacyStyle,
-                  ,
-                  form.privacy === privacy
-                    ? { backgroundColor: COLORS.primary }
-                    : '',
-                ]}
-                onPress={() => setForm({ ...form, privacy: privacy })}
-              >
-                <RadioButton
-                  value={privacy}
-                  status={
-                    (form.privacy != null ? form.privacy : recipe?.privacy) ===
-                    privacy
-                      ? 'checked'
-                      : 'unchecked'
-                  }
+          <View>
+            {privacyData.map((_, i) => {
+              const { privacy, title, description } = _;
+              return (
+                <Pressable
+                  key={i}
+                  style={[
+                    styles.privacyStyle,
+                    ,
+                    form.privacy === privacy
+                      ? { backgroundColor: COLORS.primary }
+                      : '',
+                  ]}
                   onPress={() => setForm({ ...form, privacy: privacy })}
-                />
-                <View>
-                  <Text style={styles.fffs}>{title}</Text>
-                  <Text style={styles.privactDescription}>{description}</Text>
-                </View>
-              </Pressable>
-            );
-          })}
+                >
+                  <RadioButton
+                    value={privacy}
+                    status={
+                      (form.privacy != null
+                        ? form.privacy
+                        : recipe?.privacy) === privacy
+                        ? 'checked'
+                        : 'unchecked'
+                    }
+                    onPress={() => setForm({ ...form, privacy: privacy })}
+                  />
+                  <View>
+                    <Text style={styles.fffs}>{title}</Text>
+                    <Text style={styles.privactDescription}>{description}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Pressable
+            style={[styles.submitButton, styles.mtxl]}
+            onPress={handleSubmit}
+          >
+            <Text style={styles.submitText}>Update</Text>
+          </Pressable>
         </View>
 
-        <Pressable
-          style={[styles.submitButton, styles.mtxl]}
-          onPress={handleSubmit}
-        >
-          <Text style={styles.submitText}>Update</Text>
-        </Pressable>
-      </View>
-
-      {modalVisible && (
-        <ModifyIngredientModal
-          visible={modalVisible}
-          data={selectedData}
-          onClose={closeModal}
-        />
-      )}
-    </ScrollView>
+        {modalVisible && (
+          <ModifyIngredientModal
+            visible={modalVisible}
+            data={selectedData}
+            onClose={closeModal}
+          />
+        )}
+      </ScrollView>
+    </>
   );
 };
 
