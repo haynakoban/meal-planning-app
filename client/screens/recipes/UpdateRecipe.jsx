@@ -73,7 +73,7 @@ function LoadingScreen({ failed, success }) {
           }}
         >
           <Text style={{ fontFamily: FONT.regular, color: COLORS.white }}>
-            Recipe created successfully.
+            Recipe updated successfully.
           </Text>
         </View>
       )}
