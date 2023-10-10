@@ -209,9 +209,11 @@ const RegisterScreen = () => {
       style={{ backgroundColor: 'white' }}
     >
       <SafeAreaView style={[container, { backgroundColor: 'white' }]}>
-        <View style={bannerWrapper}>
-          <Text style={bannerHeader}>Create Your Account</Text>
-          <Text style={bannerDescription}>
+        <View style={[bannerWrapper, { marginTop: 15 }]}>
+          <Text style={[bannerHeader, { color: COLORS.black }]}>
+            Create Your Account
+          </Text>
+          <Text style={[bannerDescription, { color: COLORS.black }]}>
             Please enter info to create account
           </Text>
         </View>
