@@ -4,7 +4,8 @@ const ingredients = {
   type: Array,
   required: false,
   ingredients_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ingredients',
     required: false,
   },
   measurement: { type: String, required: false },

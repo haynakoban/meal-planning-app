@@ -1,4 +1,4 @@
-const { Recipes, MealTypes } = require('../../models');
+const { Recipes, MealTypes, Ingredients } = require('../../models');
 const dbUtility = require('../../config/connection');
 const ObjectId = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
@@ -35,6 +35,13 @@ const create = async (req, res, next) => {
     const cuisineValues = JSON.parse(req.body?.cuisines);
     const ingredientsValues = JSON.parse(req.body?.ingredients);
 
+    const ingredients = ingredientsValues.map((item) => {
+      return {
+        ...item,
+        ingredients_id: new ObjectId(item.ingredients_id),
+      };
+    });
+
     const result = await Recipes.create({
       user_id: req.body?.user_id,
       name: req.body?.name,
@@ -46,7 +53,7 @@ const create = async (req, res, next) => {
       cuisines: cuisineValues || [],
       cooking_time: parseInt(req.body?.cooking_time),
       feedbacks: [],
-      ingredients: ingredientsValues,
+      ingredients: ingredients,
       privacy: req.body?.privacy,
     });
 
@@ -341,8 +348,20 @@ const show = async (req, res, next) => {
         select: 'user_id comment rating foodItemType',
       })
       .populate('cooking_time')
-      .populate('ingredients.ingredients_id')
+      .populate({ path: 'ingredients.ingredients_id', select: 'name' })
       .select('-createAt -__v');
+
+    const ingredients = await Promise.all(
+      recipe.ingredients.map(async (item) => {
+        const i = await Ingredients.findOne({ _id: item.ingredients_id });
+        return {
+          ...item,
+          ingredients_id: [{ _id: i._id, name: i.name }],
+        };
+      })
+    );
+
+    recipe.ingredients = ingredients;
 
     if (!recipe) {
       return res.status(404).json({
@@ -488,7 +507,7 @@ const deleteRecipe = async (req, res, next) => {
   }
 };
 
-// create new recipe
+// update new recipe
 const updateRecipe = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -498,6 +517,13 @@ const updateRecipe = async (req, res, next) => {
     const preferencesValues = JSON.parse(req.body?.preferences);
     const cuisineValues = JSON.parse(req.body?.cuisines);
     const ingredientsValues = JSON.parse(req.body?.ingredients);
+
+    const ingredients = ingredientsValues.map((item) => {
+      return {
+        ...item,
+        ingredients_id: new ObjectId(item.ingredients_id),
+      };
+    });
 
     if (recipe) {
       const fileId = req?.file?.id;
@@ -523,7 +549,7 @@ const updateRecipe = async (req, res, next) => {
               preferences: preferencesValues || [],
               cuisines: cuisineValues || [],
               cooking_time: parseInt(req.body.cooking_time),
-              ingredients: ingredientsValues,
+              ingredients: ingredients,
               privacy: req.body.privacy,
             },
           },
@@ -548,7 +574,7 @@ const updateRecipe = async (req, res, next) => {
               preferences: preferencesValues || [],
               cuisines: cuisineValues || [],
               cooking_time: parseInt(req.body.cooking_time),
-              ingredients: ingredientsValues,
+              ingredients: ingredients,
               privacy: req.body.privacy,
             },
           },
@@ -614,11 +640,19 @@ const filteredRecipes = async (req, res, next) => {
     let query = [];
 
     if (filter.Ingredients.length > 0) {
-      query.push({ 'ingredients.ingredients_id': { $in: filter.Ingredients } });
+      let ing = [];
+      for (let i = 0; i < filter.Ingredients.length; i++) {
+        ing.push(new ObjectId(filter.Ingredients[i]));
+      }
+      query.push({ 'ingredients.ingredients_id': { $in: ing } });
     }
 
     if (filter.Allergies.length > 0) {
-      query.push({ 'ingredients.ingredients_id': { $nin: filter.Allergies } });
+      let ing = [];
+      for (let i = 0; i < filter.Ingredients.length; i++) {
+        ing.push(new ObjectId(filter.Ingredients[i]));
+      }
+      query.push({ 'ingredients.ingredients_id': { $nin: ing } });
     }
 
     if (filter.CookingTimes.length > 0) {
