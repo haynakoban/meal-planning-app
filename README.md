@@ -54,7 +54,33 @@ To get started with Meal Planning Application Adaptive to User Nutritional Prefe
 Clone the Meal Planning Application Adaptive to User Nutritional Preferences and Available Ingredients repository to your local machine using Git:
 
 ```
-git clone [https://github.com/haynakoban/azure-avenue-online-store.git](https://github.com/haynakoban/meal-planning-app.git)
+git clone https://github.com/haynakoban/meal-planning-app.git
+```
+
+### Step 2: Install Dependencies for **Admin**
+
+1. **Navigate to the project's root directory**: After cloning the project, proceed to the root directory of the project:
+
+```
+cd meal-planning-app
+```
+
+2. **Navigate to Admin directory**: In the "admin" directory, install all the JavaScript dependencies using npm:
+
+```
+cd admin
+```
+
+3. **Install Dependencies**: Once you are in the project's root directory, navigate to the "admin" directory:
+
+```
+npm install
+```
+
+4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+
+```
+npm start
 ```
 
 ## License
