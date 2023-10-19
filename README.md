@@ -42,46 +42,40 @@ To get started with Meal Planning Application Adaptive to User Nutritional Prefe
 3. Expo CLI
 4. MongoDB (as the database)
 5. Editor/IDE (e.g., Visual Studio Code, Sublime Text)
-6. Environment Variables
-   ```bash
-   MONGO_URL="add_your_mongo_url"
-   ACCESS_SECRET_KEY="create_your_own_access_key"
-   EMAIL_PASS="add_your_email_password"
-   EMAIL="add_your_email" 
 
 ### Step 1: Clone the Repository
 
 Clone the Meal Planning Application Adaptive to User Nutritional Preferences and Available Ingredients repository to your local machine using Git:
 
-```
-git clone https://github.com/haynakoban/meal-planning-app.git
-```
+  ```
+  git clone https://github.com/haynakoban/meal-planning-app.git
+  ```
 
 ### Step 2: Install Dependencies for **Admin**
 
 1. **Navigate to the project's root directory**: After cloning the project, proceed to the root directory of the project:
 
-```
-cd meal-planning-app
-```
+  ```
+  cd meal-planning-app
+  ```
 
 2. **Navigate to Admin directory**: Once you are in the project's root directory, navigate to the "admin" directory:
 
-```
-cd admin
-```
+  ```
+  cd admin
+  ```
 
 3. **Install Dependencies**: In the "admin" directory, install all the JavaScript dependencies using npm:
 
-```
-npm install
-```
+  ```
+  npm install
+  ```
 
 4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
 
-```
-npm start
-```
+  ```
+  npm start
+  ```
 
 While the admin panel is running, please open a new terminal and navigate to the project's root directory. In this new terminal, you can proceed to install the server dependencies using the appropriate package manager command for your Node.js server.
 
@@ -89,27 +83,35 @@ While the admin panel is running, please open a new terminal and navigate to the
 
 1. **Navigate to the project's root directory**: proceed to the root directory of the project:
 
-```
-cd meal-planning-app
-```
+  ```
+  cd meal-planning-app
+  ```
 
 2. **Navigate to Server directory**: Once you are in the project's root directory, navigate to the "server" directory:
 
-```
-cd server
-```
+  ```
+  cd server
+  ```
 
 3. **Install Dependencies**: In the "server" directory, install all the JavaScript dependencies using npm:
 
-```
-npm install
-```
+  ```
+  npm install
+  ```
 
-4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+4. **Configure Environment Variables**: Create an .env file in your server directory and update the following variables with your own credentials:
+   
+   ```bash
+   MONGO_URL="add_your_mongo_url"
+   ACCESS_SECRET_KEY="create_your_own_access_key"
+   EMAIL_PASS="add_your_email_password"
+   EMAIL="add_your_email"
+   
+5. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
 
-```
-npm run dev
-```
+  ```
+  npm run dev
+  ```
 
 ## License
 
