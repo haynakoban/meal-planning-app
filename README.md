@@ -101,16 +101,45 @@ While the admin panel is running, please open a new terminal and navigate to the
 
 4. **Configure Environment Variables**: Create an .env file in your server directory and update the following variables with your own credentials:
    
-   ```bash
-   MONGO_URL="add_your_mongo_url"
-   ACCESS_SECRET_KEY="create_your_own_access_key"
-   EMAIL_PASS="add_your_email_password"
-   EMAIL="add_your_email"
+  ```
+  MONGO_URL="add_your_mongo_url"
+  ACCESS_SECRET_KEY="create_your_own_access_key"
+  EMAIL_PASS="add_your_email_password"
+  EMAIL="add_your_email"
+  ```
    
 5. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
 
   ```
   npm run dev
+  ```
+
+While having both the admin panel and server applications running, you can open a new terminal and navigate to the 'client' directory. This directory hosts the user application, which is developed using React Native Expo.
+
+### Step 4: Install Dependencies for **Client**
+
+1. **Navigate to the project's root directory**: proceed to the root directory of the project:
+
+  ```
+  cd meal-planning-app
+  ```
+
+2. **Navigate to Client directory**: Once you are in the project's root directory, navigate to the "client" directory:
+
+  ```
+  cd client
+  ```
+
+3. **Install Dependencies**: In the "client" directory, install all the JavaScript dependencies using npm:
+
+  ```
+  npm install
+  ```
+   
+4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+
+  ```
+  npx expo start
   ```
 
 ## License
