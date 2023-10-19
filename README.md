@@ -108,7 +108,7 @@ While the admin panel is running, please open a new terminal and navigate to the
   EMAIL="add_your_email"
   ```
    
-5. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+5. **Start the Application**: After all the dependencies are installed, you can start the NodeJS application:
 
   ```
   npm run dev
@@ -136,7 +136,7 @@ While having both the admin panel and server applications running, you can open 
   npm install
   ```
    
-4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+4. **Start the Application**: After all the dependencies are installed, you can start the React Native Expo application:
 
   ```
   npx expo start
