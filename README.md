@@ -179,9 +179,13 @@ We would like to thank the following for their contributions and support in the 
 
 If you have any questions, encounter issues, or need support, please don't hesitate to reach out to our team:
 
-- Email: contact@mealplanningapp.com
-- [Twitter](https://twitter.com/mealplanningapp)
-- [GitHub Issues](https://github.com/mealplanningapp/mealplanner/issues)
+- **Harold Mujar**
+  - Email: [haroldmujar01@gmail.com](mailto:haroldmujar01@gmail.com)
+  - Phone: +639914052737
+
+- **Elsie Cunanan**
+  - Email: [elsiecunanan2@gmail.com](mailto:elsiecunanan2@gmail.com)
+  - Phone: +639094768550
 
 ## Disclaimer
 
