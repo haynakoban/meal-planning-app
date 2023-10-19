@@ -65,13 +65,13 @@ git clone https://github.com/haynakoban/meal-planning-app.git
 cd meal-planning-app
 ```
 
-2. **Navigate to Admin directory**: In the "admin" directory, install all the JavaScript dependencies using npm:
+2. **Navigate to Admin directory**: Once you are in the project's root directory, navigate to the "admin" directory:
 
 ```
 cd admin
 ```
 
-3. **Install Dependencies**: Once you are in the project's root directory, navigate to the "admin" directory:
+3. **Install Dependencies**: In the "admin" directory, install all the JavaScript dependencies using npm:
 
 ```
 npm install
@@ -81,6 +81,34 @@ npm install
 
 ```
 npm start
+```
+
+While the admin panel is running, please open a new terminal and navigate to the project's root directory. In this new terminal, you can proceed to install the server dependencies using the appropriate package manager command for your Node.js server.
+
+### Step 3: Install Dependencies for **Server**
+
+1. **Navigate to the project's root directory**: proceed to the root directory of the project:
+
+```
+cd meal-planning-app
+```
+
+2. **Navigate to Server directory**: Once you are in the project's root directory, navigate to the "server" directory:
+
+```
+cd server
+```
+
+3. **Install Dependencies**: In the "server" directory, install all the JavaScript dependencies using npm:
+
+```
+npm install
+```
+
+4. **Start the Application**: After all the dependencies are installed, you can start the ReactJS application:
+
+```
+npm run dev
 ```
 
 ## License
