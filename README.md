@@ -77,6 +77,8 @@ Clone the Meal Planning Application Adaptive to User Nutritional Preferences and
   npm start
   ```
 
+The application will be available at **http://localhost:3000**.
+
 While the admin panel is running, please open a new terminal and navigate to the project's root directory. In this new terminal, you can proceed to install the server dependencies using the appropriate package manager command for your Node.js server.
 
 ### Step 3: Install Dependencies for **Server**
@@ -114,6 +116,10 @@ While the admin panel is running, please open a new terminal and navigate to the
   npm run dev
   ```
 
+The application will be available at **http://localhost:5000**.
+
+Make sure to update the .env file with your desired configurations, such as the database connection details, mail settings, and any other required variables.
+
 While having both the admin panel and server applications running, you can open a new terminal and navigate to the 'client' directory. This directory hosts the user application, which is developed using React Native Expo.
 
 ### Step 4: Install Dependencies for **Client**
@@ -141,6 +147,20 @@ While having both the admin panel and server applications running, you can open 
   ```
   npx expo start
   ```
+
+The application will be available and can access it through various methods:
+
+- **Expo Go App**: If you have the Expo Go app installed on your mobile device, you can scan the QR code provided during development to access the application.
+
+- **Web Browser**: If you're running the application on your computer, you can open your web browser and visit the provided localhost URL, typically [http://localhost:19002](http://localhost:19002), to launch the Expo DevTools. From there, you can choose to run the application in your browser.
+
+- **Emulators/Simulators**: You can run the application on mobile device emulators or simulators. The method for doing this depends on your development environment.
+
+Please note that the specific URL and methods for accessing your React Native Expo application may vary depending on your project's configuration and settings.
+
+That's it! **Meal Planning Application Adaptive to User Nutritional Preferences and Available Ingredients** is now installed and ready to be used locally. You can access it in your machine and start exploring the features.
+
+Feel free to customize the installation instructions based on your project's specific requirements.
 
 ## License
 
