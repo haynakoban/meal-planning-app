@@ -649,8 +649,8 @@ const filteredRecipes = async (req, res, next) => {
 
     if (filter.Allergies.length > 0) {
       let ing = [];
-      for (let i = 0; i < filter.Ingredients.length; i++) {
-        ing.push(new ObjectId(filter.Ingredients[i]));
+      for (let i = 0; i < filter.Allergies.length; i++) {
+        ing.push(new ObjectId(filter.Allergies[i]));
       }
       query.push({ 'ingredients.ingredients_id': { $nin: ing } });
     }

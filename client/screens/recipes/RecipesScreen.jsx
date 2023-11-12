@@ -6,10 +6,12 @@ import { SIZES } from '../../constants';
 import useMealTypeStore from '../../store/useMealTypeStore';
 import FavoriteCard from '../../components/favorites/FavoriteCard';
 import useRecipeStore from '../../store/useRecipeStore';
+import useAuthStore from '../../store/useAuthStore';
 
 const RecipesScreen = () => {
   const route = useRoute();
   const { title } = route.params;
+  const userInfo = useAuthStore((state) => state.userInfo);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const isFetching = useRef(false);
@@ -31,7 +33,7 @@ const RecipesScreen = () => {
     setIsLoading(true);
 
     try {
-      if (title != 'Recommended Recipes') {
+      if (title != 'Filtered Recipes') {
         fetchMealTypes(title, page);
         setPage(page + 1);
       } else {
