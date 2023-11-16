@@ -98,7 +98,7 @@ const RecipesFormScreen = ({ navigation }) => {
     description: '',
     procedure: [],
     image: null,
-    privacy: 'public',
+    privacy: 'private',
     cookingTime: 5,
   });
 
@@ -634,7 +634,14 @@ const RecipesFormScreen = ({ navigation }) => {
                     onPress={() => setForm({ ...form, cookingTime: t })}
                   />
                   <Text style={styles.fffs}>
-                    {t === 60 ? '1' : t === 120 ? '2' : t} {s}
+                    {t === 60
+                      ? '1'
+                      : t === 90
+                      ? '1 hour 30'
+                      : t === 120
+                      ? '2'
+                      : t}{' '}
+                    {s}
                   </Text>
                 </Pressable>
               );

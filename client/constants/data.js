@@ -209,18 +209,14 @@ export const CT = [
   { t: 20, s: 'minutes' },
   { t: 30, s: 'minutes' },
   { t: 60, s: 'hour' },
+  { t: 90, s: 'minutes' },
   { t: 120, s: 'hours' },
 ];
 
 export const privacyData = [
   {
-    privacy: 'public',
-    title: 'Public',
-    description: 'Anyone can see this recipe.',
-  },
-  {
     privacy: 'private',
-    title: 'Private',
+    title: 'Private (Default)',
     description: 'Only you can see this recipe.',
   },
 ];
@@ -349,4 +345,29 @@ export const reviews = [
     username: 'semicolon101010',
     date: new Date().toDateString(),
   },
+];
+
+export const measurement = [
+  { label: 'big', value: 'big' },
+  { label: 'bunch', value: 'bunch' },
+  { label: 'cloves', value: 'cloves' },
+  { label: 'can', value: 'can' },
+  { label: 'cups', value: 'cups' },
+  { label: 'g', value: 'g' },
+  { label: 'gal', value: 'gal' },
+  { label: 'kg', value: 'kg ' },
+  { label: 'lb', value: 'lb' },
+  { label: 'lbs', value: 'lbs' },
+  { label: 'liter', value: 'liter ' },
+  { label: 'medium', value: 'medium' },
+  { label: 'ml', value: 'ml ' },
+  { label: 'oz', value: 'oz' },
+  { label: 'packs', value: 'packs' },
+  { label: 'pc', value: 'pc' },
+  { label: 'pcs', value: 'pcs' },
+  { label: 'pinch', value: 'pinch' },
+  { label: 'quart', value: 'quart' },
+  { label: 'small', value: 'small' },
+  { label: 'tbsp', value: 'tbsp' },
+  { label: 'tsp', value: 'tsp' },
 ];

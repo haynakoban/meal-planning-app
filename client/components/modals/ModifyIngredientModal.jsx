@@ -1,11 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Text, TextInput, View, Pressable, Modal } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import { COLORS, SIZES, FONT } from '../../constants';
 import styles from '../../styles/recipeForm';
 import useIngredientsStore from '../../store/useIngredientsStore';
+import { measurement } from '../../constants';
+import styles2 from '../../styles/recipeForm';
 
 const ModifyIngredientModal = ({ visible, data, onClose }) => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState(measurement);
+
   function convertMixedNumberToDecimal(input) {
     const cleanInput = input.replace(/[^\d\s/]/g, ''); // Remove all non-digit, non-space, non-slash characters
     return cleanInput;
@@ -28,6 +35,10 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
   const [ingredientInfo, setIngredientInfo] = useState({});
 
   useEffect(() => {
+    setIngredientInfo({ ...ingredientInfo, measurement: value });
+  }, [value]);
+
+  useEffect(() => {
     setErr({
       amount: false,
       measurement: false,
@@ -41,6 +52,8 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
           measurement: filteredData[0]?.measurement,
           description: filteredData[0]?.description,
         });
+
+        setValue(filteredData[0]?.measurement);
       } else {
         setIngredientInfo({
           ingredients_id: data.id,
@@ -53,7 +66,7 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
   }, []);
 
   const handleSave = () => {
-    let converted = convertMixedNumberToDecimal(ingredientInfo.amount);
+    let converted = convertMixedNumberToDecimal(ingredientInfo?.amount || '');
     let isAmountValid =
       ingredientInfo.amount !== null &&
       ingredientInfo.amount !== '' &&
@@ -133,9 +146,9 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             }}
           >
             <View style={{ width: '48%' }}>
-              <Text style={[styles.addLabel, styles.mb]}>Amount</Text>
+              <Text style={[styles.addLabel, styles.mb]}>Amount/Quantity</Text>
               <TextInput
-                placeholder='Amount'
+                placeholder='Amount/Quantity'
                 value={ingredientInfo.amount}
                 onChangeText={(text) =>
                   setIngredientInfo({
@@ -169,14 +182,21 @@ const ModifyIngredientModal = ({ visible, data, onClose }) => {
             </View>
             <View style={{ width: '48%' }}>
               <Text style={[styles.addLabel, styles.mb]}>Measurement</Text>
-              <TextInput
-                placeholder='Measurement'
-                value={ingredientInfo.measurement}
-                onChangeText={(text) =>
-                  setIngredientInfo({ ...ingredientInfo, measurement: text })
-                }
+              <DropDownPicker
+                placeholderStyle={styles2.ddPlaceholder}
+                placeholder='Select measurement'
+                searchPlaceholder='Search measurement'
+                searchable={true}
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                showBadgeDot={false}
                 style={[
                   styles.borderWidth,
+                  styles2.noBG,
                   {
                     paddingHorizontal: 15,
                     paddingVertical: 10,

@@ -1,13 +1,15 @@
 import { FlatList, ScrollView, View, Text } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import SelectRecipe from '../../components/planner/SelectRecipe';
 import useMealPlanRecipe from '../../store/useMealPlanRecipe';
 import useRecipeStore from '../../store/useRecipeStore';
 import LoadingScreen from '../loading/LoadingScreen';
 import styles from '../../styles/search';
 import { COLORS } from '../../constants';
+import useAuthStore from '../../store/useAuthStore';
 
 const SearchRecipe = () => {
+  const userInfo = useAuthStore((state) => state.userInfo);
   const recipes = useRecipeStore((state) => state.recipes);
   const allRecipes = useRecipeStore((state) => state.allRecipes);
   const clearRecipe = useRecipeStore((state) => state.clearRecipe);
@@ -45,14 +47,20 @@ const SearchRecipe = () => {
             <>
               {recipes?.map((item, index) => {
                 return (
-                  <View key={index} style={{ width: '100%', marginBottom: 8 }}>
-                    <SelectRecipe
-                      data={item}
-                      id={item._id}
-                      addRecipe={addRecipe}
-                      removeRecipe={removeRecipe}
-                    />
-                  </View>
+                  <Fragment key={index}>
+                    {(item?.recipes?.privacy == 'public' &&
+                      item?.user_id?.username === 'default') ||
+                      (item?.user_id?._id == userInfo?._id && (
+                        <View style={{ width: '100%', marginBottom: 8 }}>
+                          <SelectRecipe
+                            data={item}
+                            id={item._id}
+                            addRecipe={addRecipe}
+                            removeRecipe={removeRecipe}
+                          />
+                        </View>
+                      ))}
+                  </Fragment>
                 );
               })}
             </>
