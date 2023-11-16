@@ -288,12 +288,23 @@ const filters = async (req, res, next) => {
     if (clientLastModified >= resourceLastModified) {
       res.status(304).end();
     } else {
-      const cuisines = await Cuisines.find().select('_id name');
-      // const cookingTimes = await CookingTimes.find().select('_id name time');
-      const mealtypes = await MealTypes.find().select('_id name');
-      const preferences = await Preferences.find().select('_id name');
-      const allergies = await Ingredients.find().select('_id name');
-      const ingredients = await Ingredients.find().select('_id name');
+      const cuisines = await Cuisines.find()
+        .select('_id name')
+        .sort({ name: 'asc' });
+      const mealtypes = await MealTypes.find()
+        .select('_id name')
+        .sort({ name: 'asc' });
+      const preferences = await Preferences.find()
+        .select('_id name')
+        .sort({ name: 'asc' });
+      const allergies = await Ingredients.find()
+        .select('_id name')
+        .sort({ name: 'asc' });
+      const ingredients = await Ingredients.find()
+        .select('_id name category')
+        .sort({
+          name: 'asc',
+        });
 
       const cookingTimes = [
         {
@@ -322,8 +333,13 @@ const filters = async (req, res, next) => {
           time: '60 minutes (1 hour)',
         },
         {
-          _id: 120,
+          _id: 90,
           name: 'Long',
+          time: '90 minutes (1 hour 3 minues)',
+        },
+        {
+          _id: 120,
+          name: 'Longest',
           time: '120 minutes (2 hours)',
         },
       ];
