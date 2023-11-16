@@ -28,6 +28,12 @@ const headCells = [
     label: 'Name',
   },
   {
+    id: 'category',
+    numeric: true,
+    disablePadding: false,
+    label: 'Category',
+  },
+  {
     id: 'created_date',
     numeric: true,
     disablePadding: false,
@@ -221,6 +227,9 @@ const Ingredients = () => {
                           sx={{ textTransform: 'capitalize' }}
                         >
                           {row?.name || '-'}
+                        </TableCell>
+                        <TableCell align='right'>
+                          {row?.category || '-'}
                         </TableCell>
                         <TableCell align='right'>{date}</TableCell>
                       </TableRow>

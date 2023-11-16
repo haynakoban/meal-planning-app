@@ -24,10 +24,11 @@ const bulkIngredients = async (req, res, next) => {
 // create new ingredient
 const create = async (req, res, next) => {
   try {
-    const { name, admin_id } = req.body;
+    const { name, admin_id, category } = req.body;
 
     const ingredient = await Ingredients.find({
       name: { $regex: new RegExp(name, 'i') },
+      category: { $regex: new RegExp(category, 'i') },
     });
 
     if (ingredient.length > 0) {
@@ -39,6 +40,7 @@ const create = async (req, res, next) => {
 
     const result = await Ingredients.create({
       name: name,
+      category: category,
       admin_id: new ObjectId(admin_id),
     });
 

@@ -8,6 +8,7 @@ import axios from '../../lib/axiosConfig';
 import MainLayout from '../../layout';
 import StyledBoxContainer from '../../components/base/StyledBoxContainer';
 import TextInputField from '../../components/forms/TextInputField';
+import { FormControl, MenuItem, Select } from '@mui/material';
 
 const IngredientsCreate = () => {
   const navigate = useNavigate();
@@ -20,12 +21,14 @@ const IngredientsCreate = () => {
   } = useForm({
     defaultValues: {
       name: '',
+      category: 'beverages',
     },
     mode: 'onChange',
   });
 
   const handleFormSubmit = async (data) => {
-    const { name } = data;
+    const { name, category } = data;
+
     const userInfo = await axios.get(`admin/auth`);
 
     if (!userInfo) {
@@ -35,10 +38,11 @@ const IngredientsCreate = () => {
       });
     }
 
-    if (name) {
+    if (name && category) {
       const response = await axios.post('ingredients', {
         name: name,
-        admin_id: userInfo?.user_id,
+        category: category,
+        admin_id: userInfo.data?.user_id,
       });
 
       if (response.data?.status === 'record created') {
@@ -51,6 +55,29 @@ const IngredientsCreate = () => {
       }
     }
   };
+
+  const c = [
+    'beverages',
+    'coconut',
+    'condiments',
+    'dairy',
+    'eggs',
+    'fruits',
+    'grains',
+    'legumes',
+    'meats',
+    'oil',
+    'pasta',
+    'powders',
+    'rice',
+    'sausages',
+    'seafoods',
+    'spices',
+    'sweetener / sweets',
+    'tapioca pearls / jelatin',
+    'vegetables',
+    'wrapper',
+  ];
 
   return (
     <MainLayout>
@@ -77,27 +104,52 @@ const IngredientsCreate = () => {
                 watch={watch}
               />
             </Box>
+          </StyledBoxContainer>
 
+          <StyledBoxContainer text='Category'>
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: {
-                  xs: 'center',
-                  sm: 'center',
-                  md: 'flex-start',
-                },
-                mt: 3,
+                justifyContent: 'center',
               }}
             >
-              <Button
-                variant='contained'
-                onClick={handleSubmit(handleFormSubmit)}
-              >
-                Submit
-              </Button>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={watch('category')}
+                  {...register('category')}
+                >
+                  {c.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
           </StyledBoxContainer>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: {
+                xs: 'center',
+                sm: 'center',
+                md: 'flex-start',
+              },
+              mt: 3,
+            }}
+          >
+            <Button
+              variant='contained'
+              onClick={handleSubmit(handleFormSubmit)}
+            >
+              Submit
+            </Button>
+          </Box>
         </Box>
       </Box>
     </MainLayout>
