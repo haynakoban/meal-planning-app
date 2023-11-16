@@ -120,7 +120,6 @@ const UpdateRecipe = () => {
       description: recipe?.description,
       procedure: recipe?.procedure,
       image: null,
-      privacy: recipe?.privacy,
       cookingTime: recipe?.cooking_time,
     });
     addMealTypeValue(recipe?.meal_types);
