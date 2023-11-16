@@ -335,7 +335,7 @@ const filters = async (req, res, next) => {
         {
           _id: 90,
           name: 'Long',
-          time: '90 minutes (1 hour 3 minues)',
+          time: '90 minutes (1 hour 30 minutes)',
         },
         {
           _id: 120,
