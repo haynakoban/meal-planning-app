@@ -15,8 +15,10 @@ import {
   searchesScreens,
 } from '../../constants';
 import styles from '../../styles/search';
+import useAuthStore from '../../store/useAuthStore';
 
 const SearchScreen = () => {
+  const userInfo = useAuthStore((state) => state.userInfo);
   const navigation = useNavigation();
   const recipes = useRecipeStore((state) => state.recipes);
   const listRecipes = useRecipeStore((state) => state.listRecipes);
@@ -54,16 +56,22 @@ const SearchScreen = () => {
                 }
 
                 return (
-                  <View key={item?._id} style={{ width: '50%' }}>
-                    <FavoriteCard
-                      name={item?.name}
-                      username={item?.user_id?.username || 'anon'}
-                      reviews={item?.feedbacks.length || 0}
-                      ratings={calculated / item?.feedbacks.length || 0}
-                      image={item?.image}
-                      id={item?._id}
-                    />
-                  </View>
+                  <>
+                    {(item?.recipes?.privacy == 'public' &&
+                      item?.user_id?.username === 'default') ||
+                      (item?.user_id?._id == userInfo?._id && (
+                        <View key={item?._id} style={{ width: '50%' }}>
+                          <FavoriteCard
+                            name={item?.name}
+                            username={item?.user_id?.username || 'anon'}
+                            reviews={item?.feedbacks.length || 0}
+                            ratings={calculated / item?.feedbacks.length || 0}
+                            image={item?.image}
+                            id={item?._id}
+                          />
+                        </View>
+                      ))}
+                  </>
                 );
               }}
               numColumns={2}

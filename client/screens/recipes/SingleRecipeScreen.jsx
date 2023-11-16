@@ -7,9 +7,9 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import { Ionicons, Feather } from '@expo/vector-icons';
+import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { COLORS, SIZES, calculateCalorie, API } from '../../constants';
+import { COLORS, SIZES, calculateCalorie, API, FONT } from '../../constants';
 import styles from '../../styles/recipe';
 import axios from '../../lib/axiosConfig';
 import ReviewCard from '../../components/reviews/ReviewCard';
@@ -190,35 +190,82 @@ const SingleRecipeScreen = ({ route, navigation }) => {
             />
 
             <View style={styles.wrapper}>
-              <Text
-                style={styles.textBold}
-                numberOfLines={3}
-                ellipsizeMode='tail'
+              <View
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}
               >
-                {recipe?.name}
-              </Text>
+                <Text
+                  style={styles.textBold}
+                  numberOfLines={3}
+                  ellipsizeMode='tail'
+                >
+                  {recipe?.name}
+                </Text>
+                {userInfo?._id !== recipe?.user_id?._id && (
+                  <Pressable
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      paddingVertical: 10,
+                      paddingHorizontal: 20,
+                      borderRadius: 5,
+                      backgroundColor: COLORS.secondary,
+                    }}
+                    onPress={() =>
+                      navigation.navigate('Customize Recipe', {
+                        id: recipe_id,
+                      })
+                    }
+                  >
+                    <MaterialCommunityIcons
+                      name='playlist-edit'
+                      size={24}
+                      color='black'
+                      style={{ marginEnd: 5 }}
+                    />
+                    <Text style={{ fontFamily: FONT.regular }}>Customize</Text>
+                  </Pressable>
+                )}
+              </View>
               <View style={styles.authorContainer}>
                 <View style={styles.authorWrapper}>
                   <Text style={styles.authorText}>Recipe by:</Text>
-
-                  <TouchableOpacity
-                    style={styles.authorButton}
-                    onPress={() => {
-                      userInfo?._id === recipe?.user_id?._id
-                        ? navigation.navigate('Profile')
-                        : navigation.navigate('OtherUserProfile', {
-                            id: recipe?.user_id?._id,
-                          });
-                    }}
-                  >
-                    <Text
-                      style={styles.authorButtonText}
-                      numberOfLines={1}
-                      ellipsizeMode='tail'
+                  {recipe?.user_id?.username === 'default' ? (
+                    <View style={styles.authorButton}>
+                      <Text
+                        style={styles.authorButtonText}
+                        numberOfLines={1}
+                        ellipsizeMode='tail'
+                      >
+                        {recipe?.user_id?.fullname}
+                      </Text>
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.authorButton}
+                      onPress={() => {
+                        userInfo?._id === recipe?.user_id?._id
+                          ? navigation.navigate('Profile')
+                          : navigation.navigate('OtherUserProfile', {
+                              id: recipe?.user_id?._id,
+                            });
+                      }}
                     >
-                      {recipe?.user_id?.fullname}
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={styles.authorButtonText}
+                        numberOfLines={1}
+                        ellipsizeMode='tail'
+                      >
+                        {recipe?.user_id?.fullname}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
                 <Pressable
                   style={styles.flexRow}
@@ -305,7 +352,9 @@ const SingleRecipeScreen = ({ route, navigation }) => {
               {recipe?.procedure?.map((text, index) => {
                 return (
                   <View key={index} style={styles.ingredientsWrapper}>
-                    <Text style={[styles.bullet, styles.text]}>{`\u25CF`}</Text>
+                    <Text style={[styles.bullet, styles.text]}>
+                      {index + 1}.
+                    </Text>
                     <Text style={[styles.text, styles.mb]}>{text}</Text>
                   </View>
                 );

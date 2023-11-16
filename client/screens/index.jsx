@@ -19,6 +19,7 @@ import ChangePassword from './profile/ChangePassword';
 import LoadingScreen from './loading/LoadingScreen';
 import UpdateRecipe from './recipes/UpdateRecipe';
 import UpdateMeal from './planner/UpdateMeal';
+import CustomizeRecipe from './recipes/CustomizeRecipe';
 
 export {
   FavoritesScreen,
@@ -42,4 +43,5 @@ export {
   SingleRecipeScreen,
   UpdateRecipe,
   UpdateMeal,
+  CustomizeRecipe,
 };

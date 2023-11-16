@@ -109,19 +109,19 @@ const HomeScreen = ({ navigation }) => {
                 renderItem={({ item }) => {
                   return (
                     <>
-                      {item?.recipes?.privacy == 'public' ||
-                      item?.recipes?.user_id._id == userInfo?._id ? (
-                        <FavoriteCard
-                          name={item?.recipes?.name}
-                          username={item?.recipes?.user_id?.username || 'anon'}
-                          reviews={item?.reviews || 0}
-                          ratings={item?.ratings || 0}
-                          image={item?.recipes?.image}
-                          id={item?.recipes?._id}
-                        />
-                      ) : (
-                        <></>
-                      )}
+                      {item?.recipes?.privacy == 'public' &&
+                        item?.recipes?.user_id?.username === 'default' && (
+                          <FavoriteCard
+                            name={item?.recipes?.name}
+                            username={
+                              item?.recipes?.user_id?.username || 'anon'
+                            }
+                            reviews={item?.reviews || 0}
+                            ratings={item?.ratings || 0}
+                            image={item?.recipes?.image}
+                            id={item?.recipes?._id}
+                          />
+                        )}
                     </>
                   );
                 }}

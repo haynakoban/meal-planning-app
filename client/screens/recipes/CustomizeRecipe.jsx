@@ -73,7 +73,7 @@ function LoadingScreen({ failed, success }) {
           }}
         >
           <Text style={{ fontFamily: FONT.regular, color: COLORS.white }}>
-            Recipe updated successfully.
+            Recipe created successfully.
           </Text>
         </View>
       )}
@@ -81,7 +81,7 @@ function LoadingScreen({ failed, success }) {
   );
 }
 
-const UpdateRecipe = () => {
+const CustomizeRecipe = () => {
   const navigation = useNavigation();
   const singleRecipes = useRecipeStore((state) => state.singleRecipes);
   const presonalRecipes = useRecipeStore((state) => state.presonalRecipes);
@@ -100,6 +100,7 @@ const UpdateRecipe = () => {
     name: false,
     description: false,
     procedure: false,
+    image: false,
     ingredients: false,
     meal_types: false,
   });
@@ -120,7 +121,6 @@ const UpdateRecipe = () => {
       description: recipe?.description,
       procedure: recipe?.procedure,
       image: null,
-      privacy: recipe?.privacy,
       cookingTime: recipe?.cooking_time,
     });
     addMealTypeValue(recipe?.meal_types);
@@ -264,6 +264,7 @@ const UpdateRecipe = () => {
           ...form,
           image: result.assets[0].uri,
         });
+        setErr({ ...err, image: false });
       }
     } else {
       // ask for storage permission if not yet granted
@@ -290,6 +291,7 @@ const UpdateRecipe = () => {
         )
       );
 
+      const isImageValid = form.image !== null;
       const isNameValid = form.name !== null && form.name !== '';
       const isDescriptionValid =
         form.description !== null && form.description !== '';
@@ -302,6 +304,7 @@ const UpdateRecipe = () => {
         name: !isNameValid,
         description: !isDescriptionValid,
         procedure: !isProcedureValid,
+        image: !isImageValid,
         ingredients: !isIngredientsValid,
         meal_types: !isMealTypeValid,
       };
@@ -328,17 +331,13 @@ const UpdateRecipe = () => {
       fd.append('cooking_time', form.cookingTime);
       fd.append('privacy', form.privacy);
 
-      if (form.image == null) {
-        fd.append('image', null);
-      } else {
-        fd.append('image', {
-          name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
-          uri: form.image,
-          type: 'image/jpg',
-        });
-      }
+      fd.append('image', {
+        name: `${new Date().getMilliseconds()}-${form.name}.jpg`,
+        uri: form.image,
+        type: 'image/jpg',
+      });
 
-      const response = await axios.put(`recipes/${recipe_id}`, fd, {
+      const response = await axios.post(`recipes`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -381,21 +380,10 @@ const UpdateRecipe = () => {
       <ScrollView keyboardShouldPersistTaps='always'>
         <View style={styles.container}>
           <Text style={styles.highlights}>Name & Photo</Text>
-          {recipe?.image ? (
-            <>
-              {form.image == null ? (
-                <TouchableHighlight onPress={pickImage}>
-                  <Image
-                    source={{ uri: recipe?.image }}
-                    style={styles.hasImage}
-                  />
-                </TouchableHighlight>
-              ) : (
-                <TouchableHighlight onPress={pickImage}>
-                  <Image source={{ uri: form.image }} style={styles.hasImage} />
-                </TouchableHighlight>
-              )}
-            </>
+          {form.image != null ? (
+            <TouchableHighlight onPress={pickImage}>
+              <Image source={{ uri: form.image }} style={styles.hasImage} />
+            </TouchableHighlight>
           ) : (
             <TouchableHighlight onPress={pickImage}>
               <View style={styles.noImage}>
@@ -407,6 +395,19 @@ const UpdateRecipe = () => {
                 <Text style={styles.addLabel}>Add Cover Photo</Text>
               </View>
             </TouchableHighlight>
+          )}
+
+          {err.image && (
+            <Text
+              style={{
+                color: COLORS.danger,
+                fontFamily: FONT.regular,
+                fontSize: SIZES.sm,
+                textAlign: 'center',
+              }}
+            >
+              Cover photo is required.
+            </Text>
           )}
 
           {form.image && (
@@ -754,7 +755,7 @@ const UpdateRecipe = () => {
             style={[styles.submitButton, styles.mtxl]}
             onPress={handleSubmit}
           >
-            <Text style={styles.submitText}>Update</Text>
+            <Text style={styles.submitText}>Create</Text>
           </Pressable>
         </View>
 
@@ -770,4 +771,4 @@ const UpdateRecipe = () => {
   );
 };
 
-export default UpdateRecipe;
+export default CustomizeRecipe;
