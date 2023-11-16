@@ -31,6 +31,11 @@ const FilterDropdown = ({ hideModal }) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     setIsLoading(false);
+    const { sortedCategories, organizedData } = organizeAndSortData(
+      filters[0].data
+    );
+    setSortedCategories(sortedCategories);
+    setOrganizedData(organizedData);
   }, [filters]);
 
   // Function to toggle section open/close
@@ -41,6 +46,34 @@ const FilterDropdown = ({ hideModal }) => {
       setOpenSections([...openSections, sectionTitle]);
     }
   };
+
+  // Function to organize and sort data by category
+  const organizeAndSortData = (data) => {
+    const organizedData = {};
+
+    // Group data by category
+    data.forEach((item) => {
+      const category = item.category || 'Uncategorized';
+      if (!organizedData[category]) {
+        organizedData[category] = [];
+      }
+      organizedData[category].push(item);
+    });
+
+    // Sort category titles alphabetically
+    const sortedCategories = Object.keys(organizedData).sort();
+
+    // Sort each category's ingredients alphabetically
+    sortedCategories.forEach((category) => {
+      organizedData[category].sort((a, b) => a.name.localeCompare(b.name));
+    });
+
+    return { sortedCategories, organizedData };
+  };
+
+  // Use the organized and sorted data in your SectionList
+  const [sortedCategories, setSortedCategories] = useState([]);
+  const [organizedData, setOrganizedData] = useState([]);
 
   return (
     <>
@@ -93,7 +126,12 @@ const FilterDropdown = ({ hideModal }) => {
             sections={filters}
             keyExtractor={(item) => item._id.toString()}
             renderItem={({ item, section }) => {
-              if (openSections.includes(section.title)) {
+              if (
+                section.title === 'Ingredients' ||
+                section.title === 'Allergies'
+              ) {
+                return null;
+              } else if (openSections.includes(section.title)) {
                 return (
                   <Button
                     icon={() => {
@@ -157,6 +195,80 @@ const FilterDropdown = ({ hideModal }) => {
                   : title}
               </Button>
             )}
+            renderSectionFooter={({ item, section }) => {
+              if (
+                section.title === 'Ingredients' ||
+                section.title === 'Allergies'
+              ) {
+                if (openSections.includes(section.title)) {
+                  return (
+                    <SectionList
+                      scrollEnabled={false}
+                      sections={sortedCategories.map((category) => ({
+                        title: category,
+                        data: organizedData[category],
+                      }))}
+                      keyExtractor={(item) => item._id.toString()}
+                      renderSectionHeader={({ section: { title } }) => (
+                        <Text
+                          style={{
+                            paddingHorizontal: 15,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                          }}
+                        >{`${title.toUpperCase()}`}</Text>
+                      )}
+                      renderItem={({ item }) => {
+                        return (
+                          <Button
+                            icon={() => {
+                              if (
+                                filteredData[section.title]?.includes(item._id)
+                              ) {
+                                return (
+                                  <Ionicons
+                                    name='checkbox'
+                                    size={24}
+                                    color='black'
+                                  />
+                                );
+                              } else {
+                                return (
+                                  <MaterialCommunityIcons
+                                    name='checkbox-blank-outline'
+                                    size={24}
+                                    color='black'
+                                  />
+                                );
+                              }
+                            }}
+                            contentStyle={[buttonContent, pd]}
+                            labelStyle={[
+                              buttonLabel,
+                              {
+                                fontFamily: filteredData[
+                                  section.title
+                                ]?.includes(item._id)
+                                  ? FONT.semiBold
+                                  : FONT.medium,
+                              },
+                            ]}
+                            textColor={COLORS.black}
+                            onPress={() =>
+                              setFilteredData(section.title, item._id)
+                            }
+                          >
+                            {item.name}
+                          </Button>
+                        );
+                      }}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              }
+            }}
           />
         </ScrollView>
       )}
