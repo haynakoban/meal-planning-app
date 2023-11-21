@@ -179,7 +179,7 @@ const update = async (req, res, next) => {
     const { id } = req.params;
     const { property } = req.body;
 
-    if (!['name'].includes(property)) {
+    if (!['name', 'category'].includes(property)) {
       return res.status(400).json({
         message: 'Invalid property provided',
         status: 'error occurred',

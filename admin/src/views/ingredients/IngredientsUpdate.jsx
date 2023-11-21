@@ -14,6 +14,7 @@ import MainLayout from '../../layout';
 import StyledBox from '../../components/base/StyledBox';
 import StyledBoxContainer from '../../components/base/StyledBoxContainer';
 import TextInputField from '../../components/forms/TextInputField';
+import { FormControl, MenuItem, Select } from '@mui/material';
 
 const IngredientsUpdate = () => {
   const { id } = useParams();
@@ -23,6 +24,7 @@ const IngredientsUpdate = () => {
   const [ingredient, setIngredient] = React.useState({});
 
   const [nameVisible, setNameVisible] = React.useState(false);
+  const [categoryVisible, setCategoryVisible] = React.useState(false);
 
   const {
     register,
@@ -33,6 +35,7 @@ const IngredientsUpdate = () => {
   } = useForm({
     defaultValues: {
       name: '',
+      category: '',
     },
     mode: 'onChange',
   });
@@ -55,6 +58,7 @@ const IngredientsUpdate = () => {
         if (response.data?.status === 'success') {
           setIngredient(response.data?.data);
           setValue('name', response.data?.data?.name);
+          setValue('category', response.data?.data?.category);
         } else {
           setIngredient({});
         }
@@ -80,11 +84,35 @@ const IngredientsUpdate = () => {
       if (response.data?.status === 'success') {
         setIngredient(response.data?.data);
         setValue('name', response.data?.data?.name);
+        setValue('category', response.data?.data?.category);
       }
     } catch (error) {
       console.error(error);
     }
   };
+
+  const c = [
+    'beverages',
+    'coconut',
+    'condiments',
+    'dairy',
+    'eggs',
+    'fruits',
+    'grains',
+    'legumes',
+    'meats',
+    'oil',
+    'pasta',
+    'powders',
+    'rice',
+    'sausages',
+    'seafoods',
+    'spices',
+    'sweetener / sweets',
+    'tapioca pearls / jelatin',
+    'vegetables',
+    'wrapper',
+  ];
 
   return (
     <MainLayout>
@@ -156,6 +184,61 @@ const IngredientsUpdate = () => {
                   <StyledBox
                     text={ingredient?.name}
                     setVisible={setNameVisible}
+                  />
+                )}
+              </StyledBoxContainer>
+              <StyledBoxContainer text='Category'>
+                {categoryVisible ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <FormControl fullWidth>
+                      <Select
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        value={watch('category')}
+                        {...register('category')}
+                      >
+                        {c.map((item) => (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Tooltip title='Cancel'>
+                      <IconButton
+                        size='small'
+                        onClick={() => {
+                          setValue('category', ingredient?.category);
+                          setCategoryVisible(false);
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Apply Changes'>
+                      <IconButton
+                        size='small'
+                        onClick={() => {
+                          handleSubmit((data) =>
+                            handleFormSubmit(data, 'category')
+                          )();
+                          setCategoryVisible(false);
+                        }}
+                      >
+                        <CheckIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                ) : (
+                  <StyledBox
+                    text={ingredient?.category}
+                    setVisible={setCategoryVisible}
                   />
                 )}
               </StyledBoxContainer>
