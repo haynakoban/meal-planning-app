@@ -1,7 +1,7 @@
 import api from 'axios';
 
-export const SERVER_URL = 'https://b455-136-158-118-226.ngrok-free.app';
-// 'https://nutri-smart-server-4bff354fb1dd.herokuapp.com';
+export const SERVER_URL =
+  'https://nutri-smart-server-4bff354fb1dd.herokuapp.com';
 
 const axios = api.create({
   baseURL: `${SERVER_URL}/api/`,
