@@ -199,7 +199,7 @@ const SingleRecipeScreen = ({ route, navigation }) => {
                 }}
               >
                 <Text
-                  style={styles.textBold}
+                  style={[styles.textBold, { width: '80%' }]}
                   numberOfLines={3}
                   ellipsizeMode='tail'
                 >
@@ -209,11 +209,12 @@ const SingleRecipeScreen = ({ route, navigation }) => {
                   <Pressable
                     style={{
                       display: 'flex',
-                      justifyContent: 'space-between',
+                      justifyContent: 'center',
                       alignItems: 'center',
                       flexDirection: 'row',
                       paddingVertical: 10,
                       paddingHorizontal: 20,
+                      width: '20%',
                       borderRadius: 5,
                       backgroundColor: COLORS.secondary,
                     }}
@@ -229,7 +230,6 @@ const SingleRecipeScreen = ({ route, navigation }) => {
                       color='black'
                       style={{ marginEnd: 5 }}
                     />
-                    <Text style={{ fontFamily: FONT.regular }}>Customize</Text>
                   </Pressable>
                 )}
               </View>
